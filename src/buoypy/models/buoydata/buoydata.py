@@ -170,5 +170,45 @@ class Wind(BuoyDataBase):
 class BuoyData(Meteorological, Spectral, Wind, Wave):
     def __init__(
         self,
+        meteorological_datum: Meteorological = None,
+        spectral_datum: Spectral = None,
+        wind_datum: Wind = None,
+        wave_datum: Wave = None,
     ):
         super().__init__()
+        self._meteorological_data = [meteorological_datum]
+        self._spectral_data = [spectral_datum]
+        self._wind_data = [wind_datum]
+        self._wave_data = [wave_datum]
+
+    @property
+    def meteorological_data(self) -> list[Meteorological]:
+        return self._meteorological_data
+
+    @property
+    def spectral_data(self) -> list[Spectral]:
+        return self._spectral_data
+
+    @property
+    def wind_data(self) -> list[Wind]:
+        return self._wind_data
+
+    @property
+    def wave_data(self) -> list[Wave]:
+        return self._wave_data
+
+    @meteorological_data.setter
+    def meteorological_data(self, met_datum: Meteorological):
+        self._meteorological_data.append(met_datum)
+
+    @spectral_data.setter
+    def spectral_data(self, spectral_datum: Spectral):
+        self._spectral_data.append(spectral_datum)
+
+    @wind_data.setter
+    def wind_data(self, wind_datum: Wind):
+        self._wind_data.append(wind_datum)
+
+    @wave_data.setter
+    def wave_data(self, wave_datum: Wave):
+        self._wave_data.append(wave_datum)
