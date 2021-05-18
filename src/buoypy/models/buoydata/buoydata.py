@@ -77,10 +77,12 @@ class Spectral(BuoyDataBase):
 @dataclass
 class Wave:
     sea_surface_wave_significant_height: float = BuoyDataBase(
-        None, WAVE_UNITS["sea_surface_wave_significant_height"]
+        None,
+        WAVE_UNITS["sea_surface_wave_significant_height"],
     )  # (m)
     sea_surface_wave_peak_period: float = BuoyDataBase(
-        None, WAVE_UNITS["sea_surface_wave_peak_period"]
+        None,
+        WAVE_UNITS["sea_surface_wave_peak_period"],
     )  # (s)
     sea_surface_wave_mean_period: float = BuoyDataBase(
         None,
