@@ -5,6 +5,24 @@ REALTIME_WAVE_UNITS = {}
 
 SPECTRAL_UNITS = {}
 
+METEOROLOGICAL = {
+    "date_recorded": "date",
+    "wind_direction": "degrees",
+    "wind_speed": "m/s",
+    "wind_gust": "m/s",
+    "wave_height": "m",
+    "dom_wave_period": "seconds",
+    "avg_wave_period": "seconds",
+    "wave_direction": "degrees",
+    "sea_pressure": "hPa",
+    "air_temperature": "celcius",
+    "water_temperature": "celcius",
+    "tide": "ft",
+    "dewpoint_temperature": "celcius",
+    "visibility": "nmi",  # nautical miles
+    "pressure_tendency": "hPa",  # direction +/- amount of pressure change over 3hr period
+}
+
 WAVE_UNITS = {
     "sea_surface_wave_significant_height": "meters",
     "sea_surface_wave_peak_period": "seconds",
