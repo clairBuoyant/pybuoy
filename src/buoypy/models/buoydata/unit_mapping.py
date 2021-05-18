@@ -1,9 +1,6 @@
 """WIP: Mapping key to unit for BuoyDataBase."""
 
 # https://www.ndbc.noaa.gov/measdes.shtml
-REALTIME_WAVE_UNITS = {}
-
-SPECTRAL_UNITS = {}
 
 METEOROLOGICAL = {
     "date_recorded": "date",
@@ -79,3 +76,7 @@ WIND_UNITS = {
     "wind_speed_of_gust": "m/s",
     "upward_air_velocity": "m/s",
 }
+
+REALTIME_WAVE_UNITS = {}
+
+SPECTRAL_UNITS = {}
