@@ -168,6 +168,8 @@ class Wind(BuoyDataBase):
 
 
 class BuoyData(Meteorological, Spectral, Wind, Wave):
+    # ? in this current state, should the following be the def of buoy/collection
+    # ? if yes, then should buoydata be buoydatum... 175-178 only?
     def __init__(
         self,
         meteorological_datum: Meteorological = None,
