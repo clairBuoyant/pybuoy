@@ -1,6 +1,6 @@
 ## Pull Request template
 
-Please, go through these steps before you submit a PR.
+Before you submit a PR, please go through these steps and **remove this template BEFORE submitting**.
 
 1. Make sure that your PR is not a duplicate.
 2. If not, then make sure that:
