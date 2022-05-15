@@ -1,7 +1,14 @@
 """BuoyPy constants."""
+from enum import Enum
+
 from .endpoints import API_PATH  # noqa: F401
 
-__version__ = "0.1.0.dev"
+__version__ = "v0.1.1_dev"
+
+
+class Endpoints(Enum):
+    ACTIVE_STATIONS = "active_stations"
+    REALTIME = "realtime2"
 
 
 #  Enable users to prepend user_agent

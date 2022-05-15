@@ -1,24 +1,34 @@
-"""WIP: Mapping key to unit for BuoyDataBase."""
+"""WIP: Mapping key to unit for Observation."""
 
 # https://www.ndbc.noaa.gov/measdes.shtml
 
 METEOROLOGICAL = {
-    "date_recorded": "date",
-    "wind_direction": "degrees",
-    "wind_speed": "m/s",
-    "wind_gust": "m/s",
-    "wave_height": "m",
-    "dom_wave_period": "seconds",
-    "avg_wave_period": "seconds",
-    "wave_direction": "degrees",
-    "sea_pressure": "hPa",
-    "air_temperature": "celcius",
-    "water_temperature": "celcius",
-    "tide": "ft",
-    "dewpoint_temperature": "celcius",
-    "visibility": "nmi",  # nautical miles
-    "pressure_tendency": "hPa",  # direction +/- amount of pressure change over 3hr period
+    # "date_recorded": {"label": "date_recorded", "unit": "datetime"},
+    "#YY": {"label": "Year", "unit": "Y"},
+    "MM": {"label": "Month", "unit": "m"},
+    "DD": {"label": "Day", "unit": "d"},
+    "hh": {"label": "Hour", "unit": "H"},
+    "mm": {"label": "Minute", "unit": "M"},
+    "WDIR": {"label": "Wind Direction", "unit": "degrees"},
+    "WSPD": {"label": "Wind Speed", "unit": "m/s"},
+    "GST": {"label": "Wind Gust", "unit": "m/s"},
+    "WVHT": {"label": "Wave Height", "unit": "m"},
+    "DPD": {"label": "DOM Wave Period", "unit": "seconds"},
+    "APD": {"label": "Average Wave Period", "unit": "seconds"},
+    "MWD": {"label": "Wave Direction", "unit": "degrees"},
+    "PRES": {"label": "Sea Pressure", "unit": "hPa"},
+    "ATMP": {"label": "Air Temperature", "unit": "celcius"},
+    "WTMP": {"label": "Water Temperature", "unit": "celcius"},
+    "DEWP": {"label": "Dewpoint Temperature", "unit": "celcius"},
+    "VIS": {"label": "Visibility", "unit": "nmi"},  # nautical miles
+    "PTDY": {
+        "label": "Pressure Tendency",
+        "unit": "hPa",
+    },  # direction +/- amount of pressure change over 3hr period
+    "TIDE": {"label": "Tide", "unit": "ft"},
 }
+
+# TODO: update below for dynamic mapping
 
 WAVE_UNITS = {
     "sea_surface_wave_significant_height": "meters",
@@ -77,6 +87,6 @@ WIND_UNITS = {
     "upward_air_velocity": "m/s",
 }
 
-REALTIME_WAVE_UNITS = {}
+# REALTIME_WAVE_UNITS = {}
 
-SPECTRAL_UNITS = {}
+# SPECTRAL_UNITS = {}

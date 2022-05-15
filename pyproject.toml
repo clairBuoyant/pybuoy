@@ -1,17 +1,60 @@
 [tool.poetry]
-name = "buoy-py"
+name = "pybuoy"
 version = "0.1.0"
 description = "Python wrapper for NDBC data."
-authors = ["Kyle J. Burda <47502769+kylejb@users.noreply.github.com>"]
+authors = ["Kyle J. Burda <kylejbdev@gmail.com>"]
 license = "GPL-3.0-or-later"
+readme = "README.md"
+keywords=["NDBC", "NOAA", "api", "buoy", "weather", "wrapper"]
+classifiers=[
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.10",
+]
+include = [
+  "LICENSE",
+]
+
+[tool.poetry.urls]
+"Source Code" = "https://github.com/clairBuoyant/pybuoy"
+"Bug Tracker" = "https://github.com/clairBuoyant/pybuoy/issues"
 
 [tool.poetry.dependencies]
-python = "^3.9"
-requests = "^2.27.1"
+python = "^3.10"
+requests = "^2.28.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
 pre-commit = "^2.19.0"
+types-requests = "^2.28.0"
+
+[tool.black]
+line-length = 100
+target_version = ['py310']
+exclude = '''
+(
+  /(
+    \.git
+    | \.github
+    | \.mypy_cache
+    | \.pytest_cache
+    | dist
+    | htmlcov
+    | venv
+    | .venv
+  )/
+)
+'''
+
+[tool.mypy]
+namespace_packages = true
+explicit_package_bases = true
+mypy_path = "pybuoy"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = [
+    "tests",
+]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
