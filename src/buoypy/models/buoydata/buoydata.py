@@ -1,8 +1,10 @@
 """Provide the BuoyData class."""
 from dataclasses import dataclass
 from datetime import date
+from typing import Optional
+
 from .base import BuoyDataBase
-from .unit_mapping import WAVE_UNITS, METEOROLOGICAL
+from .unit_mapping import METEOROLOGICAL, WAVE_UNITS
 
 
 @dataclass
@@ -184,32 +186,32 @@ class BuoyData(Meteorological, Spectral, Wind, Wave):
         self._wave_data = [wave_datum]
 
     @property
-    def meteorological_data(self) -> list[Meteorological]:
+    def meteorological_data(self) -> list[Optional[Meteorological]]:
         return self._meteorological_data
-
-    @property
-    def spectral_data(self) -> list[Spectral]:
-        return self._spectral_data
-
-    @property
-    def wind_data(self) -> list[Wind]:
-        return self._wind_data
-
-    @property
-    def wave_data(self) -> list[Wave]:
-        return self._wave_data
 
     @meteorological_data.setter
     def meteorological_data(self, met_datum: Meteorological):
         self._meteorological_data.append(met_datum)
 
+    @property
+    def spectral_data(self) -> list[Optional[Spectral]]:
+        return self._spectral_data
+
     @spectral_data.setter
     def spectral_data(self, spectral_datum: Spectral):
         self._spectral_data.append(spectral_datum)
 
+    @property
+    def wind_data(self) -> list[Optional[Wind]]:
+        return self._wind_data
+
     @wind_data.setter
     def wind_data(self, wind_datum: Wind):
         self._wind_data.append(wind_datum)
+
+    @property
+    def wave_data(self) -> list[Optional[Wave]]:
+        return self._wave_data
 
     @wave_data.setter
     def wave_data(self, wave_datum: Wave):
