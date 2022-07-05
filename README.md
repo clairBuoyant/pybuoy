@@ -34,4 +34,4 @@ For more information on what and how to work with poetry, [click here](https://r
 
 - [Get all active stations](./docs/examples/get_activestations.py).
 
-- [Get realtime meteorological data](./docs/examples/get_activestations.py) for buoy by station_id.
+- [Get realtime meteorological data](./docs/examples/get_realtime_data.py) for buoy by station_id.

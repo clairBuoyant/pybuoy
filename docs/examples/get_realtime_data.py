@@ -1,6 +1,5 @@
 from pybuoy import Buoy
 
-
 buoy = Buoy(station_id="44065")
 
 meteorological_dataset = "txt"
