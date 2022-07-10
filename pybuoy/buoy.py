@@ -6,20 +6,23 @@ class Buoy:
     """Buoy class provides convenient access to NDBC's API.
 
     Instances of this class are the gateway to interacting with National
-    Data Buoy Center (NDBC) through `buoypy`. The canonical way to obtain
+    Data Buoy Center (NDBC) through `pybuoy`. The canonical way to obtain
     an instance of this class is via:
 
     .. code-block:: python
 
         from pybuoy import Buoy
 
-        buoy = Buoy(station_id="44065")
-        buoy.realtime.get() # returns last 45 days of meteorological data
+        buoy = Buoy() # creates instance to access data from NDBC
+
+        realtime_meteorological_data = buoy.realtime.get(station_id="44065")
+
+        all_active_NDBC_stations = buoy.stations.get_active()
     """
 
     realtime: Realtime
     stations: Stations
 
-    def __init__(self, station_id: str):
-        self.realtime = Realtime(station_id=station_id)
+    def __init__(self):
+        self.realtime = Realtime()
         self.stations = Stations()

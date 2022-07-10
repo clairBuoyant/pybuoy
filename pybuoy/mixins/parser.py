@@ -39,11 +39,13 @@ class ParserMixin:
         return data if dataset != "txt" else self.__clean_realtime_data(data=data)
 
     def _clean_activestation_data(self, data: str):
-
         xml_tree = et.fromstring(data)
         return [XmlToDict(el) for el in xml_tree.findall("station")]
 
     def __clean_realtime_data(self, data: str):
+        # TODO: Improve error handling when data is not successfully fetched
+        if data is None:
+            return None
         rows = data.strip().split("\n")
         headers = [" ".join(row.split()).split(" ") for row in rows[0:2]]
         realtime_data = []

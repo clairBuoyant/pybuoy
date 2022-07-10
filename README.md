@@ -24,7 +24,7 @@ For more information on what and how to work with poetry, [click here](https://r
 
 >>> from pybuoy import Buoy
 
->>> buoy = Buoy(station_id="44065")
+>>> buoy = Buoy()
 
 >>> buoy
 <pybuoy.buoy.Buoy object at 0x10481fc10>

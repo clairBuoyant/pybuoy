@@ -1,6 +1,6 @@
 from pybuoy import Buoy
 
-buoy = Buoy(station_id="44065")
+buoy = Buoy()
 
 active_stations = buoy.stations.get_active()
 
