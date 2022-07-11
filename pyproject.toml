@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pybuoy"
-version = "0.1.1"
+version = "0.2.0"
 description = "Python wrapper for NDBC data."
 authors = ["Kyle J. Burda <kylejbdev@gmail.com>"]
 license = "GPL-3.0-or-later"
