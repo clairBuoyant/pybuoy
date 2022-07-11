@@ -1,5 +1,5 @@
 class Observation(float):
-    """TBD."""
+    """Observation class encapsulates `Buoy` data by value, unit, and datetime recorded."""
 
     def __init__(self, value, label_and_unit, datetime=None):
         self.value = value

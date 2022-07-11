@@ -4,8 +4,8 @@ from pybuoy import Buoy
 from pybuoy.mixins.parser import XmlToDict
 
 
-def test_activestations_from_xml(test_buoypy: Buoy):
-    response = test_buoypy.stations.get_active()
+def test_activestations_from_xml(test_pybuoy: Buoy):
+    response = test_pybuoy.stations.get_active()
 
     random_station = response[randrange(len(response))]
 

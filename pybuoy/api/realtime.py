@@ -3,11 +3,8 @@ from pybuoy.const import API_PATH, Endpoints
 
 
 class Realtime(ApiBase):
-    def __init__(self, station_id: str):
-        self.station_id = station_id
-
     # TODO: map phrases like "meterological" to appropriate dataset (i.e., "txt")
-    def get(self, dataset="txt"):
+    def get(self, station_id: str, dataset="txt"):
         """Get realtime data from the NDBC.
 
         There are six different data sources:
@@ -26,6 +23,9 @@ class Realtime(ApiBase):
             dataset (str): 'data_spec', 'ocean', 'spec', 'supl', 'swdir', 'swdir2', 'swr1',
                 'swr2', or 'txt'.
         """
+        if not station_id:
+            raise ValueError("station_id must be provided")
+
         dataset_options = {
             "data_spec",
             "ocean",
@@ -41,5 +41,5 @@ class Realtime(ApiBase):
         if dataset not in dataset_options:
             raise ValueError(f"Dataset must be one of {', '.join(dataset_options)}")
 
-        url = f"{API_PATH[Endpoints.REALTIME.value]}/{self.station_id}.{dataset}"
+        url = f"{API_PATH[Endpoints.REALTIME.value]}/{station_id}.{dataset}"
         return self.parse(self.make_request(url), dataset)
