@@ -1,5 +1,5 @@
-"""buoy-py exception classes."""
+"""pybuoy exception classes."""
 
 
 class BuoyException(Exception):
-    """The base buoy-py Exception that all other exception classes extend."""
+    """Base Exception that all other exception classes extend."""

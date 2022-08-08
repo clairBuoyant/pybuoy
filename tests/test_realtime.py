@@ -6,4 +6,5 @@ def test_realtime_meterological_data(test_pybuoy: Buoy):
     response = test_pybuoy.realtime.get(station_id=example_station_id)
     for record in response:
         assert isinstance(record[0], Observation)
-        assert len(record) == 14  # typically 15, but datetime was abstracted into Observation
+        # typically 15, but datetime was abstracted to Observation
+        assert len(record) == 14

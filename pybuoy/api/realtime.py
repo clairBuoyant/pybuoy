@@ -3,7 +3,7 @@ from pybuoy.const import API_PATH, Endpoints
 
 
 class Realtime(ApiBase):
-    # TODO: map phrases like "meterological" to appropriate dataset (i.e., "txt")
+    # TODO: map phrases like "meterological" to dataset (i.e., "txt")
     def get(self, station_id: str, dataset="txt"):
         """Get realtime data from the NDBC.
 
@@ -20,8 +20,7 @@ class Realtime(ApiBase):
 
         Args:
             buoy_id (str): id of buoy
-            dataset (str): 'data_spec', 'ocean', 'spec', 'supl', 'swdir', 'swdir2', 'swr1',
-                'swr2', or 'txt'.
+            dataset (str): one of the aforementioned data sources
         """
         if not station_id:
             raise ValueError("station_id must be provided")

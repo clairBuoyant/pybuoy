@@ -1,7 +1,7 @@
 """pybuoy constants."""
 from enum import Enum
 
-from .endpoints import API_PATH  # noqa: F401
+from pybuoy.endpoints import API_PATH  # noqa: F401
 
 __version__ = "0.2.0"
 

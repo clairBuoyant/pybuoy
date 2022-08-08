@@ -4,7 +4,7 @@
 
 # pybuoy
 
-`pybuoy` is a server-side Python package that serves as a convenience wrapper for clairBuoyant to faciliate rapid discovery of new data for surf forecasting models with only a single dependency!
+`pybuoy` is a server-side Python package that was built to faciliate rapid discovery of new data from [NDBC](https://www.ndbc.noaa.gov/) with only a single dependency!
 
 ## Installation
 
@@ -12,7 +12,7 @@
 
 ### Alternative
 
-I like to use [poetry](https://python-poetry.org) and it can be as easy as `poetry add pybuoy` within your project.
+[Poetry](https://python-poetry.org) is a great alternative for managing your project's dependencies within a `virtualenv` automatically. Adding `pybuoy` is as easy as `poetry add pybuoy` within your project.
 
 For more information on what and how to work with poetry, [click here](https://realpython.com/dependency-management-python-poetry).
 
