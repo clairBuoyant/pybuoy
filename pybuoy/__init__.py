@@ -1,3 +1,3 @@
-from .buoy import Buoy  # noqa
-from .const import __version__  # noqa
-from .observation import Observation  # noqa
+from .buoy import Buoy  # noqa: F401
+from .const import __version__  # noqa: F401
+from .observation import Observation  # noqa: F401

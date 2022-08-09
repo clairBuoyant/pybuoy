@@ -1,3 +1,9 @@
+## Unreleased
+
+### Internal
+
+- **mypy**: provide type annotations to support static type checking.
+
 ## 0.2.0 (2022-07-10)
 
 ### Buoy
