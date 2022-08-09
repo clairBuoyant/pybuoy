@@ -1,5 +1,5 @@
 from pybuoy.api.base import ApiBase
-from pybuoy.const import API_PATH, Endpoints
+from pybuoy.const import API_PATH, REALTIME2
 
 
 class Realtime(ApiBase):
@@ -40,5 +40,5 @@ class Realtime(ApiBase):
         if dataset not in dataset_options:
             raise ValueError(f"Dataset must be one of {', '.join(dataset_options)}")
 
-        url = f"{API_PATH[Endpoints.REALTIME.value]}/{station_id}.{dataset}"
+        url = f"{API_PATH[REALTIME2]}/{station_id}.{dataset}"
         return self.parse(self.make_request(url), dataset)

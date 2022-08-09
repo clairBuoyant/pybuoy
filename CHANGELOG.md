@@ -4,6 +4,10 @@
 
 - **Realtime**: `get` returns list of `Observation` instances. Instance of `Observation` will default to `nan` (type: float) when datum is missing.
 
+### mypy
+
+- **Types**: provide type annotations to support static type checking.
+
 ### Internal
 
 - Add new `pre-commit` hooks and update all other hooks to latest version.
