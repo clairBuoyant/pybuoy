@@ -1,13 +1,14 @@
 """Provide the ParserMixin class."""
 from datetime import datetime as dt
-from xml.etree import cElementTree as et
+from xml.etree.cElementTree import Element, fromstring
 
 from pybuoy.observation import Observation
 from pybuoy.unit_mappings import METEOROLOGICAL
 
 
+# TODO: set data's type to Element
 class XmlToDict(dict):
-    def __init__(self, data):
+    def __init__(self, data: Element):
         if data.items():
             self.update(dict(data.items()))
         for element in data:
@@ -15,14 +16,13 @@ class XmlToDict(dict):
                 # treat like dict - assumes that if the first two tags
                 # in a series are different, then all are different.
                 if len(element) == 1 or element[0].tag != element[1].tag:
-                    tmp_dict = XmlToDict(element)
+                    tmp_dict: dict[str, XmlToDict] | XmlToDict = XmlToDict(element)
                 # treat like list - we assume that if the first two tags
                 # in a series are the same, then the rest are the same.
                 else:
-                    # TODO: fix inconsistency
                     tmp_dict = {element[0].tag: XmlToDict(element)}
-                # if the tag has attributes, add those to the dict.
-                if element.items():
+                # if the tag has attributes, add those to the dict
+                if isinstance(element, XmlToDict) and element.items():
                     tmp_dict.update(dict(element.items()))
                 self.update({element.tag: tmp_dict})
             # assumes an attribute in a tag without any text.
@@ -39,7 +39,7 @@ class ParserMixin:
         return data if dataset != "txt" else self.__clean_realtime_data(data=data)
 
     def _clean_activestation_data(self, data: str):
-        xml_tree = et.fromstring(data)
+        xml_tree = fromstring(data)
         return [XmlToDict(el) for el in xml_tree.findall("station")]
 
     def __clean_realtime_data(self, data: str):

@@ -1,0 +1,18 @@
+#!/bin/bash -e
+#
+# Run test suite.
+
+CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+BASE_DIR="$(dirname "$CURRENT_DIR")"
+
+if [ -z "$GITHUB_ACTIONS" ]; then
+    ${BASE_DIR}/scripts/check
+fi
+
+if [ -d '.venv' ] ; then
+    PREFIX='.venv/bin/'
+else
+    PREFIX=''
+fi
+
+${PREFIX}/pytest

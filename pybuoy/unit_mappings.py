@@ -1,4 +1,4 @@
-"""WIP: Mapping key to unit for Observation."""
+"""Mapping key to unit for Observation."""
 
 # https://www.ndbc.noaa.gov/measdes.shtml
 

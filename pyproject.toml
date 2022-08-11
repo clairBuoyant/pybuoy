@@ -4,7 +4,7 @@ version = "0.2.0"
 description = "Python wrapper for NDBC data."
 authors = ["Kyle J. Burda <kylejbdev@gmail.com>"]
 license = "GPL-3.0-or-later"
-readme = "README.md"
+readme = "docs/README.md"
 keywords=["NDBC", "NOAA", "api", "buoy", "weather", "wrapper"]
 classifiers=[
   "Operating System :: OS Independent",
@@ -23,6 +23,10 @@ python = "^3.10"
 requests = "^2.28.1"
 
 [tool.poetry.dev-dependencies]
+black = "^22.6.0"
+flake8 = "^5.0.4"
+isort = { version = "^5.10.1", extras = ["pyproject"]}
+mypy = "^0.971"
 pytest = "^7.1.2"
 pre-commit = "^2.20.0"
 types-requests = "^2.28.0"
@@ -44,10 +48,12 @@ exclude = '''
 )
 '''
 
+[tool.isort]
+profile="black"
+
 [tool.mypy]
 namespace_packages = true
 explicit_package_bases = true
-mypy_path = "pybuoy"
 
 [tool.pytest.ini_options]
 minversion = "7.0"

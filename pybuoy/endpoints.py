@@ -1,8 +1,8 @@
 """List of API endpoints pybuoy knows about."""
 
-BASE_URL = "https://www.ndbc.noaa.gov"
+_BASE_URL = "https://www.ndbc.noaa.gov"
 
 API_PATH: dict[str, str] = {
-    "active_stations": f"{BASE_URL}/activestations",
-    "realtime2": f"{BASE_URL}/data/realtime2",
+    "active_stations": f"{_BASE_URL}/activestations",
+    "realtime2": f"{_BASE_URL}/data/realtime2",
 }

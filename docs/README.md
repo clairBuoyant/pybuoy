@@ -8,13 +8,12 @@
 
 ## Installation
 
-`pybuoy` is supported on Python 3.10+. The [recommended way to install](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments) `pybuoy` is with `pip` and `virtualenv`.
+`pybuoy` is supported on Python 3.10+ and can be installed with either `pip` or a package manager like [poetry](https://python-poetry.org):
 
-### Alternative
-
-[Poetry](https://python-poetry.org) is a great alternative for managing your project's dependencies within a `virtualenv` automatically. Adding `pybuoy` is as easy as `poetry add pybuoy` within your project.
-
-For more information on what and how to work with poetry, [click here](https://realpython.com/dependency-management-python-poetry).
+- **with pip**: `pip install pybuoy`
+  - recommended to install any third party library in python's virtualenv. ([ref](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments))
+- **with poetry**: `poetry add pybuoy`
+  - automatically creates and manages your virtualenvs. ([ref](https://realpython.com/dependency-management-python-poetry))
 
 ## Quickstart
 
