@@ -1,4 +1,4 @@
-"""List of API endpoints buoy-py knows about."""
+"""List of API endpoints pybuoy knows about."""
 
 BASE_URL = "https://www.ndbc.noaa.gov"
 

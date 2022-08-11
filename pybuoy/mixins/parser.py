@@ -13,19 +13,19 @@ class XmlToDict(dict):
         for element in data:
             if element:
                 # treat like dict - assumes that if the first two tags
-                # in a series are different, then they are all different.
+                # in a series are different, then all are different.
                 if len(element) == 1 or element[0].tag != element[1].tag:
                     tmp_dict = XmlToDict(element)
                 # treat like list - we assume that if the first two tags
                 # in a series are the same, then the rest are the same.
                 else:
-                    tmp_dict = {element[0].tag: XmlToDict(element)}  # TODO: fix inconsistency
-                # if the tag has attributes, add those to the dict
+                    # TODO: fix inconsistency
+                    tmp_dict = {element[0].tag: XmlToDict(element)}
+                # if the tag has attributes, add those to the dict.
                 if element.items():
                     tmp_dict.update(dict(element.items()))
                 self.update({element.tag: tmp_dict})
-            # this assumes that if you've got an attribute in a tag without
-            # any text.
+            # assumes an attribute in a tag without any text.
             elif element.items():
                 self.update({element.tag: dict(element.items())})
             else:
@@ -43,7 +43,7 @@ class ParserMixin:
         return [XmlToDict(el) for el in xml_tree.findall("station")]
 
     def __clean_realtime_data(self, data: str):
-        # TODO: Improve error handling when data is not successfully fetched
+        # TODO: Error handling when request not successful
         if data is None:
             return None
         rows = data.strip().split("\n")
@@ -63,7 +63,9 @@ class ParserMixin:
             for idx, value in enumerate(record_array[header_offset:]):
                 observations_for_record.append(
                     Observation(
-                        value, METEOROLOGICAL[headers[0][idx + header_offset]], date_recorded
+                        value,
+                        METEOROLOGICAL[headers[0][idx + header_offset]],
+                        date_recorded,
                     )
                 )
             realtime_data.append(observations_for_record)

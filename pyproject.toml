@@ -28,7 +28,7 @@ pre-commit = "^2.20.0"
 types-requests = "^2.28.0"
 
 [tool.black]
-line-length = 100
+line-length = 88
 target_version = ['py310']
 exclude = '''
 (
@@ -39,7 +39,6 @@ exclude = '''
     | \.pytest_cache
     | dist
     | htmlcov
-    | venv
     | .venv
   )/
 )

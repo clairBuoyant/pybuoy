@@ -1,15 +1,21 @@
 class Observation(float):
-    """Observation class encapsulates `Buoy` data by value, unit, and datetime recorded."""
+    """Observation class encapsulates `Buoy` datum."""
 
-    def __init__(self, value, label_and_unit, datetime=None):
-        self.value = value
+    def __init__(self, value: str, label_and_unit: dict[str, str], datetime=None):
+        """Initialize Observation record with relevant metadata.
+
+        Args:
+            value (str): recorded weather datum. Defaults to 'MM'.
+            label_and_unit (dict[str, str]): label and unit for value.
+            datetime (datetime): UTC time of value. Defaults to None.
+        """
+        self.value = float(value) if value != "MM" else float("nan")
         self._label = label_and_unit["label"]
         self._unit = label_and_unit["unit"]
         self._datetime = datetime
 
     def __new__(cls, value, *_):
-        # TODO: improve handling of missing values - currently defaults to -1
-        return float.__new__(cls, value) if value != "MM" else float.__new__(cls, "-1")
+        return float.__new__(cls, value) if value != "MM" else float.__new__(cls, "nan")
 
     @property
     def datetime(self):
