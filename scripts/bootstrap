@@ -1,0 +1,19 @@
+#!/bin/bash -e
+#
+# Resolve all system dependencies the application needs to run.
+
+PYV=`python3 -c 'import sys; sys.stdout.write("true") if sys.version_info.major >= 3 and sys.version_info.minor >= 10 else sys.stdout.write("false");'`
+if ! $PYV
+then
+    echo 'Python version 3.10 or greater is required.'
+    exit 1
+fi
+
+echo 'Checking for poetry...'
+if ! command -v poetry &> /dev/null
+then
+    echo 'poetry was not found. Installing...'
+    curl -sSL https://install.python-poetry.org | python3 -
+fi
+
+echo 'System dependencies installed.'

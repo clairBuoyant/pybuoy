@@ -1,0 +1,7 @@
+#!/bin/bash -e
+#
+# Install python dependencies and githooks.
+
+poetry install
+
+command -v pre-commit &> /dev/null && pre-commit install --hook-type commit-msg || echo >&2 'pre-commit not found.'

@@ -2,7 +2,7 @@
 
 BASE_URL = "https://www.ndbc.noaa.gov"
 
-ACTIVE_STATIONS = "activestations"
+ACTIVE_STATIONS = "active_stations"
 REALTIME2 = "realtime2"
 
 API_PATH: dict[str, str] = {

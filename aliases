@@ -1,0 +1,36 @@
+#!/bin/bash -e
+#
+# Load scripts to current shell environment for execution without package manager.
+
+
+PROJECT_ROOT=$(realpath $(dirname "$BASH_SOURCE"))
+
+function bootstrap() {
+    ${PROJECT_ROOT}/scripts/bootstrap
+}
+function check() {
+    ${PROJECT_ROOT}/scripts/check
+}
+function clean() {
+    ${PROJECT_ROOT}/scripts/clean
+}
+function init() {
+    ${PROJECT_ROOT}/scripts/init
+}
+function lint() {
+    ${PROJECT_ROOT}/scripts/lint
+}
+function setup() {
+    ${PROJECT_ROOT}/scripts/setup
+}
+function start() {
+    ${PROJECT_ROOT}/scripts/start
+}
+function test() {
+    ${PROJECT_ROOT}/scripts/test
+}
+function uninstall() {
+    ${PROJECT_ROOT}/scripts/uninstall
+}
+
+echo 'Script commands are ready to use in current shell environment.'

@@ -1,0 +1,23 @@
+#!/bin/bash -ex
+#
+# Remove all build artifacts.
+
+APP='pybuoy'
+
+if [ -d '.mypy_cache' ] ; then
+    rm -r .mypy_cache
+fi
+
+if [ -d '.pytest_cache' ] ; then
+    rm -r .pytest_cache
+fi
+
+if [ -d 'dist' ] ; then
+    rm -r dist
+fi
+
+if [ -d 'htmlcov' ] ; then
+    rm -r htmlcov
+fi
+
+find ${APP} -type d -name '__pycache__' | xargs -L1 rm -r

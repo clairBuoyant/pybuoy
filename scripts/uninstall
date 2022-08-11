@@ -1,0 +1,9 @@
+#!/bin/bash -ex
+#
+# Remove all dependencies and build artifacts.
+
+./scripts/clean
+
+if [ -d '.venv' ] ; then
+    rm -r .venv
+fi
