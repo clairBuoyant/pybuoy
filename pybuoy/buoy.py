@@ -20,9 +20,14 @@ class Buoy:
         all_active_NDBC_stations = buoy.stations.get_active()
     """
 
-    realtime: Realtime
-    stations: Stations
-
     def __init__(self):
-        self.realtime = Realtime()
-        self.stations = Stations()
+        self._realtime = Realtime()
+        self._stations = Stations()
+
+    @property
+    def realtime(self) -> Realtime:
+        return self._realtime
+
+    @property
+    def stations(self) -> Stations:
+        return self._stations

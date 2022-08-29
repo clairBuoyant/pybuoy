@@ -2,11 +2,15 @@
 from datetime import datetime as dt
 from xml.etree.cElementTree import Element, fromstring
 
-from pybuoy.observation import Observation
-from pybuoy.unit_mappings import METEOROLOGICAL
+from pybuoy.const import RealtimeDatasets
+from pybuoy.observation import (
+    MeteorologicalObservation,
+    Observations,
+    WaveSummaryObservation,
+)
+from pybuoy.unit_mappings import MeteorologicalKey, WaveSummaryKey
 
 
-# TODO: set data's type to Element
 class XmlToDict(dict):
     def __init__(self, data: Element):
         if data.items():
@@ -35,20 +39,30 @@ class XmlToDict(dict):
 class ParserMixin:
     """Interface for Buoy classes and its composites."""
 
-    def parse(self, data: str, dataset: str = "txt"):
-        return data if dataset != "txt" else self.__clean_realtime_data(data=data)
+    def parse(self, data: str, dataset: str = RealtimeDatasets.TXT.value):
+        return (
+            data
+            if dataset != RealtimeDatasets.TXT.value
+            and dataset != RealtimeDatasets.SPEC.value
+            else self.__clean_realtime_data(data=data, dataset=dataset)
+        )
 
     def _clean_activestation_data(self, data: str):
         xml_tree = fromstring(data)
         return [XmlToDict(el) for el in xml_tree.findall("station")]
 
-    def __clean_realtime_data(self, data: str):
+    def __clean_realtime_data(self, data: str, dataset: str) -> Observations:
         # TODO: Error handling when request not successful
         if data is None:
             return None
         rows = data.strip().split("\n")
+
         headers = [" ".join(row.split()).split(" ") for row in rows[0:2]]
-        realtime_data = []
+        header_offset = 5  # end of datetime columns
+        headers_without_dates = headers[0][header_offset:]
+
+        # TODO: consider csv module
+        realtime_data = Observations()
         for row in rows[2:]:
             record_array = " ".join(row.split()).split(" ")
             date_recorded = dt(
@@ -58,15 +72,29 @@ class ParserMixin:
                 int(record_array[3]),
                 int(record_array[4]),
             )
-            observations_for_record = []
-            header_offset = 5
-            for idx, value in enumerate(record_array[header_offset:]):
-                observations_for_record.append(
-                    Observation(
-                        value,
-                        METEOROLOGICAL[headers[0][idx + header_offset]],
-                        date_recorded,
-                    )
+
+            observation: MeteorologicalObservation | WaveSummaryObservation
+            values: dict[MeteorologicalKey, str] | dict[WaveSummaryKey, str]
+            if dataset == RealtimeDatasets.TXT.value:
+                values = {
+                    MeteorologicalKey[headers_without_dates[idx]]: value
+                    for idx, value in enumerate(record_array[header_offset:])
+                }
+                observation = MeteorologicalObservation(
+                    values,
+                    date_recorded,
                 )
-            realtime_data.append(observations_for_record)
+            elif dataset == RealtimeDatasets.SPEC.value:
+                values = {
+                    WaveSummaryKey[headers_without_dates[idx]]: value
+                    for idx, value in enumerate(record_array[header_offset:])
+                }
+                observation = WaveSummaryObservation(
+                    values,
+                    date_recorded,
+                )
+            # TODO: refactor to use setter method
+            realtime_data.reports.append(
+                observation
+            ) if observation is not None else None
         return realtime_data
