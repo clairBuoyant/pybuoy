@@ -31,6 +31,8 @@
 
 ## Examples
 
-- [Get all active stations](./docs/examples/get_activestations.py).
+- [Get all active stations](./examples/get_activestations.py).
 
-- [Get realtime meteorological data](./docs/examples/get_realtime_data.py) for buoy by station_id.
+- [Get realtime meteorological data](./examples/get_realtime_data.py#L12) for buoy by station_id.
+
+- [Get realtime wave summary data](./examples/get_realtime_data.py#L59) for buoy by station_id.
