@@ -1,32 +1,109 @@
 """Mapping key to unit for Observation."""
-
 # https://www.ndbc.noaa.gov/measdes.shtml
+from enum import Enum
+from typing import TypedDict
 
-METEOROLOGICAL = {
-    # "date_recorded": {"label": "date_recorded", "unit": "datetime"},
+
+class BaseKey(Enum):
+    ...
+
+
+class MeteorologicalKey(BaseKey):
+    WDIR = "WDIR"
+    WSPD = "WSPD"
+    GST = "GST"
+    WVHT = "WVHT"
+    DPD = "DPD"
+    APD = "APD"
+    MWD = "MWD"
+    PRES = "PRES"
+    ATMP = "ATMP"
+    WTMP = "WTMP"
+    DEWP = "DEWP"
+    VIS = "VIS"
+    PTDY = "PTDY"
+    TIDE = "TIDE"
+
+
+class WaveSummaryKey(BaseKey):
+    WVHT = "WVHT"
+    SwH = "SwH"
+    SwP = "SwP"
+    WWH = "WWH"
+    WWP = "WWP"
+    SwD = "SwD"
+    WWD = "WWD"
+    STEEPNESS = "STEEPNESS"
+    APD = "APD"
+    MWD = "MWD"
+
+
+class SummaryWaveSteepnessValues(Enum):
+    VERY_STEEP = "VERY_STEEP"
+    SWELL = "SWELL"
+    AVERAGE = "AVERAGE"
+    NA = "N/A"
+
+
+class MeasurementsAndUnits(TypedDict):
+    label: str
+    unit: str
+
+
+DATE_RECORDED = {
     "#YY": {"label": "Year", "unit": "Y"},
     "MM": {"label": "Month", "unit": "m"},
     "DD": {"label": "Day", "unit": "d"},
     "hh": {"label": "Hour", "unit": "H"},
     "mm": {"label": "Minute", "unit": "M"},
-    "WDIR": {"label": "Wind Direction", "unit": "degrees"},
-    "WSPD": {"label": "Wind Speed", "unit": "m/s"},
-    "GST": {"label": "Wind Gust", "unit": "m/s"},
-    "WVHT": {"label": "Wave Height", "unit": "m"},
-    "DPD": {"label": "DOM Wave Period", "unit": "seconds"},
-    "APD": {"label": "Average Wave Period", "unit": "seconds"},
-    "MWD": {"label": "Wave Direction", "unit": "degrees"},
-    "PRES": {"label": "Sea Pressure", "unit": "hPa"},
-    "ATMP": {"label": "Air Temperature", "unit": "celcius"},
-    "WTMP": {"label": "Water Temperature", "unit": "celcius"},
-    "DEWP": {"label": "Dewpoint Temperature", "unit": "celcius"},
-    "VIS": {"label": "Visibility", "unit": "nmi"},  # nautical miles
-    "PTDY": {
+}
+
+# Realtime (dataset="txt")
+METEOROLOGICAL: dict[MeteorologicalKey, MeasurementsAndUnits] = {
+    MeteorologicalKey.WDIR: {"label": "Wind Direction", "unit": "degrees"},
+    MeteorologicalKey.WSPD: {"label": "Wind Speed", "unit": "m/s"},
+    MeteorologicalKey.GST: {"label": "Wind Gust", "unit": "m/s"},
+    MeteorologicalKey.WVHT: {"label": "Wave Height", "unit": "m"},
+    MeteorologicalKey.DPD: {"label": "Dominate Wave Period", "unit": "seconds"},
+    MeteorologicalKey.APD: {"label": "Average Wave Period", "unit": "seconds"},
+    MeteorologicalKey.MWD: {"label": "Wave Direction", "unit": "degrees"},
+    MeteorologicalKey.PRES: {"label": "Sea Level Pressure", "unit": "hPa"},
+    MeteorologicalKey.ATMP: {"label": "Air Temperature", "unit": "celcius"},
+    MeteorologicalKey.WTMP: {"label": "Water Temperature", "unit": "celcius"},
+    MeteorologicalKey.DEWP: {"label": "Dewpoint Temperature", "unit": "celcius"},
+    MeteorologicalKey.VIS: {"label": "Visibility", "unit": "nmi"},  # nautical miles
+    MeteorologicalKey.PTDY: {
         "label": "Pressure Tendency",
         "unit": "hPa",
     },  # direction +/- amount of pressure change over 3hr period
-    "TIDE": {"label": "Tide", "unit": "ft"},
+    MeteorologicalKey.TIDE: {"label": "Tide", "unit": "ft"},
 }
+# Realtime (dateset="spec")
+WAVE_SUMMARY: dict[WaveSummaryKey, MeasurementsAndUnits] = {
+    WaveSummaryKey.WVHT: {"label": "Significant Wave Height", "unit": "meters"},
+    WaveSummaryKey.SwH: {"label": "Swell Height", "unit": "meters"},
+    WaveSummaryKey.SwP: {"label": "Swell Period", "unit": "seconds"},
+    WaveSummaryKey.WWH: {"label": "Wind Wave Height", "unit": "meters"},
+    WaveSummaryKey.WWP: {"label": "Wind Wave Period", "unit": "seconds"},
+    WaveSummaryKey.SwD: {
+        "label": "Swell Direction",
+        "unit": "string",  # cardinal directions (e.g., SE)
+    },
+    WaveSummaryKey.WWD: {
+        "label": "Wind Wave Direction",
+        "unit": "string",  # cardinal directions (e.g., SE)
+    },
+    WaveSummaryKey.STEEPNESS: {
+        "label": "Steepness",
+        "unit": "string",  # ? refer to enum class?
+    },
+    WaveSummaryKey.APD: {"label": "Average Wave Period", "unit": "seconds"},
+    WaveSummaryKey.MWD: {
+        "label": "Dominant Wave Direction",
+        "unit": "degrees",
+    },  # direction of waves at dominant period (DPD)
+}
+
 
 # TODO: update below for dynamic mapping
 

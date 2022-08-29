@@ -4,7 +4,7 @@
 
 # pybuoy
 
-`pybuoy` is a server-side Python package that was built to faciliate rapid discovery of new data from [NDBC](https://www.ndbc.noaa.gov/) with only a single dependency!
+`pybuoy` is a server-side Python package that was built to facilitate rapid discovery of new data from [NDBC](https://www.ndbc.noaa.gov/) with only a single dependency!
 
 ## Installation
 
