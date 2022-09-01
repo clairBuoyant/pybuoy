@@ -89,9 +89,9 @@ class MeteorologicalObservation(BaseObservation):
         return self._wave_height
 
     @property
-    def dominate_wave_period(self):
-        """Return observed dominate wave period."""
-        return self._dominate_wave_period
+    def dominant_wave_period(self):
+        """Return observed dominant wave period."""
+        return self._dominant_wave_period
 
     @property
     def average_wave_period(self):

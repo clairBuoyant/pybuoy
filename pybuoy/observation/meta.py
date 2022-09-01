@@ -6,7 +6,7 @@ class MeteorologicalMeta(type):
             "wind_speed",
             "wind_gust",
             "wave_height",
-            "dominate_wave_period",
+            "dominant_wave_period",
             "average_wave_period",
             "wave_direction",
             "sea_level_pressure",

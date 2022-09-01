@@ -37,7 +37,7 @@ Under the hood, the aforementioned sample output provides this object:
         wind_speed=ObservationDatum(Wind Speed: 8.0 m/s),
         wind_gust=ObservationDatum(Wind Gust: 10.0 m/s),
         wave_height=ObservationDatum(Wave Height: nan m),
-        dominate_wave_period=ObservationDatum(Dominate Wave Period: nan seconds),
+        dominant_wave_period=ObservationDatum(Dominant Wave Period: nan seconds),
         average_wave_period=ObservationDatum(Average Wave Period: nan seconds),
         wave_direction=ObservationDatum(Wave Direction: nan degrees),
         sea_level_pressure=ObservationDatum(Sea Level Pressure: 1020.9 hPa),

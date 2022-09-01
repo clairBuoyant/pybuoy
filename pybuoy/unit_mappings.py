@@ -64,7 +64,7 @@ METEOROLOGICAL: dict[MeteorologicalKey, MeasurementsAndUnits] = {
     MeteorologicalKey.WSPD: {"label": "Wind Speed", "unit": "m/s"},
     MeteorologicalKey.GST: {"label": "Wind Gust", "unit": "m/s"},
     MeteorologicalKey.WVHT: {"label": "Wave Height", "unit": "m"},
-    MeteorologicalKey.DPD: {"label": "Dominate Wave Period", "unit": "seconds"},
+    MeteorologicalKey.DPD: {"label": "Dominant Wave Period", "unit": "seconds"},
     MeteorologicalKey.APD: {"label": "Average Wave Period", "unit": "seconds"},
     MeteorologicalKey.MWD: {"label": "Wave Direction", "unit": "degrees"},
     MeteorologicalKey.PRES: {"label": "Sea Level Pressure", "unit": "hPa"},
