@@ -1,3 +1,9 @@
+## 0.4.1 (2022-08-31)
+
+### Observation
+
+- **MeteorologicalObservation**: change `dominate_wave_period` to `dominant_wave_period`.
+
 ## 0.4.0 (2022-08-29)
 
 ### Buoy
@@ -7,6 +13,8 @@
 ### Observation
 
 - **MeteorologicalObservation**: new model of type `Observation` to represent API calls for realtime meteorological data. Attributes return instances of `ObservationDatum` by label (snaked cased). This directly supports enhancements for static type checking introduced in this release.
+
+- **WaveSummaryObservation**: new model of type `Observation` to represent API calls for realtime wave summary data. Attributes return instances of `ObservationDatum` by label (snaked cased). This directly supports enhancements for static type checking introduced in this release.
 
 - **ObservationDatum**: renamed `Observation` to `ObservationDatum`. This represents a piece of data that was observed by a buoy at a unique datetime and contains metadata like unit of measurement (i.e., `.unit`). It is renamed to better define its function and purpose.
 
