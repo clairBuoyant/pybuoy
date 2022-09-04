@@ -1,8 +1,28 @@
+from typing import Literal, overload
+
 from pybuoy.api.base import ApiBase
 from pybuoy.const import API_PATH, Endpoints
+from pybuoy.observation.observations import (
+    MeteorologicalObservations,
+    WaveSummaryObservations,
+)
 
 
 class Realtime(ApiBase):
+    @overload
+    def get(
+        self, station_id: str, dataset: Literal["txt"]
+    ) -> MeteorologicalObservations:
+        ...
+
+    @overload
+    def get(
+        self,
+        station_id: str,
+        dataset: Literal["spec"],
+    ) -> WaveSummaryObservations:
+        ...
+
     # TODO: map phrases like "meterological" to dataset (i.e., "txt")
     def get(self, station_id: str, dataset="txt"):
         """Get realtime data from the NDBC.
@@ -41,4 +61,19 @@ class Realtime(ApiBase):
             raise ValueError(f"Dataset must be one of {', '.join(dataset_options)}")
 
         url = f"{API_PATH[Endpoints.REALTIME.value]}/{station_id}.{dataset}"
-        return self.parse(self.make_request(url), dataset)
+
+        # TODO: rework approach for dynamic typing
+        if dataset == "spec":
+            x: WaveSummaryObservations = self.parse(
+                self.make_request(url),
+                "spec",
+                WaveSummaryObservations,
+            )
+            return x
+        if dataset == "txt":
+            y: MeteorologicalObservations = self.parse(
+                self.make_request(url),
+                "txt",
+                MeteorologicalObservations,
+            )
+            return y
