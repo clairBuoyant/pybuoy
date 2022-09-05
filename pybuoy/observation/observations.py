@@ -21,13 +21,13 @@ class BaseObservations(Generic[ObservationType]):
     def reports(self) -> list[ObservationType]:
         return self._data
 
-    @reports.setter
-    def reports(self, observation: ObservationType) -> None:
-        self._data.append(observation)
-        self._size = len(self._data)
-
     def __getitem__(self, key: int) -> ObservationType:
         return self._data[key]
+
+    def __iadd__(self, observation: ObservationType):
+        self._data.append(observation)
+        self._size = len(self._data)
+        return self
 
     def __iter__(self) -> Iterator[ObservationType]:
         return iter(self._data)
