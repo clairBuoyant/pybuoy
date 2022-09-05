@@ -1,36 +1,35 @@
-from typing import Iterator
+from typing import Generic, Iterator, TypeVar
 
 from pybuoy.observation import MeteorologicalObservation, WaveSummaryObservation
+from pybuoy.observation.observation import BaseObservation
+
+ObservationType = TypeVar("ObservationType", bound=BaseObservation)
 
 
-class Observations:
+class BaseObservations(Generic[ObservationType]):
     """Observations class encapsulates `Observation`s by datetime."""
 
     def __init__(
         self,
-        observations: list[MeteorologicalObservation | WaveSummaryObservation] = None,
+        observations: list[ObservationType] = None,
     ):
         # TODO: improve error handling
         self._data = observations if observations is not None else []
         self._size = len(self._data)
 
     @property
-    def reports(self) -> list[MeteorologicalObservation | WaveSummaryObservation]:
+    def reports(self) -> list[ObservationType]:
         return self._data
 
-    @reports.setter
-    def reports(
-        self, observation: MeteorologicalObservation | WaveSummaryObservation
-    ) -> None:
-        self._data.append(observation)
-        self._size = len(self._data)
-
-    def __getitem__(
-        self, key: int
-    ) -> MeteorologicalObservation | WaveSummaryObservation:
+    def __getitem__(self, key: int) -> ObservationType:
         return self._data[key]
 
-    def __iter__(self) -> Iterator[MeteorologicalObservation | WaveSummaryObservation]:
+    def __iadd__(self, observation: ObservationType):
+        self._data.append(observation)
+        self._size = len(self._data)
+        return self
+
+    def __iter__(self) -> Iterator[ObservationType]:
         return iter(self._data)
 
     def __repr__(self) -> str:
@@ -52,3 +51,11 @@ class Observations:
         # Convert the list to a string joined by commas
         array_as_string = ", ".join(values)
         return f"Observations([{array_as_string}])"
+
+
+class MeteorologicalObservations(BaseObservations[MeteorologicalObservation]):
+    ...
+
+
+class WaveSummaryObservations(BaseObservations[WaveSummaryObservation]):
+    ...

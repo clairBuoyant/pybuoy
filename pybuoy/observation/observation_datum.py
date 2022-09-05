@@ -1,5 +1,4 @@
-from pybuoy.const import NO_VALUE
-from pybuoy.unit_mappings import MeasurementsAndUnits, SummaryWaveSteepnessValues
+from pybuoy.unit_mappings import NO_NUMERIC_VALUE, NO_TEXT_VALUE, MeasurementsAndUnits
 
 
 class ObservationFloatDatum(float):
@@ -12,14 +11,14 @@ class ObservationFloatDatum(float):
             value (str): value of observation. (Default: "MM")
             label_unit (MeasurementsAndUnits): label and unit for value.
         """
-        self.value = None if value == NO_VALUE else float(value)
+        self.value = None if value == NO_NUMERIC_VALUE else float(value)
         self._label = label_unit["label"]
         self._unit = label_unit["unit"]
 
     def __new__(cls, value, *_):
         return (
             float.__new__(cls, value)
-            if value != NO_VALUE
+            if value != NO_NUMERIC_VALUE
             else float.__new__(cls, "nan")
         )
 
@@ -51,9 +50,7 @@ class ObservationStringDatum(str):
             label_unit (MeasurementsAndUnits): label and unit for value.
         """
         self.value = (
-            None
-            if value == NO_VALUE or value == SummaryWaveSteepnessValues.NA.value
-            else value
+            None if value == NO_NUMERIC_VALUE or value == NO_TEXT_VALUE else value
         )
         self._label = label_unit["label"]
         self._unit = label_unit["unit"]

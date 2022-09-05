@@ -69,74 +69,74 @@ class MeteorologicalObservation(BaseObservation):
             )
 
     @property
-    def wind_direction(self):
+    def wind_direction(self) -> ObservationFloatDatum:
         """Return observed wind direction."""
-        return self._wind_direction
+        return self._wind_direction  # type: ignore # this is dynamically set
 
     @property
-    def wind_speed(self):
+    def wind_speed(self) -> ObservationFloatDatum:
         """Return observed wind speed."""
-        return self._wind_speed
+        return self._wind_speed  # type: ignore # this is dynamically set
 
     @property
-    def wind_gust(self):
+    def wind_gust(self) -> ObservationFloatDatum:
         """Return observed wind gust."""
-        return self._wind_gust
+        return self._wind_gust  # type: ignore # this is dynamically set
 
     @property
-    def wave_height(self):
+    def wave_height(self) -> ObservationFloatDatum:
         """Return observed wave height."""
-        return self._wave_height
+        return self._wave_height  # type: ignore # this is dynamically set
 
     @property
-    def dominant_wave_period(self):
+    def dominant_wave_period(self) -> ObservationFloatDatum:
         """Return observed dominant wave period."""
-        return self._dominant_wave_period
+        return self._dominant_wave_period  # type: ignore # this is dynamically set
 
     @property
-    def average_wave_period(self):
+    def average_wave_period(self) -> ObservationFloatDatum:
         """Return observed average wave period."""
-        return self._average_wave_period
+        return self._average_wave_period  # type: ignore # this is dynamically set
 
     @property
-    def wave_direction(self):
+    def wave_direction(self) -> ObservationFloatDatum:
         """Return observed wave direction."""
-        return self._wave_direction
+        return self._wave_direction  # type: ignore # this is dynamically set
 
     @property
-    def sea_level_pressure(self):
+    def sea_level_pressure(self) -> ObservationFloatDatum:
         """Return observed sea level pressure."""
-        return self._sea_level_pressure
+        return self._sea_level_pressure  # type: ignore # this is dynamically set
 
     @property
-    def air_temperature(self):
+    def air_temperature(self) -> ObservationFloatDatum:
         """Return observed air temperature."""
-        return self._air_temperature
+        return self._air_temperature  # type: ignore # this is dynamically set
 
     @property
-    def water_temperature(self):
+    def water_temperature(self) -> ObservationFloatDatum:
         """Return observed water temperature."""
-        return self._water_temperature
+        return self._water_temperature  # type: ignore # this is dynamically set
 
     @property
-    def dewpoint_temperature(self):
+    def dewpoint_temperature(self) -> ObservationFloatDatum:
         """Return observed dewpoint temperature."""
-        return self._dewpoint_temperature
+        return self._dewpoint_temperature  # type: ignore # this is dynamically set
 
     @property
-    def visibility(self):
+    def visibility(self) -> ObservationFloatDatum:
         """Return observed visibility."""
-        return self._visibility
+        return self._visibility  # type: ignore # this is dynamically set
 
     @property
-    def pressure_tendency(self):
+    def pressure_tendency(self) -> ObservationFloatDatum:
         """Return observed pressure tendency."""
-        return self._pressure_tendency
+        return self._pressure_tendency  # type: ignore # this is dynamically set
 
     @property
-    def tide(self):
+    def tide(self) -> ObservationFloatDatum:
         """Return observed tide."""
-        return self._tide
+        return self._tide  # type: ignore # this is dynamically set
 
 
 class WaveSummaryObservation(BaseObservation):
@@ -168,51 +168,51 @@ class WaveSummaryObservation(BaseObservation):
             )
 
     @property
-    def significant_wave_height(self):
+    def significant_wave_height(self) -> ObservationFloatDatum:
         """Return observed wave height."""
-        return self._significant_wave_height
+        return self._significant_wave_height  # type: ignore # this is dynamically set
 
     @property
-    def swell_height(self):
+    def swell_height(self) -> ObservationFloatDatum:
         """Return observed swell height."""
-        return self._swell_height
+        return self._swell_height  # type: ignore # this is dynamically set
 
     @property
-    def swell_period(self):
+    def swell_period(self) -> ObservationFloatDatum:
         """Return observed swell period."""
-        return self._swell_period
+        return self._swell_period  # type: ignore # this is dynamically set
 
     @property
-    def wind_wave_height(self):
+    def wind_wave_height(self) -> ObservationFloatDatum:
         """Return observed wind wave height."""
-        return self._wind_wave_height
+        return self._wind_wave_height  # type: ignore # this is dynamically set
 
     @property
-    def wind_wave_period(self):
+    def wind_wave_period(self) -> ObservationFloatDatum:
         """Return observed wind wave period."""
-        return self._wind_wave_period
+        return self._wind_wave_period  # type: ignore # this is dynamically set
 
     @property
-    def swell_direction(self):
+    def swell_direction(self) -> ObservationStringDatum:
         """Return observed swell direction."""
-        return self._swell_direction
+        return self._swell_direction  # type: ignore # this is dynamically set
 
     @property
-    def wind_wave_direction(self):
+    def wind_wave_direction(self) -> ObservationStringDatum:
         """Return observed wind wave direction."""
-        return self._wind_wave_direction
+        return self._wind_wave_direction  # type: ignore # this is dynamically set
 
     @property
-    def steepness(self):
+    def steepness(self) -> ObservationStringDatum:
         """Return observed wave steepness."""
-        return self._steepness
+        return self._steepness  # type: ignore # this is dynamically set
 
     @property
-    def average_wave_period(self):
+    def average_wave_period(self) -> ObservationFloatDatum:
         """Return observed average wave period."""
-        return self._average_wave_period
+        return self._average_wave_period  # type: ignore # this is dynamically set
 
     @property
-    def dominant_wave_direction(self):
+    def dominant_wave_direction(self) -> ObservationFloatDatum:
         """Return observed direction of waves at dominant period."""
-        return self._dominant_wave_direction
+        return self._dominant_wave_direction  # type: ignore # this is dynamically set

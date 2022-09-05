@@ -3,6 +3,9 @@
 from enum import Enum
 from typing import TypedDict
 
+NO_NUMERIC_VALUE = "MM"
+NO_TEXT_VALUE = "N/A"
+
 
 class BaseKey(Enum):
     ...
@@ -42,7 +45,6 @@ class SummaryWaveSteepnessValues(Enum):
     VERY_STEEP = "VERY_STEEP"
     SWELL = "SWELL"
     AVERAGE = "AVERAGE"
-    NA = "N/A"
 
 
 class MeasurementsAndUnits(TypedDict):
