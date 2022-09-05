@@ -4,6 +4,27 @@
 
 - **Types**: `realtime.get` [infers exact return type](https://github.com/clairBuoyant/pybuoy/pull/14#issue-1362358830) from user-provided value for `dataset`.
 
+### ObservationDatum
+
+Refers to a particular piece of data from an `Observation` (e.g., wind_direction). Metadata can be accessed with `.label`, `.unit`, and `.value`. (e.g., `wind_direction.value`).
+
+- **ObservationFloatDatum**: validate numeric values (previously named `ObservationDatum`).
+- **ObservationStringDatum**: validate non-numeric values.
+
+### Observation
+
+Weather <u>observation</u> recorded at unique datetime by type of `dataset` (e.g., meteorological).
+
+- **MeteorologicalObservation**: attributes return either `ObservationFloatDatum` or `ObservationStringDatum` after validating data provided from NDBC.
+- **WaveSummaryObservation**: attributes return either `ObservationFloatDatum` or `ObservationStringDatum` after validating data provided from NDBC.
+
+### Observations
+
+The following models were extended from `Observations` to support static typing:
+
+- **MeteorologicalObservations**: can use `+=` syntax on an instance of this class in order to append `MeteorologicalObservation` records.
+- **WaveSummaryObservations**: can use `+=` syntax on an instance of this class in order to append `WaveSummaryObservation` records.
+
 ### Internal
 
 - Bump all development dependencies to latest.
