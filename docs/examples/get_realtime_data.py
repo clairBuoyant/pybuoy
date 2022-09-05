@@ -5,14 +5,13 @@ buoy = Buoy()
 example_station_id = "44065"
 
 # dataset="txt" is default
-realtime_meteorological_data = buoy.realtime.get(
-    station_id=example_station_id, dataset="txt"
-)
+realtime_meteorological_data = buoy.realtime.get(station_id=example_station_id)
 
 for meteorological_record in realtime_meteorological_data:
     # IDE should now detect available attributes
     # add code below here
-    ...
+    pass
+
 # Sample Output of Meteorological Data
 print(f"Station Realtime Data (latest record): {realtime_meteorological_data[0]}")
 # OUTPUT: Station Realtime Data (latest record): Observation(2022-08-28 21:10:00) # noqa: E501,W505

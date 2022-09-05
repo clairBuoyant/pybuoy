@@ -1,9 +1,9 @@
 """Provide the ParserMixin class."""
 from datetime import datetime as dt
-from typing import Literal, Type, TypeVar, Union, overload
 from xml.etree.cElementTree import Element, fromstring
 
 from pybuoy.const import RealtimeDatasets, RealtimeDatasetsValues
+from pybuoy.exceptions import BuoyException
 from pybuoy.observation import MeteorologicalObservation, WaveSummaryObservation
 from pybuoy.observation.observations import (
     MeteorologicalObservations,
@@ -37,84 +37,49 @@ class XmlToDict(dict):
                 self.update({element.tag: element.text})
 
 
-T = TypeVar("T")
-
-
+# TODO: refactor and incorporate mixin
 class ParserMixin:
     """Interface for Buoy classes and its composites."""
 
-    @overload
-    def parse(
-        self,
-        data: str,
-        dataset: Literal["txt"],
-        __observation_type: Type[MeteorologicalObservations],
-    ) -> MeteorologicalObservations:
-        ...
-
-    @overload
-    def parse(
-        self,
-        data: str,
-        dataset: Literal["spec"],
-        __observation_type: Type[WaveSummaryObservations],
-    ) -> WaveSummaryObservations:
-        ...
-
-    @overload
-    def parse(
-        self, data: str, dataset: RealtimeDatasetsValues, __observation_type: Type[str]
-    ) -> str:
-        ...
-
-    # TODO: rework signature
     def parse(
         self,
         data: str,
         dataset: RealtimeDatasetsValues,
-        __observation_type: Type[T],
-    ):
-        observations_class_instance = __observation_type()
-        if isinstance(observations_class_instance, MeteorologicalObservations):
-            return self.__clean_realtime_data(
-                data, RealtimeDatasets.txt.value, observations_class_instance
-            )
-        if isinstance(observations_class_instance, WaveSummaryObservations):
-            return self.__clean_realtime_data(
-                data, RealtimeDatasets.spec.value, observations_class_instance
-            )
-        return data
+    ) -> MeteorologicalObservations | WaveSummaryObservations | str:
+        obs = self.__clean_realtime_data(data=data, dataset=dataset)
+        # TODO: refine error handling
+        if obs is None or len(obs) == 0:
+            raise BuoyException
+
+        match dataset:
+            case RealtimeDatasets.spec.value:
+                # ? overloading can be an alternative
+                wave_obs: list[WaveSummaryObservation] = obs  # type: ignore
+                return WaveSummaryObservations(observations=wave_obs)
+            case RealtimeDatasets.txt.value:
+                met_obs: list[MeteorologicalObservation] = obs  # type: ignore
+                return MeteorologicalObservations(observations=met_obs)
+            case _:
+                return data
 
     def _clean_activestation_data(self, data: str):
         xml_tree = fromstring(data)
         return [XmlToDict(el) for el in xml_tree.findall("station")]
 
-    @overload
     def __clean_realtime_data(
-        self, data: str, dataset: Literal["txt"], t: MeteorologicalObservations
-    ) -> MeteorologicalObservations:
-        ...
-
-    @overload
-    def __clean_realtime_data(
-        self, data: str, dataset: Literal["spec"], t: WaveSummaryObservations
-    ) -> WaveSummaryObservations:
-        ...
-
-    def __clean_realtime_data(
-        self, data: str, dataset: Union[Literal["txt"], Literal["spec"]], t: T
-    ):
-        # TODO: Error handling when request not successful
+        self, data: str, dataset: RealtimeDatasetsValues
+    ) -> list[MeteorologicalObservation] | list[WaveSummaryObservation]:
         if data is None:
-            return None
-        rows = data.strip().split("\n")
+            # TODO: handle when request not successful
+            raise BuoyException
 
+        # TODO: consider csv module
+        rows = data.strip().split("\n")
         headers = [" ".join(row.split()).split(" ") for row in rows[0:2]]
         header_offset = 5  # end of datetime columns
         headers_without_dates = headers[0][header_offset:]
 
-        # TODO: consider csv module
-        realtime_data = t
+        obs = []
         for row in rows[2:]:
             record_array = " ".join(row.split()).split(" ")
             date_recorded = dt(
@@ -124,29 +89,32 @@ class ParserMixin:
                 int(record_array[3]),
                 int(record_array[4]),
             )
-
-            observation: MeteorologicalObservation | WaveSummaryObservation
-            values: dict[MeteorologicalKey, str] | dict[WaveSummaryKey, str]
             if dataset == RealtimeDatasets.txt.value:
-                values = {
-                    MeteorologicalKey[headers_without_dates[idx]]: value
-                    for idx, value in enumerate(record_array[header_offset:])
-                }
-                observation = MeteorologicalObservation(
-                    values,
-                    date_recorded,
+                observation = self.__parse_meteorological_record(
+                    date_recorded=date_recorded,
+                    headers=headers_without_dates,
+                    records=record_array[header_offset:],
                 )
             elif dataset == RealtimeDatasets.spec.value:
-                values = {
-                    WaveSummaryKey[headers_without_dates[idx]]: value
-                    for idx, value in enumerate(record_array[header_offset:])
-                }
-                observation = WaveSummaryObservation(
-                    values,
-                    date_recorded,
+                observation = self.__parse_wave_summary_record(
+                    date_recorded=date_recorded,
+                    headers=headers_without_dates,
+                    records=record_array[header_offset:],
                 )
-            # TODO: refactor to use setter method and fix type
-            realtime_data.reports.append(  # type: ignore
-                observation
-            ) if observation is not None else None
-        return realtime_data
+            obs.append(observation) if observation is not None else None
+
+        return obs
+
+    # TODO: refactor
+    def __parse_meteorological_record(self, date_recorded: dt, headers, records):
+        values: dict[MeteorologicalKey, str] = {
+            MeteorologicalKey[headers[idx]]: value for idx, value in enumerate(records)
+        }
+        return MeteorologicalObservation(values, date_recorded)
+
+    # TODO: combine with above
+    def __parse_wave_summary_record(self, date_recorded: dt, headers, records):
+        values: dict[WaveSummaryKey, str] = {
+            WaveSummaryKey[headers[idx]]: value for idx, value in enumerate(records)
+        }
+        return WaveSummaryObservation(values, date_recorded)
