@@ -1,4 +1,4 @@
-## Unreleased
+## 0.4.2 (2022-09-05)
 
 ### mypy
 
@@ -28,7 +28,7 @@ The following models were extended from `Observations` to support static typing:
 ### Internal
 
 - Bump all development dependencies to latest.
-- Extend tests to check for expected attributes. [TODO: add type checks]
+- Extend tests to check for expected attributes.
 
 ## 0.4.1 (2022-08-31)
 
