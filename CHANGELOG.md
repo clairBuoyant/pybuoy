@@ -1,3 +1,9 @@
+## Unreleased
+
+### mypy
+
+- **Types**: `realtime.get` [infers exact return type](https://github.com/clairBuoyant/pybuoy/pull/14#issue-1362358830) from user-provided value for `dataset`.
+
 ## 0.4.1 (2022-08-31)
 
 ### Observation
