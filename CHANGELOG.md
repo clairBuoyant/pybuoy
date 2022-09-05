@@ -7,7 +7,7 @@
 ### Internal
 
 - Bump all development dependencies to latest.
-- Extend tests to check for expected attributes and types.
+- Extend tests to check for expected attributes. [TODO: add type checks]
 
 ## 0.4.1 (2022-08-31)
 
