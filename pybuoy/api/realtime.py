@@ -31,7 +31,7 @@ class Realtime(ApiBase):
     ):
         """Get realtime data from the NDBC.
 
-        There are six different data sources:
+        There are nine different data sources:
             - data_spec     Raw Spectral Wave Data
             - ocean         Oceanographic Data
             - spec          Spectral Wave Summary Data
