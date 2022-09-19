@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-Unreleased
-----------
+0.4.3 (2022-09-19)
+------------------
 
 Documentation
 ~~~~~~~~~~~~~
@@ -13,7 +13,7 @@ Internal
 ~~~~~~~~
 
 - Update all dependencies to latest.
-- Update ``pyproject.toml`` to comply with latest python-poetry changes.
+- Organize dependencies in ``pyproject.toml`` by groups (e.g., "dev" and "docs").
 
 0.4.2 (2022-09-05)
 ------------------
