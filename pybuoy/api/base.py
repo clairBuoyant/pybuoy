@@ -1,6 +1,6 @@
 import requests  # type: ignore
 
-from pybuoy.mixins.parser import ParserMixin  # type: ignore
+from pybuoy.mixins.parser import ParserMixin
 
 
 class ApiBase(ParserMixin):

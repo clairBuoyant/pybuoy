@@ -1,4 +1,4 @@
-from typing import Generic, Iterator, TypeVar
+from typing import Generic, Iterator, Optional, TypeVar
 
 from pybuoy.observation import MeteorologicalObservation, WaveSummaryObservation
 from pybuoy.observation.observation import BaseObservation
@@ -11,7 +11,7 @@ class BaseObservations(Generic[ObservationType]):
 
     def __init__(
         self,
-        observations: list[ObservationType] = None,
+        observations: Optional[list[ObservationType]] = None,
     ):
         # TODO: improve error handling
         self._data = observations if observations is not None else []

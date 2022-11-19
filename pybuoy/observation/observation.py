@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from pybuoy.observation.observation_datum import (
     ObservationFloatDatum,
@@ -17,7 +18,7 @@ from pybuoy.unit_mappings import (
 class BaseObservation:
     """BaseObservation class for `Buoy` readings by datetime."""
 
-    def __init__(self, datetime: datetime = None):
+    def __init__(self, datetime: Optional[datetime] = None):
         """Initialize BaseObservation record with datetime.
 
         Args:
@@ -46,7 +47,7 @@ class MeteorologicalObservation(BaseObservation):
     def __init__(
         self,
         values: dict[MeteorologicalKey, str],
-        datetime: datetime = None,
+        datetime: Optional[datetime] = None,
     ):
         """Initialize Observation record with relevant metadata.
 
@@ -145,7 +146,7 @@ class WaveSummaryObservation(BaseObservation):
     def __init__(
         self,
         values: dict[WaveSummaryKey, str],
-        datetime: datetime = None,
+        datetime: Optional[datetime] = None,
     ):
         """Initialize Observation record with relevant metadata.
 
