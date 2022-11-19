@@ -1,5 +1,6 @@
 from pybuoy.api.realtime import Realtime
 from pybuoy.api.stations import Stations
+from pybuoy.api.forecasts import Forecasts
 
 
 class Buoy:
@@ -23,6 +24,7 @@ class Buoy:
     def __init__(self):
         self._realtime = Realtime()
         self._stations = Stations()
+        self._forecasts = Forecasts()
 
     @property
     def realtime(self) -> Realtime:
@@ -31,3 +33,7 @@ class Buoy:
     @property
     def stations(self) -> Stations:
         return self._stations
+
+    @property
+    def forecasts(self) -> Forecasts:
+        return self._forecasts

@@ -65,12 +65,13 @@ class ParserMixin:
             case _:
                 return data
 
-    # TODO: consider station class/dto like observations
+    # is this ever used? Don't think so since the API returns str of data not XML
     def _clean_activestation_data(self, data: str):
         xml_tree_root = fromstring(data)
         # TODO: consider incorporating `etree_to_dict`
         return [dict(el.items()) for el in xml_tree_root.findall("station")]
 
+    # This method can only be applied to text nonXML data for NOAA buoy stations
     def __clean_realtime_data(
         self, data: str, dataset: RealtimeDatasetsValues
     ) -> list[MeteorologicalObservation] | list[WaveSummaryObservation]:
