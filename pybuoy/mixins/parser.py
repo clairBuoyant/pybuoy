@@ -1,6 +1,6 @@
 """Provide the ParserMixin class."""
 from datetime import datetime as dt
-from xml.etree.cElementTree import Element, fromstring
+from xml.etree.ElementTree import Element, fromstring
 
 from pybuoy.const import RealtimeDatasets, RealtimeDatasetsValues
 from pybuoy.exceptions import BuoyException
