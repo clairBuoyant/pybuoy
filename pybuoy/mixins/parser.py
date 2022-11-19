@@ -39,7 +39,7 @@ class XmlToDict(dict):
 
 # TODO: refactor and incorporate mixin
 class ParserMixin:
-    """Interface for Buoy classes and its composites."""
+    """Parser mixin supports handling of third-party data."""
 
     def parse(
         self,
