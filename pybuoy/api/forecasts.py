@@ -21,6 +21,20 @@ class Forecasts(ApiBase):
             "wgust": "wgust",
             "Submit": "Submit"
         })
+        # Code that I paste into terminal
+        # Will delete when finished with forecast development
+        # import pybuoy
+        # buoy = pybuoy.Buoy()
+        # buoy.forecasts.get(40.369, -73.702531, 2022-11-19, 2022-11-22)
         root = ET.fromstring(response)
-        print(root)
-        return root
+        for time in root.iter("start-valid-time"):
+            print(time.text)
+        for wind_speed in root.findall(".//*[@type='sustained']/value"):
+            print(wind_speed.text)
+        for wind_direction in root.findall(".//direction/value"):
+            print(wind_direction.text)
+        for wind_gust in root.findall(".//*[@type='gust']/value"):
+            print(wind_gust.text)
+        for wave in root.findall(".//waves/value"):
+            print(wave.text)
+        return "End of method"
