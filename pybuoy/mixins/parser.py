@@ -19,26 +19,30 @@ class ParserMixin:
 
     def etree_to_dict(self, element: Element):
         """Parse XML Element to dictionary."""
-        d: dict[str, dict[Any, Any] | Any] = {  # TODO: improve typing
+        from_etree: dict[str, dict[str, Any] | Any] = {  # TODO: improve typing
             element.tag: {} if element.attrib else None
         }
         children = list(element)
         if children:
-            dd = defaultdict(list)
+            parsed_children = defaultdict(list)
             for child in map(self.etree_to_dict, children):
                 for key, value in child.items():
-                    dd[key].append(value)
-            d = {element.tag: {k: v[0] if len(v) == 1 else v for k, v in dd.items()}}
+                    parsed_children[key].append(value)
+            from_etree = {
+                element.tag: {
+                    k: v[0] if len(v) == 1 else v for k, v in parsed_children.items()
+                }
+            }
         if element.attrib:
-            d[element.tag].update((k, v) for k, v in element.attrib.items())
+            from_etree[element.tag].update((k, v) for k, v in element.attrib.items())
         if element.text:
             text = element.text.strip()
             if children or element.attrib:
                 if text:
-                    d[element.tag]["text"] = text
+                    from_etree[element.tag]["text"] = text
             else:
-                d[element.tag] = text
-        return d
+                from_etree[element.tag] = text
+        return from_etree
 
     def parse(
         self,
