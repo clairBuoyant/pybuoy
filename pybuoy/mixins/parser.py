@@ -1,5 +1,7 @@
 """Provide the ParserMixin class."""
+from collections import defaultdict
 from datetime import datetime as dt
+from typing import Any
 from xml.etree.ElementTree import Element, fromstring
 
 from pybuoy.const import RealtimeDatasets, RealtimeDatasetsValues
@@ -12,34 +14,31 @@ from pybuoy.observation.observations import (
 from pybuoy.unit_mappings import MeteorologicalKey, WaveSummaryKey
 
 
-class XmlToDict(dict):
-    def __init__(self, data: Element):
-        if data.items():
-            self.update(dict(data.items()))
-        for element in data:
-            if element:
-                # treat like dict - assumes that if the first two tags
-                # in a series are different, then all are different.
-                if len(element) == 1 or element[0].tag != element[1].tag:
-                    tmp_dict: dict[str, XmlToDict] | XmlToDict = XmlToDict(element)
-                # treat like list - we assume that if the first two tags
-                # in a series are the same, then the rest are the same.
-                else:
-                    tmp_dict = {element[0].tag: XmlToDict(element)}
-                # if the tag has attributes, add those to the dict
-                if isinstance(element, XmlToDict) and element.items():
-                    tmp_dict.update(dict(element.items()))
-                self.update({element.tag: tmp_dict})
-            # assumes an attribute in a tag without any text.
-            elif element.items():
-                self.update({element.tag: dict(element.items())})
-            else:
-                self.update({element.tag: element.text})
-
-
-# TODO: refactor and incorporate mixin
 class ParserMixin:
     """Parser mixin supports handling of third-party data."""
+
+    def etree_to_dict(self, element: Element):
+        """Parse XML Element to dictionary."""
+        d: dict[str, dict[Any, Any] | Any] = {  # TODO: improve typing
+            element.tag: {} if element.attrib else None
+        }
+        children = list(element)
+        if children:
+            dd = defaultdict(list)
+            for child in map(self.etree_to_dict, children):
+                for key, value in child.items():
+                    dd[key].append(value)
+            d = {element.tag: {k: v[0] if len(v) == 1 else v for k, v in dd.items()}}
+        if element.attrib:
+            d[element.tag].update((k, v) for k, v in element.attrib.items())
+        if element.text:
+            text = element.text.strip()
+            if children or element.attrib:
+                if text:
+                    d[element.tag]["text"] = text
+            else:
+                d[element.tag] = text
+        return d
 
     def parse(
         self,
@@ -62,9 +61,11 @@ class ParserMixin:
             case _:
                 return data
 
+    # TODO: consider station class/dto like observations
     def _clean_activestation_data(self, data: str):
-        xml_tree = fromstring(data)
-        return [XmlToDict(el) for el in xml_tree.findall("station")]
+        xml_tree_root = fromstring(data)
+        # TODO: consider incorporating `etree_to_dict`
+        return [dict(el.items()) for el in xml_tree_root.findall("station")]
 
     def __clean_realtime_data(
         self, data: str, dataset: RealtimeDatasetsValues
