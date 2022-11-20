@@ -1,12 +1,11 @@
 from random import randrange
 
 from pybuoy import Buoy
-from pybuoy.mixins.parser import XmlToDict
 
 example_station_id = "44065"
 
 
-def find_buoy(buoys: list[XmlToDict], station_id: str):
+def find_buoy(buoys: list[dict], station_id: str):
     return next((buoy for buoy in buoys if buoy.get("id", None) == station_id), None)
 
 
@@ -15,7 +14,7 @@ def test_activestations_from_xml(test_pybuoy: Buoy):
 
     random_station = response[randrange(len(response))]
 
-    assert isinstance(random_station, XmlToDict)
+    assert isinstance(random_station, dict)
     assert "id" in random_station
     assert "lat" in random_station
     assert "lon" in random_station
@@ -36,7 +35,7 @@ def test_rockaway_beach_buoy(test_pybuoy: Buoy):
     response = test_pybuoy.stations.get_active()
 
     rockaway_buoy = find_buoy(response, example_station_id)
-    assert isinstance(rockaway_buoy, XmlToDict)
+    assert isinstance(rockaway_buoy, dict)
 
     assert "id" in rockaway_buoy
     assert "lat" in rockaway_buoy
