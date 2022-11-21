@@ -4,16 +4,17 @@ from datetime import datetime as dt
 import xml.etree.ElementTree as ET
 
 class Forecasts(ApiBase):
-    # TODO: (HIGH) implement get method with XML parsing
-    def get(self, lat: int, lon: int, beginDate: dt, endDate: dt):
-        # All this does rn is make a request and returns an XML text, there is no parsing
+    def get(self, lat: int, lon: int, beginDate: str, endDate: str):
+        # TODO: (LOW) add error checking for dates so they are passed in as strings in ISO format
+        # If not in ISO format throw user friendly exception
+        # TODO: (LOW) investigate if there's a better way of passing params dict
         response = self.make_request(API_PATH[Endpoints.FORECASTS.value], params={
-            "whichClient":"NDFgen",
+            "whichClient":"NDFDgen",
             "lat": lat,
             "lon": lon,
             "product": "time-series",
-            "begin": beginDate,
-            "end": endDate,
+            "begin": dt.fromisoformat(beginDate).isoformat(),
+            "end": dt.fromisoformat(endDate).isoformat(),
             "Unit": "e",
             "wspd": "wspd",
             "wdir": "wdir",
@@ -21,20 +22,16 @@ class Forecasts(ApiBase):
             "wgust": "wgust",
             "Submit": "Submit"
         })
-        # Code that I paste into terminal
-        # Will delete when finished with forecast development
-        # import pybuoy
-        # buoy = pybuoy.Buoy()
-        # buoy.forecasts.get(40.369, -73.702531, 2022-11-19, 2022-11-22)
-        root = ET.fromstring(response)
-        for time in root.iter("start-valid-time"):
-            print(time.text)
-        for wind_speed in root.findall(".//*[@type='sustained']/value"):
-            print(wind_speed.text)
-        for wind_direction in root.findall(".//direction/value"):
-            print(wind_direction.text)
-        for wind_gust in root.findall(".//*[@type='gust']/value"):
-            print(wind_gust.text)
-        for wave in root.findall(".//waves/value"):
-            print(wave.text)
-        return "End of method"
+        data = self.etree_to_dict(ET.fromstring(response))['dwml']['data']
+        forecast_data = []
+        time_stamps = data['time-layout']['start-valid-time']
+        parameters = data['parameters']
+        for i, time_stamp in enumerate(time_stamps):
+            forecast_data.append({
+                "datetime": time_stamp,
+                "wind_direction": parameters['direction']['value'][i],
+                "wind_speed": parameters['wind-speed'][0]['value'][i],
+                "wind_gust": parameters['wind-speed'][1]['value'][i],
+                "wave_height": parameters['water-state']['waves']['value'][i]
+            })
+        return forecast_data
