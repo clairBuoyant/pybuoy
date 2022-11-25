@@ -65,7 +65,7 @@ class ParserMixin:
             case _:
                 return data
 
-    # is this ever used? Don't think so since the API returns str of data not XML
+    # TODO: consider station class/dto like observations
     def _clean_activestation_data(self, data: str):
         xml_tree_root = fromstring(data)
         # TODO: consider incorporating `etree_to_dict`
