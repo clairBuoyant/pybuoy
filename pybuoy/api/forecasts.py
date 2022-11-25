@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
 
 class Forecasts(ApiBase):
+    # https://graphical.weather.gov/xml/mdl/XML/Design/MDL_XML_Design.pdf
     def get(self, lat: int, lon: int, beginDate: str, endDate: str):
         # TODO: (LOW) add error checking for dates so they are passed in as strings in ISO format
         # If not in ISO format throw user friendly exception
