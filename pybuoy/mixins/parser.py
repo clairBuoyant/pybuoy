@@ -95,6 +95,7 @@ class ParserMixin:
                 int(record_array[3]),
                 int(record_array[4]),
             )
+            # TODO: (LOW) Investigate if Strategy Pattern could fit here...
             if dataset == RealtimeDatasets.txt.value:
                 observation = self.__parse_meteorological_record(
                     date_recorded=date_recorded,

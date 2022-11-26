@@ -40,7 +40,6 @@ class WaveSummaryKey(BaseKey):
     APD = "APD"
     MWD = "MWD"
 
-
 class SummaryWaveSteepnessValues(Enum):
     VERY_STEEP = "VERY_STEEP"
     SWELL = "SWELL"
@@ -106,6 +105,12 @@ WAVE_SUMMARY: dict[WaveSummaryKey, MeasurementsAndUnits] = {
     },  # direction of waves at dominant period (DPD)
 }
 
+FORECAST: dict[MeteorologicalKey, MeasurementsAndUnits] = {
+    MeteorologicalKey.WDIR: {"label": "Wind Direction", "unit": "degrees"},
+    MeteorologicalKey.WSPD: {"label": "Wind Speed Sustained", "unit": "knots"},
+    MeteorologicalKey.GST: {"label": "Wind Speed Gust", "unit": "knots"},
+    MeteorologicalKey.WVHT: {"lable": "Wave Heigt", "unit": "feet"}
+}
 
 # TODO: update below for dynamic mapping
 

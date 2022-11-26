@@ -3,6 +3,7 @@ from pybuoy.const import API_PATH, Endpoints
 from datetime import datetime as dt
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
+from pybuoy.unit_mappings import MeteorologicalKey
 
 class Forecasts(ApiBase):
     # https://graphical.weather.gov/xml/mdl/XML/Design/MDL_XML_Design.pdf
@@ -41,16 +42,16 @@ class Forecasts(ApiBase):
             layout_key = time_layout.find("layout-key").text
             mapping = { time_layout : {} }
             if layout_key == wind_speed_sustained.attrib['time-layout']:
-                mapping[time_layout]["wind_speed_sustained"] = wind_speed_sustained_values
+                mapping[time_layout][MeteorologicalKey.WSPD.value] = wind_speed_sustained_values
             if layout_key == wind_speed_gust.attrib['time-layout']:
-                mapping[time_layout]["wind_speed_gust"] = wind_speed_gust_values
+                mapping[time_layout][MeteorologicalKey.GST.value] = wind_speed_gust_values
             if layout_key == wind_direction.attrib['time-layout']:
-                mapping[time_layout]["wind_direction"] = wind_direction_values
+                mapping[time_layout][MeteorologicalKey.WDIR.value] = wind_direction_values
             if layout_key == water_state.attrib['time-layout']:
-                mapping[time_layout]["wave"] = wave_values
+                mapping[time_layout][MeteorologicalKey.WVHT.value] = wave_values
             element_mappings.append(mapping)
 
-        # mapping the data with actual time_stamps
+        # mapping the data with actual time-stamp values: start-valid-time
         timed_mappings = []
         for element_mapping in element_mappings:
             time_layout = next(iter(element_mapping))
@@ -58,20 +59,20 @@ class Forecasts(ApiBase):
             mapping_holder = {}
             for i, time_stamp in enumerate(time_stamps):
                 forecast_values = {
-                    "wind_speed_sustained": None,
-                    "wind_speed_gust": None,
-                    "wind_direction": None,
-                    "wave": None
+                    MeteorologicalKey.WSPD.value: None,
+                    MeteorologicalKey.GST.value: None,
+                    MeteorologicalKey.WDIR.value: None,
+                    MeteorologicalKey.WVHT.value: None
                 }
 
-                if "wind_speed_sustained" in element_mapping[time_layout]:
-                    forecast_values["wind_speed_sustained"] = element_mapping[time_layout]["wind_speed_sustained"][i]
-                if "wind_speed_gust" in element_mapping[time_layout]:
-                    forecast_values["wind_speed_gust"] = element_mapping[time_layout]["wind_speed_gust"][i]
-                if "wind_direction" in element_mapping[time_layout]:
-                    forecast_values["wind_direction"] = element_mapping[time_layout]["wind_direction"][i]
-                if "wave" in element_mapping[time_layout]:
-                    forecast_values["wave"] = element_mapping[time_layout]["wave"][i]
+                if MeteorologicalKey.WSPD.value in element_mapping[time_layout]:
+                    forecast_values[MeteorologicalKey.WSPD.value] = element_mapping[time_layout][MeteorologicalKey.WSPD.value][i]
+                if MeteorologicalKey.GST.value in element_mapping[time_layout]:
+                    forecast_values[MeteorologicalKey.GST.value] = element_mapping[time_layout][MeteorologicalKey.GST.value][i]
+                if MeteorologicalKey.WDIR.value in element_mapping[time_layout]:
+                    forecast_values[MeteorologicalKey.WDIR.value] = element_mapping[time_layout][MeteorologicalKey.WDIR.value][i]
+                if MeteorologicalKey.WVHT.value in element_mapping[time_layout]:
+                    forecast_values[MeteorologicalKey.WVHT.value] = element_mapping[time_layout][MeteorologicalKey.WVHT.value][i]
 
                 mapping_holder[time_stamp] = forecast_values
             timed_mappings.append(mapping_holder)
@@ -79,14 +80,14 @@ class Forecasts(ApiBase):
         synced_timed_mapping = self.__get_longest_mapping(timed_mappings)
         for timed_mapping in timed_mappings:
             for key in timed_mapping.keys():
-                if timed_mapping[key]["wind_speed_sustained"] != None:
-                    synced_timed_mapping[key]["wind_speed_sustained"] = timed_mapping[key]["wind_speed_sustained"]
-                if timed_mapping[key]["wind_speed_gust"] != None:
-                    synced_timed_mapping[key]["wind_speed_gust"] = timed_mapping[key]["wind_speed_gust"]
-                if timed_mapping[key]["wind_direction"] != None:
-                    synced_timed_mapping[key]["wind_direction"] = timed_mapping[key]["wind_direction"]
-                if timed_mapping[key]["wave"] != None:
-                    synced_timed_mapping[key]["wave"] = timed_mapping[key]["wave"]
+                if timed_mapping[key][MeteorologicalKey.WSPD.value] != None:
+                    synced_timed_mapping[key][MeteorologicalKey.WSPD.value] = timed_mapping[key][MeteorologicalKey.WSPD.value]
+                if timed_mapping[key][MeteorologicalKey.GST.value] != None:
+                    synced_timed_mapping[key][MeteorologicalKey.GST.value] = timed_mapping[key][MeteorologicalKey.GST.value]
+                if timed_mapping[key][MeteorologicalKey.WDIR.value] != None:
+                    synced_timed_mapping[key][MeteorologicalKey.WDIR.value] = timed_mapping[key][MeteorologicalKey.WDIR.value]
+                if timed_mapping[key][MeteorologicalKey.WVHT.value] != None:
+                    synced_timed_mapping[key][MeteorologicalKey.WVHT.value] = timed_mapping[key][MeteorologicalKey.WVHT.value]
 
         print(synced_timed_mapping)
         return synced_timed_mapping
