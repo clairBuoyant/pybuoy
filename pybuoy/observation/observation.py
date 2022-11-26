@@ -219,6 +219,7 @@ class WaveSummaryObservation(BaseObservation):
         """Return observed direction of waves at dominant period."""
         return self._dominant_wave_direction  # type: ignore # this is dynamically set
 
+
 class MeteorologicalPrediction(BaseObservation):
     def __init__(
         self,
