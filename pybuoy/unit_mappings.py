@@ -109,7 +109,7 @@ FORECAST: dict[MeteorologicalKey, MeasurementsAndUnits] = {
     MeteorologicalKey.WDIR: {"label": "Wind Direction", "unit": "degrees"},
     MeteorologicalKey.WSPD: {"label": "Wind Speed Sustained", "unit": "knots"},
     MeteorologicalKey.GST: {"label": "Wind Speed Gust", "unit": "knots"},
-    MeteorologicalKey.WVHT: {"lable": "Wave Heigt", "unit": "feet"}
+    MeteorologicalKey.WVHT: {"label": "Wave Heigt", "unit": "feet"}
 }
 
 # TODO: update below for dynamic mapping

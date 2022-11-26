@@ -4,6 +4,8 @@ from datetime import datetime as dt
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
 from pybuoy.unit_mappings import MeteorologicalKey
+from pybuoy.observation.observation import MeteorologicalPrediction
+from pybuoy.observation.observations import MeteorologicalPredictions
 
 class Forecasts(ApiBase):
     # https://graphical.weather.gov/xml/mdl/XML/Design/MDL_XML_Design.pdf
@@ -25,6 +27,7 @@ class Forecasts(ApiBase):
             "Submit": "Submit"
         })
 
+        # TODO: (MEDIUM) Refactor code into parserMixin?
         element_mappings = []
         data = ET.fromstring(response)
         time_layouts = data.findall(".//time-layout")
@@ -42,13 +45,13 @@ class Forecasts(ApiBase):
             layout_key = time_layout.find("layout-key").text
             mapping = { time_layout : {} }
             if layout_key == wind_speed_sustained.attrib['time-layout']:
-                mapping[time_layout][MeteorologicalKey.WSPD.value] = wind_speed_sustained_values
+                mapping[time_layout][MeteorologicalKey.WSPD] = wind_speed_sustained_values
             if layout_key == wind_speed_gust.attrib['time-layout']:
-                mapping[time_layout][MeteorologicalKey.GST.value] = wind_speed_gust_values
+                mapping[time_layout][MeteorologicalKey.GST] = wind_speed_gust_values
             if layout_key == wind_direction.attrib['time-layout']:
-                mapping[time_layout][MeteorologicalKey.WDIR.value] = wind_direction_values
+                mapping[time_layout][MeteorologicalKey.WDIR] = wind_direction_values
             if layout_key == water_state.attrib['time-layout']:
-                mapping[time_layout][MeteorologicalKey.WVHT.value] = wave_values
+                mapping[time_layout][MeteorologicalKey.WVHT] = wave_values
             element_mappings.append(mapping)
 
         # mapping the data with actual time-stamp values: start-valid-time
@@ -59,20 +62,20 @@ class Forecasts(ApiBase):
             mapping_holder = {}
             for i, time_stamp in enumerate(time_stamps):
                 forecast_values = {
-                    MeteorologicalKey.WSPD.value: None,
-                    MeteorologicalKey.GST.value: None,
-                    MeteorologicalKey.WDIR.value: None,
-                    MeteorologicalKey.WVHT.value: None
+                    MeteorologicalKey.WSPD: "nan",
+                    MeteorologicalKey.GST: "nan",
+                    MeteorologicalKey.WDIR: "nan",
+                    MeteorologicalKey.WVHT: "nan"
                 }
 
-                if MeteorologicalKey.WSPD.value in element_mapping[time_layout]:
-                    forecast_values[MeteorologicalKey.WSPD.value] = element_mapping[time_layout][MeteorologicalKey.WSPD.value][i]
-                if MeteorologicalKey.GST.value in element_mapping[time_layout]:
-                    forecast_values[MeteorologicalKey.GST.value] = element_mapping[time_layout][MeteorologicalKey.GST.value][i]
-                if MeteorologicalKey.WDIR.value in element_mapping[time_layout]:
-                    forecast_values[MeteorologicalKey.WDIR.value] = element_mapping[time_layout][MeteorologicalKey.WDIR.value][i]
-                if MeteorologicalKey.WVHT.value in element_mapping[time_layout]:
-                    forecast_values[MeteorologicalKey.WVHT.value] = element_mapping[time_layout][MeteorologicalKey.WVHT.value][i]
+                if MeteorologicalKey.WSPD in element_mapping[time_layout]:
+                    forecast_values[MeteorologicalKey.WSPD] = element_mapping[time_layout][MeteorologicalKey.WSPD][i]
+                if MeteorologicalKey.GST in element_mapping[time_layout]:
+                    forecast_values[MeteorologicalKey.GST] = element_mapping[time_layout][MeteorologicalKey.GST][i]
+                if MeteorologicalKey.WDIR in element_mapping[time_layout]:
+                    forecast_values[MeteorologicalKey.WDIR] = element_mapping[time_layout][MeteorologicalKey.WDIR][i]
+                if MeteorologicalKey.WVHT in element_mapping[time_layout]:
+                    forecast_values[MeteorologicalKey.WVHT] = element_mapping[time_layout][MeteorologicalKey.WVHT][i]
 
                 mapping_holder[time_stamp] = forecast_values
             timed_mappings.append(mapping_holder)
@@ -80,17 +83,18 @@ class Forecasts(ApiBase):
         synced_timed_mapping = self.__get_longest_mapping(timed_mappings)
         for timed_mapping in timed_mappings:
             for key in timed_mapping.keys():
-                if timed_mapping[key][MeteorologicalKey.WSPD.value] != None:
-                    synced_timed_mapping[key][MeteorologicalKey.WSPD.value] = timed_mapping[key][MeteorologicalKey.WSPD.value]
-                if timed_mapping[key][MeteorologicalKey.GST.value] != None:
-                    synced_timed_mapping[key][MeteorologicalKey.GST.value] = timed_mapping[key][MeteorologicalKey.GST.value]
-                if timed_mapping[key][MeteorologicalKey.WDIR.value] != None:
-                    synced_timed_mapping[key][MeteorologicalKey.WDIR.value] = timed_mapping[key][MeteorologicalKey.WDIR.value]
-                if timed_mapping[key][MeteorologicalKey.WVHT.value] != None:
-                    synced_timed_mapping[key][MeteorologicalKey.WVHT.value] = timed_mapping[key][MeteorologicalKey.WVHT.value]
+                if timed_mapping[key][MeteorologicalKey.WSPD] != "nan":
+                    synced_timed_mapping[key][MeteorologicalKey.WSPD] = timed_mapping[key][MeteorologicalKey.WSPD]
+                if timed_mapping[key][MeteorologicalKey.GST] != "nan":
+                    synced_timed_mapping[key][MeteorologicalKey.GST] = timed_mapping[key][MeteorologicalKey.GST]
+                if timed_mapping[key][MeteorologicalKey.WDIR] != "nan":
+                    synced_timed_mapping[key][MeteorologicalKey.WDIR] = timed_mapping[key][MeteorologicalKey.WDIR]
+                if timed_mapping[key][MeteorologicalKey.WVHT] != "nan":
+                    synced_timed_mapping[key][MeteorologicalKey.WVHT] = timed_mapping[key][MeteorologicalKey.WVHT]
+        
+        predictions = [MeteorologicalPrediction(synced_timed_mapping[key], dt.fromisoformat(key)) for key in synced_timed_mapping.keys()]
 
-        print(synced_timed_mapping)
-        return synced_timed_mapping
+        return MeteorologicalPredictions(observations=predictions)
 
     def __get_values(self, element: Element, value: str) -> list[str]:
         element_text_list = []
