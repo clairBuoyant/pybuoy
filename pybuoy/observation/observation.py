@@ -236,7 +236,7 @@ class MeteorologicalPrediction(BaseObservation):
             )
 
     def __str__(self):
-        return f"Predecition({self.datetime})"
+        return f"Prediction({self.datetime})"
     
     @property
     def wind_direction(self) -> ObservationFloatDatum:

@@ -1,5 +1,6 @@
 from pybuoy.api.base import ApiBase
 from pybuoy.const import API_PATH, Endpoints
+from typing import Optional
 from datetime import datetime as dt
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
@@ -9,7 +10,7 @@ from pybuoy.observation.observations import MeteorologicalPredictions
 
 class Forecasts(ApiBase):
     # https://graphical.weather.gov/xml/mdl/XML/Design/MDL_XML_Design.pdf
-    def get(self, lat: int, lon: int, beginDate: str, endDate: str):
+    def get(self, lat: float, lon: float, beginDate: str, endDate: str):
         # TODO: (LOW) add error checking for dates so they are passed in as strings in ISO format
         # If not in ISO format throw user friendly exception
         response = self.make_request(API_PATH[Endpoints.FORECASTS.value], params={
@@ -30,20 +31,20 @@ class Forecasts(ApiBase):
         # TODO: (MEDIUM) Refactor code into parserMixin?
         element_mappings = []
         data = ET.fromstring(response)
-        time_layouts = data.findall(".//time-layout")
-        wind_speed_sustained = data.find(".//*[@type='sustained']")
-        wind_speed_sustained_values = self.__get_values(wind_speed_sustained, "value")
-        wind_speed_gust = data.find(".//*[@type='gust']")
-        wind_speed_gust_values = self.__get_values(wind_speed_gust, "value")
-        wind_direction = data.find(".//direction")
-        wind_direction_values = self.__get_values(wind_direction, "value")
-        water_state = data.find('.//water-state')
-        wave_values = self.__get_values(water_state.find('waves'), "value")
+        time_layouts: list[Element] = data.findall(".//time-layout")
+        wind_speed_sustained: Optional[Element] = data.find(".//*[@type='sustained']")
+        wind_speed_sustained_values: list[str] = self.__get_values(wind_speed_sustained, "value")
+        wind_speed_gust: Optional[Element] = data.find(".//*[@type='gust']")
+        wind_speed_gust_values: list[str] = self.__get_values(wind_speed_gust, "value")
+        wind_direction: Optional[Element] = data.find(".//direction")
+        wind_direction_values: list[str] = self.__get_values(wind_direction, "value")
+        water_state: Optional[Element] = data.find('.//water-state')
+        wave_values: list[str] = self.__get_values(water_state.find('waves'), "value")
 
         # mapping data to time stamp elements
         for time_layout in time_layouts:
-            layout_key = time_layout.find("layout-key").text
-            mapping = { time_layout : {} }
+            layout_key: Optional[str] = time_layout.find("layout-key").text
+            mapping: dict = { time_layout : {} }
             if layout_key == wind_speed_sustained.attrib['time-layout']:
                 mapping[time_layout][MeteorologicalKey.WSPD] = wind_speed_sustained_values
             if layout_key == wind_speed_gust.attrib['time-layout']:
@@ -96,16 +97,16 @@ class Forecasts(ApiBase):
 
         return MeteorologicalPredictions(observations=predictions)
 
-    def __get_values(self, element: Element, value: str) -> list[str]:
-        element_text_list = []
-        element_list = element.findall(value)
+    def __get_values(self, element: Optional[Element], value: str) -> list[str]:
+        element_text_list: list = []
+        element_list: list[Element] = element.findall(value)
         for element in element_list:
             element_text_list.append(element.text)
         return element_text_list
 
-    def __get_longest_mapping(self, array: list) -> dict:
-        index = 0
-        max_len = 0
+    def __get_longest_mapping(self, array: list[dict]) -> dict:
+        index: int = 0
+        max_len: int = 0
         for i, mapping in enumerate(array):
             if len(mapping.keys()) > max_len:
                 index = i 
