@@ -1,4 +1,4 @@
-pybuoy - Python NDBC API Wrapper
+pybuoy - Python NDBC and NDFD API Wrapper
 ================================
 
 .. image:: https://img.shields.io/pypi/v/pybuoy?color=blue

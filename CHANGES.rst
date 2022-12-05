@@ -1,5 +1,10 @@
 Change Log
 ==========
+0.4.4 (2022-12-03)
+------------------
+Unreleased
+
+- Created new Forecasts feature which returns an interable MeteorologicalPredictions object filled with MeteorologicalPrediction objects which has forecast data
 
 0.4.3 (2022-09-19)
 ------------------
