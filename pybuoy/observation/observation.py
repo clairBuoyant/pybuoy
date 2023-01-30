@@ -6,9 +6,9 @@ from pybuoy.observation.observation_datum import (
     ObservationStringDatum,
 )
 from pybuoy.unit_mappings import (
+    FORECAST,
     METEOROLOGICAL,
     WAVE_SUMMARY,
-    FORECAST,
     MeteorologicalKey,
     WaveSummaryKey,
 )
@@ -237,7 +237,7 @@ class MeteorologicalPrediction(BaseObservation):
 
     def __str__(self):
         return f"Prediction({self.datetime})"
-    
+
     @property
     def wind_direction(self) -> ObservationFloatDatum:
         """Return observed wind direction."""

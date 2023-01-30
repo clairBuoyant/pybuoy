@@ -1,6 +1,6 @@
+from pybuoy.api.forecasts import Forecasts
 from pybuoy.api.realtime import Realtime
 from pybuoy.api.stations import Stations
-from pybuoy.api.forecasts import Forecasts
 
 
 class Buoy:

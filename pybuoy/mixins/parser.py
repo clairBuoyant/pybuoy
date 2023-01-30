@@ -30,11 +30,14 @@ class ParserMixin:
                     parsed_children[key].append(value)
             from_etree = {
                 element.tag: {
-                    key: value[0] if len(value) == 1 else value for key, value in parsed_children.items()
+                    key: value[0] if len(value) == 1 else value
+                    for key, value in parsed_children.items()
                 }
             }
         if element.attrib:
-            from_etree[element.tag].update((key, value) for key, value in element.attrib.items())
+            from_etree[element.tag].update(
+                (key, value) for key, value in element.attrib.items()
+            )
         if element.text:
             text = element.text.strip()
             if children or element.attrib:
