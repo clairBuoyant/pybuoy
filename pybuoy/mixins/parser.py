@@ -5,7 +5,7 @@ from typing import Any
 from xml.etree.ElementTree import Element, fromstring
 
 from pybuoy.const import RealtimeDatasets, RealtimeDatasetsValues
-from pybuoy.exceptions import BuoyException
+from pybuoy.exceptions import NDBCException
 from pybuoy.observation import MeteorologicalObservation, WaveSummaryObservation
 from pybuoy.observation.observations import (
     MeteorologicalObservations,
@@ -55,7 +55,7 @@ class ParserMixin:
         obs = self.__clean_realtime_data(data=data, dataset=dataset)
         # TODO: refine error handling
         if obs is None or len(obs) == 0:
-            raise BuoyException
+            raise NDBCException
 
         match dataset:
             case RealtimeDatasets.spec.value:
@@ -80,7 +80,7 @@ class ParserMixin:
     ) -> list[MeteorologicalObservation] | list[WaveSummaryObservation]:
         if data is None:
             # TODO: handle when request not successful
-            raise BuoyException
+            raise NDBCException
 
         # TODO: consider csv module
         rows = data.strip().split("\n")
