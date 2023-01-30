@@ -8,6 +8,7 @@ from pybuoy.observation.observation_datum import (
 from pybuoy.unit_mappings import (
     METEOROLOGICAL,
     WAVE_SUMMARY,
+    FORECAST,
     MeteorologicalKey,
     WaveSummaryKey,
 )
@@ -217,3 +218,42 @@ class WaveSummaryObservation(BaseObservation):
     def dominant_wave_direction(self) -> ObservationFloatDatum:
         """Return observed direction of waves at dominant period."""
         return self._dominant_wave_direction  # type: ignore # this is dynamically set
+
+
+class MeteorologicalPrediction(BaseObservation):
+    def __init__(
+        self,
+        values: dict[MeteorologicalKey, str],
+        datetime: Optional[datetime] = None,
+    ):
+        super().__init__(datetime=datetime)
+        for key in FORECAST:
+            new_key = "_".join(FORECAST[key]["label"].lower().split(" "))
+            setattr(
+                self,
+                f"_{new_key}",
+                ObservationFloatDatum(values[key], FORECAST[key]),
+            )
+
+    def __str__(self):
+        return f"Prediction({self.datetime})"
+    
+    @property
+    def wind_direction(self) -> ObservationFloatDatum:
+        """Return observed wind direction."""
+        return self._wind_direction  # type: ignore # this is dynamically set
+
+    @property
+    def wind_speed(self) -> ObservationFloatDatum:
+        """Return observed wind speed."""
+        return self._wind_speed  # type: ignore # this is dynamically set
+
+    @property
+    def wind_gust(self) -> ObservationFloatDatum:
+        """Return observed wind gust."""
+        return self._wind_gust  # type: ignore # this is dynamically set
+
+    @property
+    def wave_height(self) -> ObservationFloatDatum:
+        """Return observed wave height."""
+        return self._wave_height  # type: ignore # this is dynamically set

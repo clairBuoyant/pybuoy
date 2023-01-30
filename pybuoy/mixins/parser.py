@@ -30,11 +30,11 @@ class ParserMixin:
                     parsed_children[key].append(value)
             from_etree = {
                 element.tag: {
-                    k: v[0] if len(v) == 1 else v for k, v in parsed_children.items()
+                    key: value[0] if len(value) == 1 else value for key, value in parsed_children.items()
                 }
             }
         if element.attrib:
-            from_etree[element.tag].update((k, v) for k, v in element.attrib.items())
+            from_etree[element.tag].update((key, value) for key, value in element.attrib.items())
         if element.text:
             text = element.text.strip()
             if children or element.attrib:
@@ -71,6 +71,7 @@ class ParserMixin:
         # TODO: consider incorporating `etree_to_dict`
         return [dict(el.items()) for el in xml_tree_root.findall("station")]
 
+    # This method can only be applied to text nonXML data for NOAA buoy stations
     def __clean_realtime_data(
         self, data: str, dataset: RealtimeDatasetsValues
     ) -> list[MeteorologicalObservation] | list[WaveSummaryObservation]:
@@ -94,6 +95,7 @@ class ParserMixin:
                 int(record_array[3]),
                 int(record_array[4]),
             )
+            # TODO: (LOW) Investigate if Strategy Pattern could fit here...
             if dataset == RealtimeDatasets.txt.value:
                 observation = self.__parse_meteorological_record(
                     date_recorded=date_recorded,

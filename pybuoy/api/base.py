@@ -4,8 +4,8 @@ from pybuoy.mixins.parser import ParserMixin
 
 
 class ApiBase(ParserMixin):
-    def make_request(self, url: str):
-        response = requests.get(url)
+    def make_request(self, url: str, params: dict = {}):
+        response = requests.get(url, params=params)
         if response.status_code == 200:
             return response.text
         elif response.status_code == 404:
