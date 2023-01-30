@@ -1,4 +1,4 @@
-pybuoy - Python NDBC and NDFD API Wrapper
+pybuoy - Python NOAA/NDBC API Wrapper
 ================================
 
 .. image:: https://img.shields.io/pypi/v/pybuoy?color=blue
@@ -14,7 +14,7 @@ pybuoy - Python NDBC and NDFD API Wrapper
     :target: https://pypi.python.org/pypi/pybuoy
 
 
-``pybuoy`` is a server-side Python package that was built to facilitate rapid discovery of new data from `NDBC <https://www.ndbc.noaa.gov>`_ with only a single dependency!
+``pybuoy`` is a server-side Python package that was built to facilitate rapid discovery of new data from `NOAA <https://www.noaa.gov>`_ and `NDBC <https://www.ndbc.noaa.gov>`_ with only a single dependency!
 
 Installation
 ------------

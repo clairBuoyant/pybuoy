@@ -1,10 +1,20 @@
 Change Log
 ==========
-0.4.4 (2022-12-03)
-------------------
-Unreleased
 
-- Created new Forecasts feature which returns an interable MeteorologicalPredictions object filled with MeteorologicalPrediction objects which has forecast data
+Unreleased
+----------
+
+Buoy
+~~~~
+
+- **Forecasts**: ``get`` returns an iterable ``MeteorologicalPredictions`` object. The type of
+  iterable provided is ``MeteorologicalPrediction``.
+
+Internal
+~~~~~~~~
+
+- Bump certifi to 2022.12.07. (CVE-2022-23491)
+- Update all dependencies to latest.
 
 0.4.3 (2022-09-19)
 ------------------
