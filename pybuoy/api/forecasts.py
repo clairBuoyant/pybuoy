@@ -18,7 +18,7 @@ def parse_dt(dt: str | None):
 class Forecasts(ApiBase):
     # https://graphical.weather.gov/xml/mdl/XML/Design/MDL_XML_Design.pdf
     def get(self, lat: float, lon: float, beginDate: str, endDate: str):
-        # TODO: (LOW) add error checking for dates so they are passed in as strings in ISO format
+        # TODO: (LOW) add error checking for dates
         # If not in ISO format throw user friendly exception
         response = self.make_request(
             API_PATH[Endpoints.FORECASTS.value],
@@ -88,7 +88,6 @@ class Forecasts(ApiBase):
                 mapping[time_layout][MeteorologicalKey.WVHT] = wave_values
             element_mappings.append(mapping)
 
-        # mapping the data with actual time-stamp values: start-valid-time
         timed_mappings = []
         for element_mapping in element_mappings:
             time_layout = next(iter(element_mapping))

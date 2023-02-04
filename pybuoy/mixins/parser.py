@@ -74,7 +74,6 @@ class ParserMixin:
         # TODO: consider incorporating `etree_to_dict`
         return [dict(el.items()) for el in xml_tree_root.findall("station")]
 
-    # This method can only be applied to text nonXML data for NOAA buoy stations
     def __clean_realtime_data(
         self, data: str, dataset: RealtimeDatasetsValues
     ) -> list[MeteorologicalObservation] | list[WaveSummaryObservation]:
@@ -98,7 +97,7 @@ class ParserMixin:
                 int(record_array[3]),
                 int(record_array[4]),
             )
-            # TODO: (LOW) Investigate if Strategy Pattern could fit here...
+            # TODO: investigate adding Strategy Pattern here
             if dataset == RealtimeDatasets.txt.value:
                 observation = self.__parse_meteorological_record(
                     date_recorded=date_recorded,
