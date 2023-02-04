@@ -10,6 +10,11 @@ from pybuoy.observation.observations import MeteorologicalPredictions
 from pybuoy.unit_mappings import MeteorologicalKey
 
 
+# TODO: complete stub and refactor
+def parse_dt(dt: str | None):
+    ...
+
+
 class Forecasts(ApiBase):
     # https://graphical.weather.gov/xml/mdl/XML/Design/MDL_XML_Design.pdf
     def get(self, lat: float, lon: float, beginDate: str, endDate: str):
@@ -161,3 +166,41 @@ class Forecasts(ApiBase):
                 index = i
                 max_len = len(mapping.keys())
         return array.pop(index)
+
+    def __parse_conditions(self, tree: Element, condition: str):
+        for weather_element in tree.iterfind(condition):
+            # TODO: list comprehension
+            values = []
+
+            # TODO: replace condition with another dynamic approach
+            for condition_element in weather_element.iterfind(condition):
+                # TODO: replace condition with another dynamic approach
+                value = condition_element.attrib.get(condition)
+                values.append(value)
+
+            time_layout_key = weather_element.attrib["time-layout"]
+            return time_layout_key, values
+
+    def __parse_time_layouts(self, tree: Element):
+        """Return a dictionary containing the time-layouts.
+
+        A time-layout looks like:
+            { 'time-layout-key': [(start-time, end-time), ...] }
+        """
+        time_layouts = {}
+        for tl_elem in tree.iterfind("time-layout"):
+            start_times = []
+            end_times = []
+            for tl_child in tl_elem:
+                if tl_child.tag == "layout-key":
+                    key = tl_child.text
+                elif tl_child.tag == "start-valid-time":
+                    dt = parse_dt(tl_child.text)
+                    start_times.append(dt)
+                elif tl_child.tag == "end-valid-time":
+                    dt = parse_dt(tl_child.text)
+                    end_times.append(dt)
+
+            time_layouts[key] = zip(start_times, end_times)
+
+        return time_layouts
