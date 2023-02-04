@@ -34,33 +34,52 @@ class Forecasts(ApiBase):
         )
 
         # TODO: (MEDIUM) Refactor code into parserMixin?
-        element_mappings = []
         data = ET.fromstring(response)
-        time_layouts: list[Element] = data.findall(".//time-layout")
+
         wind_speed_sustained: Optional[Element] = data.find(".//*[@type='sustained']")
-        wind_speed_sustained_values: list[str] = self.__get_values(
-            wind_speed_sustained, "value"
-        )
+        wind_speed_sustained_values = self.__get_values(wind_speed_sustained, "value")
+
         wind_speed_gust: Optional[Element] = data.find(".//*[@type='gust']")
         wind_speed_gust_values: list[str] = self.__get_values(wind_speed_gust, "value")
+
         wind_direction: Optional[Element] = data.find(".//direction")
         wind_direction_values: list[str] = self.__get_values(wind_direction, "value")
-        water_state: Optional[Element] = data.find(".//water-state")
-        wave_values: list[str] = self.__get_values(water_state.find("waves"), "value")
 
-        # mapping data to time stamp elements
+        water_state: Optional[Element] = data.find(".//water-state")
+        waves = water_state.find("waves") if water_state is not None else None
+        wave_values: list[str] = self.__get_values(waves, "value")
+
+        # mapping data to timestamp elements
+        element_mappings = []
+        time_layouts: list[Element] = data.findall(".//time-layout")
         for time_layout in time_layouts:
-            layout_key: Optional[str] = time_layout.find("layout-key").text
+            if time_layout is None:
+                continue
+            layout_key: str | None = getattr(
+                time_layout.find("layout-key"), "text", None
+            )
             mapping: dict = {time_layout: {}}
-            if layout_key == wind_speed_sustained.attrib["time-layout"]:
+            if (
+                wind_speed_sustained is not None
+                and layout_key == wind_speed_sustained.attrib["time-layout"]
+            ):
                 mapping[time_layout][
                     MeteorologicalKey.WSPD
                 ] = wind_speed_sustained_values
-            if layout_key == wind_speed_gust.attrib["time-layout"]:
+            if (
+                wind_speed_gust is not None
+                and layout_key == wind_speed_gust.attrib["time-layout"]
+            ):
                 mapping[time_layout][MeteorologicalKey.GST] = wind_speed_gust_values
-            if layout_key == wind_direction.attrib["time-layout"]:
+            if (
+                wind_direction is not None
+                and layout_key == wind_direction.attrib["time-layout"]
+            ):
                 mapping[time_layout][MeteorologicalKey.WDIR] = wind_direction_values
-            if layout_key == water_state.attrib["time-layout"]:
+            if (
+                water_state is not None
+                and layout_key == water_state.attrib["time-layout"]
+            ):
                 mapping[time_layout][MeteorologicalKey.WVHT] = wave_values
             element_mappings.append(mapping)
 
@@ -125,7 +144,9 @@ class Forecasts(ApiBase):
 
         return MeteorologicalPredictions(observations=predictions)
 
-    def __get_values(self, element: Optional[Element], value: str) -> list[str]:
+    def __get_values(self, element: Element | None, value: str) -> list[str]:
+        if element is None:
+            return []
         element_text_list: list = []
         element_list: list[Element] = element.findall(value)
         for element in element_list:

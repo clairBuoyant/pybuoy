@@ -66,5 +66,5 @@ class WaveSummaryObservations(BaseObservations[WaveSummaryObservation]):
 
 
 class MeteorologicalPredictions(BaseObservations[MeteorologicalPrediction]):
-    def __repr__(self) -> str:
-        return super().__repr__(10)
+    def __repr__(self, limit=10) -> str:
+        return super().__repr__(limit)
