@@ -107,7 +107,7 @@ WAVE_SUMMARY: dict[WaveSummaryKey, MeasurementsAndUnits] = {
 }
 
 FORECAST: dict[MeteorologicalKey, MeasurementsAndUnits] = {
-    MeteorologicalKey.WDIR: {"label": "Wind Direction", "unit": "degrees"},
+    MeteorologicalKey.WDIR: METEOROLOGICAL[MeteorologicalKey.WDIR],
     MeteorologicalKey.WSPD: {"label": "Wind Speed", "unit": "knots"},
     MeteorologicalKey.GST: {"label": "Wind Gust", "unit": "knots"},
     MeteorologicalKey.WVHT: {"label": "Wave Height", "unit": "feet"},
