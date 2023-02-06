@@ -9,9 +9,11 @@ from pybuoy.observation.observations import MeteorologicalPredictions
 from pybuoy.unit_mappings import MeteorologicalKey
 
 
-# TODO: complete stub and refactor
-def parse_dt(dt: str | None):
-    ...
+# TODO: consider datetime utils to handle parsing
+def parse_dt(timestamp: str | None):
+    if timestamp is None:
+        raise ValueError
+    return dt.fromisoformat(timestamp)
 
 
 class Forecasts(ApiBase):
@@ -186,7 +188,7 @@ class Forecasts(ApiBase):
             { 'time-layout-key': [(start-time, end-time), ...] }
         """
         time_layouts = {}
-        for tl_elem in tree.iterfind("time-layout"):
+        for tl_elem in tree.iterfind(".//time-layout"):
             start_times = []
             end_times = []
             for tl_child in tl_elem:
@@ -198,7 +200,7 @@ class Forecasts(ApiBase):
                 elif tl_child.tag == "end-valid-time":
                     dt = parse_dt(tl_child.text)
                     end_times.append(dt)
-
+            # TODO: replace zip - lists not always symmetrical
             time_layouts[key] = zip(start_times, end_times)
 
         return time_layouts
