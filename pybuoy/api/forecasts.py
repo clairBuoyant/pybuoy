@@ -1,7 +1,6 @@
-import xml.etree.ElementTree as ET
 from datetime import datetime as dt
 from typing import Optional
-from xml.etree.ElementTree import Element
+from xml.etree.ElementTree import Element, fromstring
 
 from pybuoy.api.base import ApiBase
 from pybuoy.const import API_PATH, Endpoints
@@ -39,7 +38,7 @@ class Forecasts(ApiBase):
         )
 
         # TODO: (MEDIUM) Refactor code into parserMixin?
-        data = ET.fromstring(response)
+        data = fromstring(response)
 
         wind_speed_sustained: Optional[Element] = data.find(".//*[@type='sustained']")
         wind_speed_sustained_values = self.__get_values(wind_speed_sustained, "value")
