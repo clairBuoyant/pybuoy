@@ -168,7 +168,7 @@ class Forecasts(ApiBase):
         return array.pop(index)
 
     def __parse_conditions(self, tree: Element, condition: str):
-        for weather_element in tree.iterfind(condition):
+        for weather_element in tree.iter(tag=condition):
             # TODO: list comprehension
             values = []
 
@@ -188,7 +188,7 @@ class Forecasts(ApiBase):
             { 'time-layout-key': [(start-time, end-time), ...] }
         """
         time_layouts = {}
-        for tl_elem in tree.iterfind(".//time-layout"):
+        for tl_elem in tree.iter(tag="time-layout"):
             start_times = []
             end_times = []
             for tl_child in tl_elem:
