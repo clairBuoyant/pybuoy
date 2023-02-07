@@ -17,7 +17,7 @@ def parse_dt(timestamp: str | None):
 
 
 class Forecasts(ApiBase):
-    # https://graphical.weather.gov/xml/mdl/XML/Design/MDL_XML_Design.pdf
+    # https://graphical.weather.gov/xml/rest.php
     def get(self, lat: float, lon: float, beginDate: str, endDate: str):
         # TODO: (LOW) add error checking for dates
         # If not in ISO format throw user friendly exception
@@ -167,6 +167,53 @@ class Forecasts(ApiBase):
                 max_len = len(mapping.keys())
         return array.pop(index)
 
+    def forecast_by_lat_lon(
+        self,
+        lat,
+        lon,
+        start_date: Optional[dt] = None,
+        end_date: Optional[dt] = None,
+        metric=False,
+    ):
+        return self._daily_forecast_from_location_info(
+            location_info=[lat, lon],
+            start_date=start_date,
+            end_date=end_date,
+            metric=metric,
+        )
+
+    def _daily_forecast_from_location_info(
+        self,
+        location_info,
+        start_date: Optional[dt] = None,
+        end_date: Optional[dt] = None,
+        metric=False,
+    ):
+        if not start_date:
+            start_date = dt.today()
+
+        # TODO: test array of tuples
+        # ? does order of query-string parameter matter
+        lat, lon = location_info
+        params = {
+            "whichClient": "NDFDgen",
+            "lat": lat,
+            "lon": lon,
+            "product": "time-series",
+            "begin": start_date.isoformat(),
+            "end": None if end_date is None else end_date.isoformat(),
+            "Unit": "m" if metric else "e",
+            "wspd": "wspd",
+            "wdir": "wdir",
+            "waveh": "waveh",
+            "wgust": "wgust",
+            "Submit": "Submit",
+        }
+        response = self.make_request(API_PATH[Endpoints.FORECASTS.value], params=params)
+        xml_root = self._parse_xml(response)
+        # TODO: complete
+        return xml_root
+
     def __parse_conditions(self, tree: Element, condition: str):
         for weather_element in tree.iter(tag=condition):
             # TODO: list comprehension
@@ -204,3 +251,6 @@ class Forecasts(ApiBase):
             time_layouts[key] = zip(start_times, end_times)
 
         return time_layouts
+
+    def _parse_xml(self, xml_data):
+        return fromstring(xml_data)
