@@ -6,8 +6,13 @@ from pybuoy.observation.observation import MeteorologicalPrediction
 
 
 def test_forecast_data(test_pybuoy: Buoy):
-    test_begin_date = (datetime.now() + timedelta(1)).isoformat()
-    test_end_date = (datetime.now() + timedelta(5)).isoformat()
+    test_begin_date = (
+        "2023-02-26T20:08:30.476379"  # (datetime.now() + timedelta(1)).isoformat()
+    )
+    test_end_date = (
+        "2023-02-28T20:08:30.476395"  # (datetime.now() + timedelta(5)).isoformat()
+    )
+
     response = test_pybuoy.forecasts.get(
         40.369, -73.702531, test_begin_date, test_end_date
     )

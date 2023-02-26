@@ -1,6 +1,9 @@
 from datetime import datetime as dt
+from json import dumps, loads
 from typing import Optional
 from xml.etree.ElementTree import Element, fromstring
+
+import lxml.etree as ET
 
 from pybuoy.api.base import ApiBase
 from pybuoy.const import API_PATH, Endpoints
@@ -19,6 +22,12 @@ def parse_dt(timestamp: str | None):
 class Forecasts(ApiBase):
     # https://graphical.weather.gov/xml/rest.php
     def get(self, lat: float, lon: float, beginDate: str, endDate: str):
+        self.forecast_by_lat_lon(
+            lat=lat,
+            lon=lon,
+            start_date=dt.fromisoformat(beginDate),
+            end_date=dt.fromisoformat(endDate),
+        )
         # TODO: (LOW) add error checking for dates
         # If not in ISO format throw user friendly exception
         response = self.make_request(
@@ -193,6 +202,7 @@ class Forecasts(ApiBase):
             start_date = dt.today()
 
         # TODO: test array of tuples
+        # https://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php?lat=40.369&lon=-73.702&product=time-series&begin=2023-01-01T00:00:00&end=2023-02-20T00:00:00&waveh=waveh&wspd=wspd&wgust=wgust&wdir=wdir
         # ? does order of query-string parameter matter
         lat, lon = location_info
         params = {
@@ -211,22 +221,79 @@ class Forecasts(ApiBase):
         }
         response = self.make_request(API_PATH[Endpoints.FORECASTS.value], params=params)
         xml_root = self._parse_xml(response)
+        import os
+
+        dirname = os.path.dirname(__file__)
+        filename = os.path.join(dirname, "noaa.xsl")
+        xslt = ET.parse(filename)
+        dom = ET.fromstring(response)
+        transform = ET.XSLT(xslt)
+        x = transform(dom)
+
+        json_load = loads(str(x))
+        json_dump = dumps(json_load, indent=2)
+        print(json_dump)
+        # print("Transformed", type(x))
+        # for i in str(x):
+        #     print(i)
         # TODO: complete
+        time_layouts = self.__parse_time_layouts(xml_root)
+        # wind_speed_conditions = self.__parse_conditions(xml_root, "wind-speed")
+        all_parameters = self.__parse_conditions(
+            xml_root, "parameters"
+        )  # returns array of all values without delinating type and time
+        # TODO: create and return structure with conditions + time_layouts for end-user consumption
         return xml_root
 
+    # TODO: add support for all, if it might be more efficient/dynamic
+    # .tag = 'water-state'
+    # [0...n] = child root from parameters
+    # [0..n][0..n] = iterate for name,value in child
+    # [0...n][0][0...n] = iterate for name,value in waves from water-state
     def __parse_conditions(self, tree: Element, condition: str):
+        for condition_or_conditions in tree.iter(tag=condition):
+            # TODO: determine which to support logic
+            print("condition_or_conditions:", condition_or_conditions.tag)
+            for _condition in condition_or_conditions:
+                print("_condition:", _condition.tag)
+
+                for con in _condition:
+                    print("con:", con, con.text)
+
+                    # TODO: print values from water-state children like waves (name,value)
+                    if _condition.tag == "water-state":
+                        for water_condition in con:
+                            print(
+                                f"{con.tag}:{water_condition.text} (should be water-state)"
+                            )
+        # collect all names based on condition
+        # names: list[str] = (
+        #     [weather_element.text for weather_element in tree.iter("name")]
+        #     if condition == "parameters"
+        #     else [condition]
+        # )
+
         for weather_element in tree.iter(tag=condition):
-            # TODO: list comprehension
-            values = []
+            print(weather_element)
+        # values = [
+        #     (
+        #         weather_element.attrib["time-layout"]
+        #         if "time-layout" in weather_element.attrib
+        #         else None,
+        #         weather_element.attrib["type"]
+        #         if "type" in weather_element.attrib
+        #         else None,
+        #         [
+        #             condition_value_element.text
+        #             # ! iter value collects ALL values without delination
+        #             for condition_value_element in weather_element.iter("value")
+        #         ],
+        #     )
+        #     # insert name with values by index
+        #     for weather_element in tree.iter(tag=condition)
+        # ]
 
-            # TODO: replace condition with another dynamic approach
-            for condition_element in weather_element.iterfind(condition):
-                # TODO: replace condition with another dynamic approach
-                value = condition_element.attrib.get(condition)
-                values.append(value)
-
-            time_layout_key = weather_element.attrib["time-layout"]
-            return time_layout_key, values
+        return []
 
     def __parse_time_layouts(self, tree: Element):
         """Return a dictionary containing the time-layouts.
@@ -248,7 +315,7 @@ class Forecasts(ApiBase):
                     dt = parse_dt(tl_child.text)
                     end_times.append(dt)
             # TODO: replace zip - lists not always symmetrical
-            time_layouts[key] = zip(start_times, end_times)
+            time_layouts[key] = start_times
 
         return time_layouts
 
