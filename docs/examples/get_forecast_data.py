@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 from pybuoy import Buoy
 
-
 start = datetime.today().isoformat()
 end = (datetime.today() + timedelta(7)).isoformat()
 buoy = Buoy()
@@ -37,4 +36,4 @@ Under the hood, the aforementioned sample output provides this object:
     )
 
 `forecast_data[0].wave_height.value` would return 2.0 as type float (defaults to None, if no value was recorded).
-"""  # noqa: W505
+"""  # noqa: E501,W505

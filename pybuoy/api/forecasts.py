@@ -4,7 +4,7 @@ from json import loads
 from os.path import dirname, join
 from typing import Optional
 
-import lxml.etree as ET
+import lxml.etree as ET  # type: ignore
 
 from pybuoy.api.base import ApiBase
 from pybuoy.const import API_PATH, Endpoints
