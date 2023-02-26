@@ -18,10 +18,10 @@ Get Forecast Data
 
 .. code-block:: python
 
-    from datetime import datetime as dt
+    from datetime import datetime, timedelta
 
-    start = dt.today().isoformat()
-    end = (dt.today() + dt.timedelta(7)).isoformat()
+    start = datetime.today().isoformat()
+    end = (datetime.today() + timedelta(7)).isoformat()
 
     station_44065 = [40.369, -73.703] # lat, lon
 
@@ -41,7 +41,7 @@ Get Forecast Data
 .. code-block:: python
 
     ForecastObservations(
-        _data=[
+        reports=[
             ForecastObservation(
                 datetime=datetime.datetime(2022, 12, 4, 19, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=68400))),
                 wind_direction=ObservationDatum(Wind Direction: 280.0 degrees),
