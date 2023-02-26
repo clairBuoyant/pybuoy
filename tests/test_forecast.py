@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from random import randrange
 
 from pybuoy import Buoy
-from pybuoy.observation.observation import MeteorologicalPrediction
+from pybuoy.observation.observation import ForecastObservation
 
 
 def test_forecast_data(test_pybuoy: Buoy):
@@ -13,7 +13,7 @@ def test_forecast_data(test_pybuoy: Buoy):
         40.369, -73.702531, test_begin_date, test_end_date
     )
     for record in response:
-        assert isinstance(record, MeteorologicalPrediction)
+        assert isinstance(record, ForecastObservation)
 
     random_record = response[randrange(len(response.reports))]
     assert hasattr(random_record, "wind_direction")

@@ -7,8 +7,8 @@ Unreleased
 Buoy
 ~~~~
 
-- **Forecasts**: ``get`` returns an iterable ``MeteorologicalPredictions`` object. The type of
-  iterable provided is ``MeteorologicalPrediction``.
+- **Forecasts**: ``get`` returns an iterable ``ForecastObservations`` object. The type of
+  iterable provided is ``ForecastObservation``.
 
 Internal
 ~~~~~~~~

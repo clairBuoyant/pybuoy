@@ -20,7 +20,7 @@ Get Forecast Data
 
     from datetime import datetime as dt
 
-    begin = dt.today().isoformat()
+    start = dt.today().isoformat()
     end = (dt.today() + dt.timedelta(7)).isoformat()
 
     station_44065 = [40.369, -73.703] # lat, lon
@@ -28,35 +28,35 @@ Get Forecast Data
     forecast_data = buoy.forecasts.get(
         lat=station_44065[0],
         lon=station_44065[1],
-        beginDate=begin,
-        endDate=end
+        start_date=start,
+        end_date=end
     )
 
 .. note::
 
-    beginDate and endDate **MUST BE** a valid ISO Date string.
+    start_date and end_date **MUST BE** a valid ISO Date string.
 
-`forecast_data` returns an iterable instance of ``MeteorologicalPredictions``.
+`forecast_data` returns an iterable instance of ``ForecastObservations``.
 
 .. code-block:: python
 
-    MeteorologicalPredictions(
+    ForecastObservations(
         _data=[
-            MeteorologicalPrediction(
+            ForecastObservation(
                 datetime=datetime.datetime(2022, 12, 4, 19, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=68400))),
                 wind_direction=ObservationDatum(Wind Direction: 280.0 degrees),
                 wind_speed=ObservationDatum(Wind Speed: 9.0 knots),
                 wind_gust=ObservationDatum(Wind Gust: 11.0 knots),
                 wave_height=ObservationDatum(Wave Height: 2.0 feet)
             ),
-            MeteorologicalPrediction(
+            ForecastObservation(
                 datetime=datetime.datetime(2022, 12, 4, 22, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=68400))),
                 wind_direction=ObservationDatum(Wind Direction: 270.0 degrees),
                 wind_speed=ObservationDatum(Wind Speed: 9.0 knots),
                 wind_gust=ObservationDatum(Wind Gust: 12.0 knots),
                 wave_height=ObservationDatum(Wave Height: 2.0 feet)
             ),
-            MeteorologicalPrediction(
+            ForecastObservation(
                 datetime=datetime.datetime(2022, 12, 5, 1, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=68400))),
                 wind_direction=ObservationDatum(Wind Direction: 270.0 degrees),
                 wind_speed=ObservationDatum(Wind Speed: 9.0 knots),
@@ -64,21 +64,21 @@ Get Forecast Data
                 wave_height=ObservationDatum(Wave Height: 2.0 feet)
             ),
             ...
-            MeteorologicalPrediction(
+            ForecastObservation(
                 datetime=datetime.datetime(2022, 12, 11, 7, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=68400))),
                 wind_direction=ObservationDatum(Wind Direction: 20.0 degrees),
                 wind_speed=ObservationDatum(Wind Speed: 16.0 knots),
                 wind_gust=ObservationDatum(Wind Gust: nan knots),
                 wave_height=ObservationDatum(Wave Height: nan feet)
             ),
-            MeteorologicalPrediction(
+            ForecastObservation(
                 datetime=datetime.datetime(2022, 12, 11, 13, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=68400))),
                 wind_direction=ObservationDatum(Wind Direction: 30.0 degrees),
                 wind_speed=ObservationDatum(Wind Speed: 13.0 knots),
                 wind_gust=ObservationDatum(Wind Gust: nan knots),
                 wave_height=ObservationDatum(Wave Height: nan feet)
             ),
-            MeteorologicalPrediction(
+            ForecastObservation(
                 datetime=datetime.datetime(2022, 12, 11, 19, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=68400))),
                 wind_direction=ObservationDatum(Wind Direction: 50.0 degrees),
                 wind_speed=ObservationDatum(Wind Speed: 13.0 knots),

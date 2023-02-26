@@ -220,19 +220,25 @@ class WaveSummaryObservation(BaseObservation):
         return self._dominant_wave_direction  # type: ignore # this is dynamically set
 
 
-class MeteorologicalPrediction(BaseObservation):
+class ForecastObservation(BaseObservation):
+    """Encapsulates forecasted `Buoy` data."""
+
     def __init__(
         self,
-        values: dict[MeteorologicalKey, str],
+        # TODO: fix dict key type
+        values: dict[str, dict],
         datetime: Optional[datetime] = None,
     ):
         super().__init__(datetime=datetime)
         for key in FORECAST:
             new_key = "_".join(FORECAST[key]["label"].lower().split(" "))
+            default_val = {"value": "nan"}  # TODO: refactor
+            value = values.get(key.name, default_val)
+            value_value = value.get("value", "nan")  # TODO: rename
             setattr(
                 self,
                 f"_{new_key}",
-                ObservationFloatDatum(values[key], FORECAST[key]),
+                ObservationFloatDatum(value_value, FORECAST[key]),
             )
 
     def __str__(self):

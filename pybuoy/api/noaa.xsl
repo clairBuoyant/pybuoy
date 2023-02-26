@@ -123,6 +123,13 @@
                     </xsl:for-each>
                 }
             </xsl:if>
+            <xsl:if test="parameters/direction">
+                , "direction": {
+                    <xsl:for-each select="parameters/direction">
+                        <xsl:call-template name="direction" /><xsl:if test="position() != last()">, </xsl:if>
+                    </xsl:for-each>
+                }
+            </xsl:if>
             <xsl:if test="parameters/cloud-amount">
                 , "cloud-amount": {
                     <xsl:apply-templates select="parameters/cloud-amount" />
@@ -232,6 +239,30 @@
                         <xsl:with-param name="position" select="position()" />
                         <xsl:with-param name="duration" select="$duration" />
                     </xsl:call-template><xsl:if test="position() != last()">, </xsl:if>
+                </xsl:for-each>
+            ]
+        }
+    </xsl:template>
+
+     <!-- wind direction -->
+    <xsl:template name="direction">
+        <xsl:variable name="tl-key" select="@time-layout" />
+        <xsl:variable name="duration">
+            <xsl:call-template name="find-period-duration">
+                <xsl:with-param name="layout-key" select="$tl-key" />
+            </xsl:call-template>
+        </xsl:variable>
+        "wind-direction": {
+            "name": "<xsl:value-of select="name" />",
+            "units": "<xsl:value-of select="@units" />",
+            "periods": [
+                <xsl:for-each select="value">
+                    <xsl:call-template name="generate-periods">
+                        <xsl:with-param name="layout-key" select="$tl-key" />
+                        <xsl:with-param name="position" select="position()" />
+                        <xsl:with-param name="duration" select="$duration" />
+                    </xsl:call-template>
+                    <xsl:if test="position() != last()">, </xsl:if>
                 </xsl:for-each>
             ]
         }
