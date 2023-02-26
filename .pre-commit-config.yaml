@@ -4,19 +4,19 @@ repos:
     hooks:
       - id: branch-validate
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v2.32.2
+    rev: v2.42.1
     hooks:
       - id: commitizen
         stages: [commit-msg]
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
       - id: check-added-large-files
       - id: check-merge-conflict
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.3.1
+    rev: v1.4.2
     hooks:
       - id: forbid-tabs
       - id: remove-tabs
@@ -25,7 +25,7 @@ repos:
     hooks:
       - id: absolufy-imports
   - repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: 23.1.0
     hooks:
       - id: black
   - repo: https://github.com/PyCQA/isort
@@ -33,9 +33,9 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
+    rev: 6.0.0
     hooks:
       - id: flake8
         additional_dependencies:
-          - flake8-black>=0.3.3
+          - flake8-black>=0.3.6
         args: ['--config=.flake8']
