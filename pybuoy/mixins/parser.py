@@ -74,7 +74,7 @@ class ParserMixin:
         # TODO: consider incorporating `etree_to_dict`
         return [dict(el.items()) for el in xml_tree_root.findall("station")]
 
-    # TODO: ensure latest row is also provided (appears to be missing in response)
+    # TODO: fix missing latest row
     def __clean_realtime_data(
         self, data: str, dataset: RealtimeDatasetsValues
     ) -> list[MeteorologicalObservation] | list[WaveSummaryObservation]:
