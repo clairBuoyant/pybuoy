@@ -1,8 +1,11 @@
 """Provide the ParserMixin class."""
 from collections import defaultdict
 from datetime import datetime as dt
+from os.path import dirname, join
 from typing import Any
 from xml.etree.ElementTree import Element, fromstring
+
+import lxml.etree as ET  # type: ignore
 
 from pybuoy.const import RealtimeDatasets, RealtimeDatasetsValues
 from pybuoy.exceptions import NDBCException
@@ -17,9 +20,12 @@ from pybuoy.unit_mappings import MeteorologicalKey, WaveSummaryKey
 class ParserMixin:
     """Parser mixin supports handling of third-party data."""
 
+    def __init__(self) -> None:
+        self.__set_xslt_transform()
+
     def etree_to_dict(self, element: Element):
         """Parse XML Element to dictionary."""
-        from_etree: dict[str, dict[str, Any] | Any] = {  # TODO: improve typing
+        from_etree: dict[str, dict[str, Any] | Any] = {
             element.tag: {} if element.attrib else None
         }
         children = list(element)
@@ -68,6 +74,10 @@ class ParserMixin:
             case _:
                 return data
 
+    @property
+    def xslt_transform(self) -> ET.XSLT:
+        return self._xslt_transform
+
     # TODO: consider station class/dto like observations
     def _clean_activestation_data(self, data: str):
         xml_tree_root = fromstring(data)
@@ -115,16 +125,19 @@ class ParserMixin:
 
         return obs
 
-    # TODO: refactor
     def __parse_meteorological_record(self, date_recorded: dt, headers, records):
         values: dict[MeteorologicalKey, str] = {
             MeteorologicalKey[headers[idx]]: value for idx, value in enumerate(records)
         }
         return MeteorologicalObservation(values, date_recorded)
 
-    # TODO: combine with above
+    # TODO: refactor (e.g., combine with __parse_meteorological_record)
     def __parse_wave_summary_record(self, date_recorded: dt, headers, records):
         values: dict[WaveSummaryKey, str] = {
             WaveSummaryKey[headers[idx]]: value for idx, value in enumerate(records)
         }
         return WaveSummaryObservation(values, date_recorded)
+
+    def __set_xslt_transform(self, xsl_filename="noaa.xsl"):
+        forecast_xslt = ET.parse(join(dirname(__file__), xsl_filename))
+        self._xslt_transform = ET.XSLT(forecast_xslt)
