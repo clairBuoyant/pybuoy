@@ -2,9 +2,7 @@
 pybuoy
 ======
 
----------------------------------------------------
 Python wrapper for `NOAA <https://www.noaa.gov>`_ and `NDBC <https://www.ndbc.noaa.gov>`_ REST web services.
----------------------------------------------------
 
 .. note::
 
