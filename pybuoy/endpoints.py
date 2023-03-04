@@ -5,6 +5,6 @@ _FORECASTS_URL = "https://graphical.weather.gov/xml/sample_products/browser_inte
 
 API_PATH: dict[str, str] = {
     "active_stations": f"{_BASE_URL}/activestations",
-    "realtime2": f"{_BASE_URL}/data/realtime2",
     "forecasts": f"{_FORECASTS_URL}",
+    "realtime2": f"{_BASE_URL}/data/realtime2",
 }

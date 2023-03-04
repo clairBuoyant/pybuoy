@@ -7,8 +7,8 @@ from pybuoy.endpoints import API_PATH as API_PATH  # noqa: F401
 
 class Endpoints(Enum):
     ACTIVE_STATIONS = "active_stations"
-    REALTIME = "realtime2"
     FORECASTS = "forecasts"
+    REALTIME = "realtime2"
 
 
 class RealtimeDatasets(Enum):

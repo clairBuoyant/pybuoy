@@ -1,5 +1,6 @@
+=====================================
 pybuoy - Python NOAA/NDBC API Wrapper
-================================
+=====================================
 
 .. image:: https://img.shields.io/pypi/v/pybuoy?color=blue
     :alt: Latest Version
@@ -14,7 +15,10 @@ pybuoy - Python NOAA/NDBC API Wrapper
     :target: https://pypi.python.org/pypi/pybuoy
 
 
-``pybuoy`` is a server-side Python package that was built to facilitate rapid discovery of new data from `NOAA <https://www.noaa.gov>`_ and `NDBC <https://www.ndbc.noaa.gov>`_ with only a single dependency!
+---------------------------------------------------
+``pybuoy`` is a Python wrapper for `NOAA <https://www.noaa.gov>`_ and `NDBC <https://www.ndbc.noaa.gov>`_ REST web services.
+---------------------------------------------------
+
 
 Installation
 ------------
@@ -39,10 +43,12 @@ Quickstart
     buoy = Buoy()
 
 
-With the ``buoy`` instance you can then interact with NDBC:
+With a instance of ``Buoy``, you can request data from NOAA and NDBC like so:
 
 - `Get all active stations <https://pybuoy.readthedocs.io/en/latest/tutorials/active_buoys.html>`_.
 
 - `Get realtime meteorological data <https://pybuoy.readthedocs.io/en/latest/tutorials/realtime_data.html#get-meteorological-data>`_ for buoy by station_id.
 
 - `Get realtime wave summary data <https://pybuoy.readthedocs.io/en/latest/tutorials/realtime_data.html#get-wave-summary-data>`_ for buoy by station_id.
+
+- `Get forecast data <https://pybuoy.readthedocs.io/en/latest/tutorials/forecast_data.html>`_ for buoy by lat/lon.
