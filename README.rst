@@ -15,15 +15,12 @@ pybuoy - Python NOAA/NDBC API Wrapper
     :target: https://pypi.python.org/pypi/pybuoy
 
 
----------------------------------------------------
 ``pybuoy`` is a Python wrapper for `NOAA <https://www.noaa.gov>`_ and `NDBC <https://www.ndbc.noaa.gov>`_ REST web services.
----------------------------------------------------
-
 
 Installation
 ------------
 
-``pybuoy`` is supported on Python 3.10+ and can be installed with either pip or a package manager like `poetry <https://python-poetry.org>`_:
+``pybuoy`` is supported on Python 3.11+ and can be installed with either pip or a package manager like `poetry <https://python-poetry.org>`_:
 
 - **with pip**: ``pip install pybuoy``
 
