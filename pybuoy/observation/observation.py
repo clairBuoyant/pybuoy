@@ -6,6 +6,7 @@ from pybuoy.observation.observation_datum import (
     ObservationStringDatum,
 )
 from pybuoy.unit_mappings import (
+    FORECAST,
     METEOROLOGICAL,
     WAVE_SUMMARY,
     MeteorologicalKey,
@@ -217,3 +218,48 @@ class WaveSummaryObservation(BaseObservation):
     def dominant_wave_direction(self) -> ObservationFloatDatum:
         """Return observed direction of waves at dominant period."""
         return self._dominant_wave_direction  # type: ignore # this is dynamically set
+
+
+class ForecastObservation(BaseObservation):
+    """Encapsulates forecasted `Buoy` data."""
+
+    def __init__(
+        self,
+        # TODO: fix dict key type
+        values: dict[str, dict],
+        datetime: Optional[datetime] = None,
+    ):
+        super().__init__(datetime=datetime)
+        for key in FORECAST:
+            new_key = "_".join(FORECAST[key]["label"].lower().split(" "))
+            default_val = {"value": "nan"}  # TODO: refactor
+            value = values.get(key.name, default_val)
+            value_value = value.get("value", "nan")  # TODO: rename
+            setattr(
+                self,
+                f"_{new_key}",
+                ObservationFloatDatum(value_value, FORECAST[key]),
+            )
+
+    def __str__(self):
+        return f"Prediction({self.datetime})"
+
+    @property
+    def wind_direction(self) -> ObservationFloatDatum:
+        """Return observed wind direction."""
+        return self._wind_direction  # type: ignore # this is dynamically set
+
+    @property
+    def wind_speed(self) -> ObservationFloatDatum:
+        """Return observed wind speed."""
+        return self._wind_speed  # type: ignore # this is dynamically set
+
+    @property
+    def wind_gust(self) -> ObservationFloatDatum:
+        """Return observed wind gust."""
+        return self._wind_gust  # type: ignore # this is dynamically set
+
+    @property
+    def wave_height(self) -> ObservationFloatDatum:
+        """Return observed wave height."""
+        return self._wave_height  # type: ignore # this is dynamically set

@@ -1,5 +1,10 @@
-pybuoy: Python Wrapper for NDBC/NOAA buoy data
-==============================================
+======
+pybuoy
+======
+
+---------------------------------------------------
+Python wrapper for `NOAA <https://www.noaa.gov>`_ and `NDBC <https://www.ndbc.noaa.gov>`_ REST web services.
+---------------------------------------------------
 
 .. note::
 
@@ -40,6 +45,7 @@ Contents
     :caption: Tutorials
 
     tutorials/active_buoys.rst
+    tutorials/forecast_data.rst
     tutorials/realtime_data.rst
 
 .. _package_info:

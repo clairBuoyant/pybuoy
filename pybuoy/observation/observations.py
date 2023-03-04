@@ -1,6 +1,10 @@
 from typing import Generic, Iterator, Optional, TypeVar
 
-from pybuoy.observation import MeteorologicalObservation, WaveSummaryObservation
+from pybuoy.observation import (
+    ForecastObservation,
+    MeteorologicalObservation,
+    WaveSummaryObservation,
+)
 from pybuoy.observation.observation import BaseObservation
 
 ObservationType = TypeVar("ObservationType", bound=BaseObservation)
@@ -10,11 +14,11 @@ class BaseObservations(Generic[ObservationType]):
     """Observations class encapsulates `Observation`s by datetime."""
 
     def __init__(
-        self,
-        observations: Optional[list[ObservationType]] = None,
+        self, observations: Optional[list[ObservationType]] = None, repr_limit=1000
     ):
         # TODO: improve error handling
         self._data = observations if observations is not None else []
+        self._repr_limit = repr_limit
         self._size = len(self._data)
 
     @property
@@ -33,7 +37,7 @@ class BaseObservations(Generic[ObservationType]):
         return iter(self._data)
 
     def __repr__(self) -> str:
-        if len(self._data) < 1000:
+        if len(self._data) < self._repr_limit:
             return "{}({})".format(
                 self.__class__.__name__,
                 ", ".join("{}={!r}".format(k, v) for k, v in self.__dict__.items()),
@@ -58,4 +62,8 @@ class MeteorologicalObservations(BaseObservations[MeteorologicalObservation]):
 
 
 class WaveSummaryObservations(BaseObservations[WaveSummaryObservation]):
+    ...
+
+
+class ForecastObservations(BaseObservations[ForecastObservation]):
     ...

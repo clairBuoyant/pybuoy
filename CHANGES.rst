@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+Buoy
+~~~~
+
+- **Forecasts**: ``get`` returns an iterable ``ForecastObservations`` object. The type of
+  iterable provided is ``ForecastObservation``.
+
+Internal
+~~~~~~~~
+
+- Bump certifi to 2022.12.07. (CVE-2022-23491)
+- Update all dependencies to latest.
+
 0.4.3 (2022-09-19)
 ------------------
 
