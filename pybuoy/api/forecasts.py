@@ -8,6 +8,7 @@ import lxml.etree as ET  # type: ignore
 from pybuoy.api.base import ApiBase
 from pybuoy.const import API_PATH, Endpoints
 from pybuoy.observation import ForecastObservation, ForecastObservations
+from pybuoy.unit_mappings import NO_NUMERIC_VALUE
 
 
 class Forecasts(ApiBase):
@@ -105,7 +106,7 @@ class Forecasts(ApiBase):
             ),
             "water-state": ("significant",),
         }
-        default_val = {"value": "nan"}
+        default_val = {"value": NO_NUMERIC_VALUE}
         groupedby_timestamp: dict[str, dict] = defaultdict(
             lambda: defaultdict(
                 dict,
