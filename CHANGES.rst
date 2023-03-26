@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+Fix
+~~~
+
+- **Forecasts**: ``.value`` of ``ForecastObservation`` will default to ``None`` (type: NoneType)
+  when datum missing instead of ``nan`` (type: float) to support ``JSON``.
+
 0.5.0 (2023-03-04)
 ------------------
 
