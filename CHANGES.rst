@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+0.5.2 (2023-05-24)
+
+Internal
+~~~~~~~~
+
+- Bump ``requests`` to 2.31.0. (CVE-2023-32681)
+- Bump all dependencies to latest.
+
 0.5.1 (2023-03-26)
 ------------------
 
