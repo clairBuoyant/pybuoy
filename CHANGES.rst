@@ -9,6 +9,7 @@ Internal
 
 - Update ``certifi`` to 2023.7.22. (CVE-2023-37920)
 - Update ``urllib3`` to 2.0.7 (CVE-2023-43804, CVE-2023-45803)
+- Update ``jinja2`` to 3.1.3 (CVE-2024-22195)
 
 0.5.2 (2023-05-24)
 ------------------
