@@ -8,4 +8,5 @@ else
     PREFIX=''
 fi
 
+${PREFIX}ruff check --fix
 ${PREFIX}ruff format
