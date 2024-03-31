@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+Internal
+~~~~~~~~
+
+- Update all dependencies to latest.
+
+Security
+~~~~~~~~
+
+- Update ``black`` to 24.3.0. (CVE-2024-21503)
+
+
 0.5.3 (2024-01-15)
 ------------------
 
