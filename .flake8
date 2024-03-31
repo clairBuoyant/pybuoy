@@ -1,5 +1,0 @@
-[flake8]
-exclude = docs/source/conf.py
-extend-ignore = E203
-max-doc-length = 72
-max-line-length = 88

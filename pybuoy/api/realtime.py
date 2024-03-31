@@ -14,14 +14,12 @@ class Realtime(ApiBase):
         self,
         station_id: str,
         dataset: Literal["spec"],
-    ) -> WaveSummaryObservations:
-        ...
+    ) -> WaveSummaryObservations: ...
 
     @overload
     def get(
         self, station_id: str, dataset: Literal["txt"] = "txt"
-    ) -> MeteorologicalObservations:
-        ...
+    ) -> MeteorologicalObservations: ...
 
     # TODO: consider mapping str literal to dataset
     def get(

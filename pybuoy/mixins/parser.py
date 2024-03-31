@@ -1,4 +1,5 @@
 """Provide the ParserMixin class."""
+
 from collections import defaultdict
 from datetime import datetime as dt
 from os.path import dirname, join

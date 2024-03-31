@@ -1,4 +1,5 @@
 """Mapping key to unit for Observation."""
+
 # https://www.ndbc.noaa.gov/measdes.shtml
 from enum import Enum
 from typing import TypedDict
@@ -7,8 +8,7 @@ NO_NUMERIC_VALUE = "MM"
 NO_TEXT_VALUE = "N/A"
 
 
-class BaseKey(Enum):
-    ...
+class BaseKey(Enum): ...
 
 
 class ForecastKey(BaseKey):
