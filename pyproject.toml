@@ -23,9 +23,7 @@ python = "^3.11"
 requests = "^2.31.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.3.0"
-flake8 = "^7.0.0"
-isort = { version = "^5.13.2", extras = ["pyproject"]}
+ruff = "^0.3.4"
 mypy = "^1.9.0"
 pre-commit = "^3.7.0"
 pytest = "^8.1.1"
@@ -38,25 +36,18 @@ optional = true
 furo = "^2023.9.10"
 Sphinx = "^7.2.6"
 
-[tool.black]
+[tool.ruff]
+exclude = [
+  ".git",
+  ".github",
+  ".mypy_cache",
+  ".pytest_cache",
+  ".venv",
+  "dist",
+  "htmlcov",
+]
 line-length = 88
-target_version = ['py310']
-exclude = '''
-(
-  /(
-    \.git
-    | \.github
-    | \.mypy_cache
-    | \.pytest_cache
-    | dist
-    | htmlcov
-    | .venv
-  )/
-)
-'''
-
-[tool.isort]
-profile="black"
+target-version = "py311"
 
 [tool.mypy]
 namespace_packages = true
@@ -73,9 +64,9 @@ exclude = '''
 '''
 
 [tool.pytest.ini_options]
-minversion = "7.0"
+minversion = "8.0"
 testpaths = [
-    "tests",
+  "tests",
 ]
 
 [build-system]

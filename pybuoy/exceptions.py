@@ -1,4 +1,5 @@
 """pybuoy exception classes."""
+
 from requests import HTTPError  # type: ignore
 
 
@@ -8,16 +9,13 @@ class BaseException(Exception):
     ...
 
 
-class HTTPException(HTTPError):
-    ...
+class HTTPException(HTTPError): ...
 
 
-class NDBCException(BaseException):
-    ...
+class NDBCException(BaseException): ...
 
 
-class NOAAException(BaseException):
-    ...
+class NOAAException(BaseException): ...
 
 
 class DWMLException(NOAAException):

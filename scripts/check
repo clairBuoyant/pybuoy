@@ -13,7 +13,5 @@ fi
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 BASE_DIR="$(dirname "$CURRENT_DIR")"
 
-${PREFIX}black --check --config "${BASE_DIR}/pyproject.toml" "${BASE_DIR}"
-${PREFIX}isort --check --settings-path "${BASE_DIR}/pyproject.toml" "${BASE_DIR}"
-${PREFIX}flake8 --config="${BASE_DIR}/.flake8" "${BASE_DIR}/${APP}"
+${PREFIX}ruff check
 ${PREFIX}mypy --config-file "${BASE_DIR}/pyproject.toml" -p "${APP}"

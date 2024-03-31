@@ -7,6 +7,7 @@ Unreleased
 Internal
 ~~~~~~~~
 
+- Replace ``black``, ``flake8``, and ``isort`` with ``ruff``.
 - Update all dependencies to latest.
 
 Security

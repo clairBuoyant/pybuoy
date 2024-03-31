@@ -4,7 +4,7 @@ repos:
     hooks:
       - id: branch-validate
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v3.13.0
+    rev: v3.21.3
     hooks:
       - id: commitizen
         stages: [commit-msg]
@@ -16,26 +16,13 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.5.4
+    rev: v1.5.5
     hooks:
       - id: forbid-tabs
       - id: remove-tabs
-  - repo: https://github.com/MarcoGorelli/absolufy-imports
-    rev: v0.3.1
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.4
     hooks:
-      - id: absolufy-imports
-  - repo: https://github.com/psf/black
-    rev: 23.12.1
-    hooks:
-      - id: black
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.0.0
-    hooks:
-      - id: flake8
-        additional_dependencies:
-          - flake8-black>=0.3.6
-        args: ["--config=.flake8"]
+      - id: ruff
+        args: [ --fix ]
+      - id: ruff-format
