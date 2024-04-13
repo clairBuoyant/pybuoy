@@ -18,7 +18,7 @@ readme = "README.rst"
 "Bug Tracker" = "https://github.com/clairBuoyant/pybuoy/issues"
 
 [tool.poetry.dependencies]
-lxml = "^5.2.0"
+lxml = "^5.2.1"
 python = "^3.11"
 requests = "^2.31.0"
 
