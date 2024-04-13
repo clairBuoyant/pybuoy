@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-Unreleased
-----------
+0.5.4 (2024-04-13)
+------------------
 
 Internal
 ~~~~~~~~
@@ -13,7 +13,8 @@ Internal
 Security
 ~~~~~~~~
 
-- Update ``black`` to 24.3.0. (CVE-2024-21503)
+- Update ``black`` to 24.3.0  (CVE-2024-21503)
+- Update ``idna`` to 3.7.0    (CVE-2024-3651)
 
 
 0.5.3 (2024-01-15)
@@ -22,9 +23,9 @@ Security
 Internal
 ~~~~~~~~
 
-- Update ``certifi`` to 2023.7.22. (CVE-2023-37920)
-- Update ``jinja2`` to 3.1.3 (CVE-2024-22195)
-- Update ``urllib3`` to 2.1.0 (CVE-2023-43804, CVE-2023-45803)
+- Update ``certifi`` to 2023.7.22 (CVE-2023-37920)
+- Update ``jinja2`` to 3.1.3     (CVE-2024-22195)
+- Update ``urllib3`` to 2.1.0    (CVE-2023-43804, CVE-2023-45803)
 
 0.5.2 (2023-05-24)
 ------------------
@@ -32,7 +33,7 @@ Internal
 Internal
 ~~~~~~~~
 
-- Bump ``requests`` to 2.31.0. (CVE-2023-32681)
+- Bump ``requests`` to 2.31.0 (CVE-2023-32681)
 - Bump all dependencies to latest.
 
 0.5.1 (2023-03-26)
