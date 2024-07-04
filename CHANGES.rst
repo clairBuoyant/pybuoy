@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+0.5.5 (2024-07-04)
+------------------
+
+Internal
+~~~~~~~~
+
+- Update all dependencies to latest
+
+Security
+~~~~~~~~
+
+- Update ``requests`` to 2.32.3 (CVE-2024-35195)
+- Update ``jinja2`` to 3.1.4 (CVE-2024-34064)
+- Update ``urllib3`` to 2.2.2 (CVE-2024-37891)
+
 0.5.4 (2024-04-13)
 ------------------
 
