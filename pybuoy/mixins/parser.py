@@ -81,7 +81,7 @@ class ParserMixin:
 
     # TODO: consider station class/dto like observations
     def _clean_activestation_data(self, data: str):
-        xml_tree_root = fromstring(data)
+        xml_tree_root = fromstring(data.encode("utf-8"))
         # TODO: consider incorporating `etree_to_dict`
         return [dict(el.items()) for el in xml_tree_root.findall("station")]
 

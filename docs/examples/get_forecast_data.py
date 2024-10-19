@@ -6,7 +6,7 @@ start = datetime.today().isoformat()
 end = (datetime.today() + timedelta(7)).isoformat()
 buoy = Buoy()
 
-station_44065 = [40.369, -73.703]  # lat, lon
+station_44065 = [40.368, -73.701]  # lat, lon
 
 forecast_observations = buoy.forecasts.get(
     lat=station_44065[0], lon=station_44065[1], start_date=start, end_date=end

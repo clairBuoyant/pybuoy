@@ -10,7 +10,7 @@ def test_forecast_data(test_pybuoy: Buoy):
     test_end_date = (datetime.now() + timedelta(5)).isoformat()
 
     response = test_pybuoy.forecasts.get(
-        40.369, -73.702531, test_begin_date, test_end_date
+        40.368, -73.702531, test_begin_date, test_end_date
     )
     for record in response:
         assert isinstance(record, ForecastObservation)

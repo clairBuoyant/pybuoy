@@ -71,7 +71,7 @@ class Forecasts(ApiBase):
             "Submit": "Submit",
         }
         response = self.make_request(API_PATH[Endpoints.FORECASTS.value], params=params)
-        xml_root = ET.fromstring(response)
+        xml_root = ET.fromstring(response.encode("utf-8"))
         parsed = self.xslt_transform(xml_root)
 
         return loads(str(parsed))
