@@ -47,8 +47,8 @@ def test_rockaway_beach_buoy(test_pybuoy: Buoy):
     assert "currents" in rockaway_buoy
     assert "waterquality" in rockaway_buoy
 
-    expected_lat = "40.369"
-    expected_lon = "-73.703"
+    expected_lat = "40.368"
+    expected_lon = "-73.701"
     expected_name = "New York Harbor Entrance - 15 NM SE of Breezy Point , NY"
     assert rockaway_buoy.get("lat") == expected_lat
     assert rockaway_buoy.get("lon") == expected_lon

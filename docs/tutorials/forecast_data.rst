@@ -23,7 +23,7 @@ Get Forecast Data
     start = datetime.today().isoformat()
     end = (datetime.today() + timedelta(7)).isoformat()
 
-    station_44065 = [40.369, -73.703] # lat, lon
+    station_44065 = [40.368, -73.701] # lat, lon
 
     forecast_data = buoy.forecasts.get(
         lat=station_44065[0],
