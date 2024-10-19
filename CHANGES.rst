@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+0.5.6 (2024-10-19)
+------------------
+
+Fix
+~~~
+
+- ``lxml``: parsing error by converting unicode strings responses with encoding declaration
+  to bytes.
+
+Internal
+~~~~~~~~
+
+- Update all dependencies to latest.
+
 0.5.5 (2024-07-04)
 ------------------
 
@@ -30,7 +44,6 @@ Security
 
 - Update ``black`` to 24.3.0  (CVE-2024-21503)
 - Update ``idna`` to 3.7.0    (CVE-2024-3651)
-
 
 0.5.3 (2024-01-15)
 ------------------
