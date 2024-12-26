@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+0.5.7 (2024-12-26)
+------------------
+
+Internal
+~~~~~~~~
+
+- Update all dependencies to latest.
+
+Security
+~~~~~~~~
+
+- Update ``jinja2`` to 3.1.5 (CVE-2024-56201, CVE-2024-56326)
+
 0.5.6 (2024-10-19)
 ------------------
 
