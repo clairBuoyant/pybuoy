@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+0.5.8 (2025-05-18)
+------------------
+
+Internal
+~~~~~~~~
+
+- Update all dependencies to latest.
+
+Security
+~~~~~~~~
+
+- Address CVE-2025-27516 by updating ``jinja2`` to ``3.1.6``.
+
 0.5.7 (2024-12-26)
 ------------------
 
