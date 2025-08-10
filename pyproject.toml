@@ -23,7 +23,7 @@ python = "^3.11"
 requests = "^2.32.3"
 
 [tool.poetry.group.dev.dependencies]
-ruff = ">=0.7,<0.12"
+ruff = ">=0.7,<0.13"
 mypy = "^1.15.0"
 pre-commit = "^4.2.0"
 pytest = "^8.3.5"
