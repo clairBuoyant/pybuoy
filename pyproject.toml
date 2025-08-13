@@ -33,7 +33,7 @@ types-requests = "^2.32.0"
 optional = true
 
 [tool.poetry.group.docs.dependencies]
-furo = "^2024.8.6"
+furo = ">=2024.8.6,<2026.0.0"
 Sphinx = "^8.2.3"
 
 [tool.ruff]
