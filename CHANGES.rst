@@ -1,6 +1,22 @@
 Change Log
 ==========
 
+0.5.9 (2025-08-13)
+------------------
+
+Internal
+~~~~~~~~
+
+- Update all dependencies to latest.
+- Update pre-commit hooks to latest.
+
+Security
+~~~~~~~~
+
+- Address CVE-2024-47081 by updating ``requests`` to ``2.32.4``.
+- Address CVE-2025-50181 by updating ``urllib3`` to ``2.5.0``.
+- Address CVE-2025-50182 by updating ``urllib3`` to ``2.5.0``.
+
 0.5.8 (2025-05-18)
 ------------------
 

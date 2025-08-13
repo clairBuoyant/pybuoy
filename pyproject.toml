@@ -1,6 +1,6 @@
 [project]
 name = "pybuoy"
-version = "0.5.8"
+version = "0.5.9"
 authors = [{ name = "Kyle J. Burda", email = "kylejbdev@gmail.com" }]
 classifiers = [
     "Operating System :: OS Independent",
