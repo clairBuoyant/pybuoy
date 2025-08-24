@@ -20,7 +20,7 @@ requires-python = ">=3.11"
 
 [tool.poetry.dependencies]
 lxml = ">=6.0,<7.0"
-requests = "^2.32.4"
+requests = "^2.32.5"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.12.8"
