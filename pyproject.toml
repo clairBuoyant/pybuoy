@@ -23,10 +23,10 @@ lxml = ">=6.0,<7.0"
 requests = "^2.32.4"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.12.8"
+ruff = "^0.12.12"
 mypy = "^1.17.1"
 pre-commit = "^4.3.0"
-pytest = "^8.4.1"
+pytest = "^8.4.2"
 types-requests = "^2.32.4"
 
 [tool.poetry.group.docs]
