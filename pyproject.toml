@@ -1,40 +1,56 @@
 [project]
 name = "pybuoy"
 version = "0.5.9"
+description = "Python wrapper for NOAA and NDBC REST web services."
 authors = [{ name = "Kyle J. Burda", email = "kylejbdev@gmail.com" }]
+requires-python = ">=3.11"
+readme = "README.rst"
+license = "GPL-3.0-or-later"
+keywords = [
+    "NDBC",
+    "NOAA",
+    "api",
+    "buoy",
+    "weather",
+    "wrapper",
+]
 classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.11",
 ]
-description = "Python wrapper for NOAA and NDBC REST web services."
+dependencies = [
+    "lxml>=6.0,<7.0",
+    "requests>=2.32.4,<3",
+]
 documentation = "https://pybuoy.readthedocs.io"
 include = ["LICENSE"]
-keywords = ["NDBC", "NOAA", "api", "buoy", "weather", "wrapper"]
-license = "GPL-3.0-or-later"
-readme = "README.rst"
-requires-python = ">=3.11"
 
-[tool.poetry.urls]
+[project.urls]
 "Source Code" = "https://github.com/clairBuoyant/pybuoy"
 "Bug Tracker" = "https://github.com/clairBuoyant/pybuoy/issues"
 
-[tool.poetry.dependencies]
-lxml = ">=6.0,<7.0"
-requests = "^2.32.4"
+[dependency-groups]
+dev = [
+    "ruff>=0.12.8,<0.13",
+    "mypy>=1.17.1,<2",
+    "pre-commit>=4.3.0,<5",
+    "pytest>=8.4.1,<9",
+    "types-requests>=2.32.4,<3",
+]
+docs = [
+    "furo>=2025.7.19",
+    "Sphinx>=8.2.3,<9",
+]
 
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.12.8"
-mypy = "^1.17.1"
-pre-commit = "^4.3.0"
-pytest = "^8.4.1"
-types-requests = "^2.32.4"
+[tool.uv]
+default-groups = [
+    "dev",
+    "docs",
+]
 
-[tool.poetry.group.docs]
-optional = true
-
-[tool.poetry.group.docs.dependencies]
-furo = ">=2025.7.19"
-Sphinx = "^8.2.3"
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff]
 exclude = [
@@ -66,7 +82,3 @@ exclude = '''
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
-
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
