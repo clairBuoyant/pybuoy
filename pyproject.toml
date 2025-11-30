@@ -39,7 +39,7 @@ dev = [
 ]
 docs = [
     "furo>=2025.9.25",
-    "Sphinx>=8.2.3,<9",
+    "Sphinx>=8.2.3,<10",
 ]
 
 [tool.uv]
