@@ -34,12 +34,12 @@ dev = [
     "ruff>=0.13.1",
     "mypy>=1.18.2,<2",
     "pre-commit>=4.3.0,<5",
-    "pytest>=8.4.2,<9",
+    "pytest>=8.4.2,<10",
     "types-requests>=2.32.4,<3",
 ]
 docs = [
-    "furo>=2025.9.25",
-    "Sphinx>=8.2.3,<9",
+    "furo>=2025.12.19",
+    "Sphinx>=8.2.3,<10",
 ]
 
 [tool.uv]
