@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+UNRELEASED
+----------
+
+Internal
+~~~~~~~~
+
+- Update all dependencies to latest.
+- Update pre-commit hooks to latest.
+
+Security
+~~~~~~~~
+
+- Address CVE-2026-41066 by updating ``lxml`` to ``6.1.0``.
+- Address CVE-2026-25645 by updating ``requests`` to ``2.33.1``.
+
 0.5.9 (2025-08-13)
 ------------------
 
