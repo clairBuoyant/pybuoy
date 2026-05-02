@@ -20,7 +20,7 @@ pybuoy - Python NOAA/NDBC API Wrapper
 Installation
 ------------
 
-``pybuoy`` is supported on Python 3.11+ and can be installed with either pip or a package manager like `uv <https://docs.astral.sh/uv/>`_:
+``pybuoy`` is supported on Python 3.12+ and can be installed with either pip or a package manager like `uv <https://docs.astral.sh/uv/>`_:
 
 Quickstart
 ----------
