@@ -22,7 +22,7 @@ include = ["LICENSE"]
 [dependency-groups]
 dev = [
     "ruff>=0.15.12",
-    "mypy>=1.20.2,<2",
+    "mypy>=1.20.2,<3",
     "pre-commit>=4.6.0,<5",
     "pytest>=9.0.3,<10",
     "types-requests>=2.33.0,<3",
