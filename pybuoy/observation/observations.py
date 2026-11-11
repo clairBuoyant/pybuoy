@@ -1,11 +1,6 @@
 from collections.abc import Iterator
 
-from pybuoy.observation import (
-    ForecastObservation,
-    MeteorologicalObservation,
-    WaveSummaryObservation,
-)
-from pybuoy.observation.observation import BaseObservation
+from pybuoy.observation.observation import BaseObservation, ForecastObservation
 
 
 class BaseObservations[ObservationType: BaseObservation]:
@@ -54,12 +49,6 @@ class BaseObservations[ObservationType: BaseObservation]:
         # Convert the list to a string joined by commas
         array_as_string = ", ".join(values)
         return f"Observations([{array_as_string}])"
-
-
-class MeteorologicalObservations(BaseObservations[MeteorologicalObservation]): ...
-
-
-class WaveSummaryObservations(BaseObservations[WaveSummaryObservation]): ...
 
 
 class ForecastObservations(BaseObservations[ForecastObservation]): ...
