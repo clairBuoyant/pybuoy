@@ -52,8 +52,9 @@ Quickstart
     now = datetime.now(UTC)
     forecasts = buoy.forecasts.get(40.368, -73.701, now, now + timedelta(days=3))
 
-Results are plain dataclasses. Times are timezone-aware UTC, values are metric, and a value
-is ``None`` when the source did not report it.
+Results are plain dataclasses. Times are timezone-aware UTC and a value is ``None`` when the
+source did not report it. Observations keep the units NDBC publishes and forecasts are in
+metres and metres per second; ``pybuoy.units`` gives the unit of every field.
 
 - `Get all active stations <https://pybuoy.readthedocs.io/en/latest/tutorials/active_buoys.html>`_.
 

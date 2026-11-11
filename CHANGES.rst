@@ -15,6 +15,8 @@ Buoy
   are case-sensitive, so ``"burl1"`` used to fail.
 - **Realtime**: a column NDBC adds to a file is ignored instead of raising ``KeyError``.
 - **Forecasts**: ``get`` returns exactly the requested range for a point in any timezone.
+- **Forecasts**: a point NOAA rejects raises ``RequestError`` with NOAA's reason, and a
+  ``start`` after ``end`` raises ``ValueError``. Both used to return an empty list.
 - ``pybuoy.units(model)`` returns the unit of each field of a record type.
 
 Errors
@@ -23,7 +25,7 @@ Errors
 - Every error derives from ``pybuoy.PybuoyError``: ``RequestError`` (with ``.status``) when
   NOAA or NDBC cannot be reached or answers with an error status, ``StationNotFoundError``
   when NDBC has no data for a station, and ``ParseError`` when a response is not in the
-  expected format.
+  expected format, including a well-formed document of the wrong kind.
 
 Internal
 ~~~~~~~~
