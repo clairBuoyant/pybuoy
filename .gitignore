@@ -61,3 +61,8 @@ htmlcov/
 .ruff_cache/
 .dmypy.json
 dmypy.json
+
+##! Exceptions
+# Keep these tracked even when a global gitignore matches them (e.g. `scripts`, `*.spec`).
+!/scripts/
+!/tests/fixtures/*
