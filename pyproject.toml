@@ -52,7 +52,8 @@ line-length = 88
 select = ["B", "E", "F", "I", "RUF", "SIM", "UP", "W"]
 
 [tool.mypy]
-packages = ["pybuoy"]
+files = ["pybuoy", "tests"]
+strict = true
 
 [tool.pytest.ini_options]
 minversion = "8.0"
