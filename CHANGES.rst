@@ -13,6 +13,8 @@ Fix
   local time at the forecast point.
 - **Forecasts**: ``get`` works for a point that has no wave forecast, such as one on land.
   It raised ``JSONDecodeError``.
+- **Forecasts**: a point NOAA rejects raises ``NOAAException`` with NOAA's reason instead
+  of ``JSONDecodeError``.
 - **Forecasts**: a missing (``xsi:nil``) forecast value is ``None`` instead of raising
   ``TypeError``.
 - **Realtime**: ``get`` only accepts the ``txt`` and ``spec`` datasets and raises

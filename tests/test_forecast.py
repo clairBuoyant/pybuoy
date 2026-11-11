@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta, timezone
 
+import pytest
 from conftest import FakeNoaa
 
 from pybuoy import Buoy
+from pybuoy.exceptions import NOAAException
 from pybuoy.observation import ForecastObservation
 
 EST = timezone(timedelta(hours=-5))
@@ -104,6 +106,19 @@ def test_forecast_for_a_point_with_only_wind_direction(
 
     assert forecast[0].wind_direction.value == 290.0
     assert forecast[0].wind_speed.value is None
+
+
+def test_error_reported_by_noaa_raises_with_its_message(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    # NOAA answers an invalid point with status 200 and this body.
+    noaa.bodies[noaa.forecast_url] = (
+        '<error><h2>ERROR</h2><pre>Point with latitude "999" longitude "-73" '
+        "is not on an NDFD grid</pre></error>"
+    )
+
+    with pytest.raises(NOAAException, match="not on an NDFD grid"):
+        buoy.forecasts.get(999, -73, START, END)
 
 
 def test_forecast_dates_with_an_offset_select_the_exact_range(

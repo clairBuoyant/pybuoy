@@ -7,6 +7,7 @@ import lxml.etree as ET  # type: ignore
 
 from pybuoy.api.base import ApiBase
 from pybuoy.const import API_PATH, Endpoints
+from pybuoy.exceptions import NOAAException
 from pybuoy.observation import ForecastObservation, ForecastObservations
 from pybuoy.unit_mappings import NO_NUMERIC_VALUE
 
@@ -82,6 +83,10 @@ class Forecasts(ApiBase):
         }
         response = self.make_request(API_PATH[Endpoints.FORECASTS.value], params=params)
         xml_root = ET.fromstring(response.encode("utf-8"))
+        if xml_root.tag == "error":
+            # NOAA reports a rejected request in the body, with status 200.
+            reason = xml_root.findtext("pre", default="no reason given")
+            raise NOAAException(f"NOAA rejected the forecast request: {reason}")
         parsed = self.xslt_transform(xml_root)
 
         return loads(str(parsed))
