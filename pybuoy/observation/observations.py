@@ -17,7 +17,6 @@ class BaseObservations[ObservationType: BaseObservation]:
         # TODO: improve error handling
         self._data = observations if observations is not None else []
         self._repr_limit = repr_limit
-        self._size = len(self._data)
 
     @property
     def reports(self) -> list[ObservationType]:
@@ -28,11 +27,13 @@ class BaseObservations[ObservationType: BaseObservation]:
 
     def __iadd__(self, observation: ObservationType):
         self._data.append(observation)
-        self._size = len(self._data)
         return self
 
     def __iter__(self) -> Iterator[ObservationType]:
         return iter(self._data)
+
+    def __len__(self) -> int:
+        return len(self._data)
 
     def __repr__(self) -> str:
         if len(self._data) < self._repr_limit:

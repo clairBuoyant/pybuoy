@@ -7,6 +7,7 @@ from pybuoy.observation.observation_datum import (
 from pybuoy.unit_mappings import (
     FORECAST,
     METEOROLOGICAL,
+    NO_NUMERIC_VALUE,
     WAVE_SUMMARY,
     MeteorologicalKey,
     WaveSummaryKey,
@@ -231,13 +232,14 @@ class ForecastObservation(BaseObservation):
         super().__init__(datetime=datetime)
         for key in FORECAST:
             new_key = "_".join(FORECAST[key]["label"].lower().split(" "))
-            default_val = {"value": "nan"}  # TODO: refactor
-            value = values.get(key.name, default_val)
-            value_value = value.get("value", "nan")  # TODO: rename
+            # NDFD marks a missing value with xsi:nil, which arrives here as None.
+            value = values.get(key.name, {}).get("value")
             setattr(
                 self,
                 f"_{new_key}",
-                ObservationFloatDatum(value_value, FORECAST[key]),
+                ObservationFloatDatum(
+                    NO_NUMERIC_VALUE if value is None else value, FORECAST[key]
+                ),
             )
 
     def __str__(self):

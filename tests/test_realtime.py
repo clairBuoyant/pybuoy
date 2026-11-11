@@ -19,6 +19,10 @@ def test_meteorological_observations_are_parsed_newest_first(buoy: Buoy) -> None
     ]
 
 
+def test_observations_have_a_length(buoy: Buoy) -> None:
+    assert len(buoy.realtime.get("44065")) == 3
+
+
 def test_meteorological_values(buoy: Buoy) -> None:
     first, second, third = buoy.realtime.get("44065")
 

@@ -60,3 +60,18 @@ def test_forecast_dates_are_sent_without_microseconds(
     assert isinstance(params, dict)
     assert params["begin"] == "2026-11-11T00:00:00"
     assert params["end"] == "2026-11-11T03:00:00"
+
+
+def test_forecast_nil_value_is_none(buoy: Buoy, noaa: FakeNoaa) -> None:
+    noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
+        "<value>290</value>", '<value xsi:nil="true"/>', 1
+    )
+
+    first, second, _, _ = buoy.forecasts.get(40.368, -73.701, START, END)
+
+    assert first.wind_direction.value is None
+    assert second.wind_direction.value == 290.0
+
+
+def test_forecast_has_a_length(buoy: Buoy) -> None:
+    assert len(buoy.forecasts.get(40.368, -73.701, START, END)) == 4
