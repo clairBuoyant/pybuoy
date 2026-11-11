@@ -63,6 +63,30 @@ class WaveSummaryObservation:
     dominant_wave_direction: float | None = _num("MWD", "degT")
 
 
+@dataclass(frozen=True, slots=True)
+class Station:
+    """An active NDBC station."""
+
+    id: str
+    name: str
+    lat: float
+    lon: float
+    owner: str
+    program: str
+    type: str
+    """Kind of platform, such as ``"buoy"``, ``"fixed"`` or ``"dart"``."""
+    elevation: float | None = None
+    """Site elevation in metres above mean sea level."""
+    met: bool = False
+    """Whether NDBC lists meteorological data for the station."""
+    currents: bool = False
+    """Whether NDBC lists ocean current data for the station."""
+    water_quality: bool = False
+    """Whether NDBC lists water quality data for the station."""
+    dart: bool = False
+    """Whether NDBC lists tsunami (DART) data for the station."""
+
+
 Model = MeteorologicalObservation | WaveSummaryObservation
 
 

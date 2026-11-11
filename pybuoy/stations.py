@@ -1,0 +1,37 @@
+"""NDBC active stations."""
+
+from xml.etree import ElementTree
+
+from pybuoy.api.base import ApiBase
+from pybuoy.models import Station
+
+URL = "https://www.ndbc.noaa.gov/activestations.xml"
+
+
+class Stations(ApiBase):
+    def get_active(self) -> list[Station]:
+        """Get every station NDBC currently lists as active."""
+        return parse_active_stations(self.make_request(URL))
+
+
+def parse_active_stations(xml: str) -> list[Station]:
+    """Parse NDBC's ``activestations.xml``."""
+    return [
+        Station(
+            id=station.attrib["id"],
+            name=station.attrib["name"],
+            lat=float(station.attrib["lat"]),
+            lon=float(station.attrib["lon"]),
+            owner=station.attrib["owner"],
+            program=station.attrib["pgm"],
+            type=station.attrib["type"],
+            elevation=float(station.attrib["elev"])
+            if "elev" in station.attrib
+            else None,
+            met=station.get("met") == "y",
+            currents=station.get("currents") == "y",
+            water_quality=station.get("waterquality") == "y",
+            dart=station.get("dart") == "y",
+        )
+        for station in ElementTree.fromstring(xml).iter("station")
+    ]

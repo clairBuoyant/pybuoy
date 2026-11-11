@@ -33,8 +33,9 @@ def test_realtime_wave_summary_data(buoy: Buoy) -> None:
 def test_active_stations_include_the_example_station(buoy: Buoy) -> None:
     stations = buoy.stations.get_active()
 
-    station = next(s for s in stations if s["id"] == STATION_ID)
-    assert {"id", "lat", "lon", "name", "owner", "type"} <= station.keys()
+    station = next(s for s in stations if s.id == STATION_ID)
+    assert (round(station.lat), round(station.lon)) == (40, -74)
+    assert station.met is True
 
 
 def test_forecast_data(buoy: Buoy) -> None:
