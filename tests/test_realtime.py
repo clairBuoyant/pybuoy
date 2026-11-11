@@ -94,6 +94,23 @@ def test_unknown_station_raises_with_a_message(
     assert capsys.readouterr().out == ""
 
 
+def test_error_status_raises_with_the_status_and_url(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    noaa.status = 503
+
+    with pytest.raises(ValueError, match=r"503 .*realtime2/44065\.txt"):
+        buoy.realtime.get("44065")
+
+
+def test_file_without_observations_raises(buoy: Buoy, noaa: FakeNoaa) -> None:
+    url = "https://www.ndbc.noaa.gov/data/realtime2/44065.txt"
+    noaa.bodies[url] = "\n".join(noaa.bodies[url].splitlines()[:2])
+
+    with pytest.raises(NDBCException, match="No observations"):
+        buoy.realtime.get("44065")
+
+
 def test_requests_have_a_timeout(buoy: Buoy, noaa: FakeNoaa) -> None:
     buoy.realtime.get("44065")
 
