@@ -19,4 +19,4 @@ class RealtimeDatasets(Enum):
 
 RealtimeDatasetsValues = Literal["spec", "txt"]
 
-__version__ = "0.5.10"
+__version__ = "0.5.11"
