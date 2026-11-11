@@ -6,6 +6,7 @@ Deselected by default; run with ``pytest -m live``.
 from datetime import UTC, datetime, timedelta
 
 import pytest
+import requests
 
 from pybuoy import Buoy, Forecast, MeteorologicalObservation, WaveSummaryObservation
 
@@ -15,9 +16,12 @@ STATION_ID = "44065"
 
 
 def test_realtime_meteorological_data(buoy: Buoy) -> None:
+    url = f"https://www.ndbc.noaa.gov/data/realtime2/{STATION_ID}.txt"
+    raw = requests.get(url, timeout=10).text
     observations = buoy.realtime.get(STATION_ID)
 
-    assert len(observations) > 0
+    # Every line after the two header rows is one observation.
+    assert len(observations) == len(raw.splitlines()) - 2
     assert all(type(o) is MeteorologicalObservation for o in observations)
     assert observations == sorted(observations, key=lambda o: o.time, reverse=True)
 
