@@ -20,8 +20,8 @@ Fix
 - **Realtime**: ``get`` only accepts the ``txt`` and ``spec`` datasets and raises
   ``ValueError`` for anything else. The other seven datasets were advertised but never
   parsed; they raised ``UnboundLocalError``.
-- **Realtime**: an unknown station raises ``NDBCException`` with a message naming the URL,
-  and no longer prints to stdout.
+- A 404 answer, such as the one for an unknown station, raises ``NDBCException`` with a
+  message naming the URL, and no longer prints to stdout.
 - Requests time out after 10 seconds instead of waiting forever.
 - ``len()`` works on ``MeteorologicalObservations``, ``WaveSummaryObservations`` and
   ``ForecastObservations``.
