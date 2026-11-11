@@ -1,15 +1,16 @@
 import requests
 
+from pybuoy.exceptions import NDBCException
 from pybuoy.mixins.parser import ParserMixin
+
+REQUEST_TIMEOUT_SECONDS = 10
 
 
 class ApiBase(ParserMixin):
-    def make_request(self, url: str, params: dict | None = None):
-        response = requests.get(url, params=params)
+    def make_request(self, url: str, params: dict | None = None) -> str:
+        response = requests.get(url, params=params, timeout=REQUEST_TIMEOUT_SECONDS)
         if response.status_code == 200:
             return response.text
-        elif response.status_code == 404:
-            print(f"Data not available for url: {url}")
-            return None
-        else:
-            raise ValueError(f"Error code {response.status_code} for url: {url}")
+        if response.status_code == 404:
+            raise NDBCException(f"No data found at {url}")
+        raise ValueError(f"Error code {response.status_code} for url: {url}")

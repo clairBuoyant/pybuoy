@@ -6,16 +6,8 @@ import requests
 from pybuoy import Buoy
 
 FIXTURES = Path(__file__).parent / "fixtures"
-
 NDBC_URL = "https://www.ndbc.noaa.gov"
 NDFD_URL = "https://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php"
-
-ROUTES = {
-    f"{NDBC_URL}/data/realtime2/44065.txt": "44065.txt",
-    f"{NDBC_URL}/data/realtime2/44065.spec": "44065.spec",
-    f"{NDBC_URL}/activestations.xml": "activestations.xml",
-    NDFD_URL: "ndfd_forecast.xml",
-}
 
 
 class FakeResponse:
@@ -24,27 +16,45 @@ class FakeResponse:
         self.text = text
 
 
-@pytest.fixture(autouse=True)
-def noaa(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> list[dict]:
-    """Serve fixtures instead of the network, except for tests marked ``live``.
+class FakeNoaa:
+    """Stands in for the NOAA/NDBC services.
 
-    Returns the list of requests made, so tests can assert on what was sent.
+    ``bodies`` maps URL to response text and starts out with the fixtures;
+    tests may change it. Unknown URLs answer 404. ``calls`` records every
+    request so tests can assert on what was sent.
     """
-    calls: list[dict] = []
-    if request.node.get_closest_marker("live"):
-        return calls
 
-    def fake_get(
-        url: str, params: dict | None = None, **kwargs: object
+    forecast_url = NDFD_URL
+
+    def __init__(self) -> None:
+        self.calls: list[dict[str, object]] = []
+        self.bodies = {
+            f"{NDBC_URL}/data/realtime2/44065.txt": _fixture("44065.txt"),
+            f"{NDBC_URL}/data/realtime2/44065.spec": _fixture("44065.spec"),
+            f"{NDBC_URL}/activestations.xml": _fixture("activestations.xml"),
+            NDFD_URL: _fixture("ndfd_forecast.xml"),
+        }
+
+    def get(
+        self, url: str, params: dict[str, object] | None = None, **kwargs: object
     ) -> FakeResponse:
-        calls.append({"url": url, "params": params, **kwargs})
-        name = ROUTES.get(url)
-        if name is None:
+        self.calls.append({"url": url, "params": params, **kwargs})
+        if url not in self.bodies:
             return FakeResponse(404, "")
-        return FakeResponse(200, (FIXTURES / name).read_text())
+        return FakeResponse(200, self.bodies[url])
 
-    monkeypatch.setattr(requests, "get", fake_get)
-    return calls
+
+def _fixture(name: str) -> str:
+    return (FIXTURES / name).read_text()
+
+
+@pytest.fixture(autouse=True)
+def noaa(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> FakeNoaa:
+    """Replace the network with ``FakeNoaa``, except for tests marked ``live``."""
+    fake = FakeNoaa()
+    if not request.node.get_closest_marker("live"):
+        monkeypatch.setattr(requests, "get", fake.get)
+    return fake
 
 
 @pytest.fixture

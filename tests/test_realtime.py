@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pytest
+from conftest import FakeNoaa
 
 from pybuoy import Buoy
 from pybuoy.exceptions import NDBCException
@@ -80,9 +81,19 @@ def test_wave_summary_missing_values_are_none(buoy: Buoy) -> None:
     assert third.swell_direction.value is None
 
 
-def test_unknown_station_raises(buoy: Buoy) -> None:
-    with pytest.raises(NDBCException):
+def test_unknown_station_raises_with_a_message(
+    buoy: Buoy, capsys: pytest.CaptureFixture[str]
+) -> None:
+    with pytest.raises(NDBCException, match=r"realtime2/ZZZZZ\.txt"):
         buoy.realtime.get("ZZZZZ")
+
+    assert capsys.readouterr().out == ""
+
+
+def test_requests_have_a_timeout(buoy: Buoy, noaa: FakeNoaa) -> None:
+    buoy.realtime.get("44065")
+
+    assert noaa.calls[0]["timeout"] == 10
 
 
 def test_station_id_is_required(buoy: Buoy) -> None:

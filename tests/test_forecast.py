@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
+from conftest import FakeNoaa
+
 from pybuoy import Buoy
 from pybuoy.observation import ForecastObservation
 
@@ -34,10 +36,11 @@ def test_forecast_value_missing_from_a_shorter_time_layout_is_none(buoy: Buoy) -
     assert last.wind_speed.value == 13.0
 
 
-def test_forecast_request_parameters(buoy: Buoy, noaa: list[dict]) -> None:
+def test_forecast_request_parameters(buoy: Buoy, noaa: FakeNoaa) -> None:
     buoy.forecasts.get(40.368, -73.701, START, END)
 
-    params = noaa[0]["params"]
+    params = noaa.calls[0]["params"]
+    assert isinstance(params, dict)
     assert params["lat"] == 40.368
     assert params["lon"] == -73.701
     assert params["begin"] == START
