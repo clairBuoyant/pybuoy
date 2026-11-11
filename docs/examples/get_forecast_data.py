@@ -14,12 +14,11 @@ forecast_observations = buoy.forecasts.get(
 
 for observation in forecast_observations:
     # IDE should now detect available attributes
-    # add code below here
-    pass
+    print(observation)
 
 # Sample Output of Forecast Data
 print(f"Station Forecast: {forecast_observations[0]}")
-# OUTPUT: Station Forecast: Observation(2022-12-04 19:00:00) # noqa: E501,W505
+# OUTPUT: Station Forecast: Observation(2022-12-04 19:00:00)
 #
 """forecast_data returns an instance of `ForecastObservations`.
 `Observations` is an iterable object and contains a list
@@ -36,4 +35,4 @@ Under the hood, the aforementioned sample output provides this object:
     )
 
 `forecast_data[0].wave_height.value` would return 2.0 as type float (defaults to None, if no value was recorded).
-"""  # noqa: E501,W505
+"""  # noqa: E501

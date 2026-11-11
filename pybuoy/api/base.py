@@ -1,10 +1,10 @@
-import requests  # type: ignore
+import requests
 
 from pybuoy.mixins.parser import ParserMixin
 
 
 class ApiBase(ParserMixin):
-    def make_request(self, url: str, params: dict = {}):
+    def make_request(self, url: str, params: dict | None = None):
         response = requests.get(url, params=params)
         if response.status_code == 200:
             return response.text

@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from pybuoy.observation.observation_datum import (
     ObservationFloatDatum,
@@ -19,7 +18,7 @@ from pybuoy.unit_mappings import (
 class BaseObservation:
     """BaseObservation class for `Buoy` readings by datetime."""
 
-    def __init__(self, datetime: Optional[datetime] = None):
+    def __init__(self, datetime: datetime | None = None):
         """Initialize BaseObservation record with datetime.
 
         Args:
@@ -35,7 +34,7 @@ class BaseObservation:
     def __repr__(self):
         return "{}({})".format(
             self.__class__.__name__,
-            ", ".join("{}={!r}".format(k, v) for k, v in self.__dict__.items()),
+            ", ".join(f"{k}={v!r}" for k, v in self.__dict__.items()),
         )
 
     def __str__(self):
@@ -48,7 +47,7 @@ class MeteorologicalObservation(BaseObservation):
     def __init__(
         self,
         values: dict[MeteorologicalKey, str],
-        datetime: Optional[datetime] = None,
+        datetime: datetime | None = None,
     ):
         """Initialize Observation record with relevant metadata.
 
@@ -147,7 +146,7 @@ class WaveSummaryObservation(BaseObservation):
     def __init__(
         self,
         values: dict[WaveSummaryKey, str],
-        datetime: Optional[datetime] = None,
+        datetime: datetime | None = None,
     ):
         """Initialize Observation record with relevant metadata.
 
@@ -227,7 +226,7 @@ class ForecastObservation(BaseObservation):
         self,
         # TODO: fix dict key type
         values: dict[str, dict],
-        datetime: Optional[datetime] = None,
+        datetime: datetime | None = None,
     ):
         super().__init__(datetime=datetime)
         for key in FORECAST:

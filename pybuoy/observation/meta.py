@@ -18,7 +18,7 @@ class MeteorologicalMeta(type):
             "tide",
             "_datetime",
         )
-        return super(MeteorologicalMeta, cls).__new__(cls, name, bases, attrs)
+        return super().__new__(cls, name, bases, attrs)
 
 
 class WaveMeta(type):
@@ -47,4 +47,4 @@ class WaveMeta(type):
             "sampling_rate",
             "_datetime",
         )
-        return super(WaveMeta, cls).__new__(cls, name, bases, attrs)
+        return super().__new__(cls, name, bases, attrs)

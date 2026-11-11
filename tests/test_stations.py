@@ -22,7 +22,7 @@ def test_activestations_from_xml(test_pybuoy: Buoy):
     assert "owner" in random_station
     assert "type" in random_station
 
-    is_type_tao = True if random_station.get("type", None) == "tao" else False
+    is_type_tao = random_station.get("type", None) == "tao"
     if not is_type_tao:
         assert "met" in random_station
         assert "currents" in random_station

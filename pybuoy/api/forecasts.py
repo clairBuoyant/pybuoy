@@ -1,7 +1,6 @@
 from collections import defaultdict
 from datetime import datetime as dt
 from json import loads
-from typing import Optional
 
 import lxml.etree as ET  # type: ignore
 
@@ -25,7 +24,7 @@ class Forecasts(ApiBase):
         return ForecastObservations(
             observations=[
                 ForecastObservation(grouped[key], dt.fromisoformat(key))
-                for key in grouped.keys()
+                for key in grouped
             ],
             repr_limit=10,
         )
@@ -34,8 +33,8 @@ class Forecasts(ApiBase):
         self,
         lat,
         lon,
-        start_date: Optional[dt] = None,
-        end_date: Optional[dt] = None,
+        start_date: dt | None = None,
+        end_date: dt | None = None,
         metric=False,
     ):
         return self._daily_forecast_from_location_info(
@@ -48,8 +47,8 @@ class Forecasts(ApiBase):
     def _daily_forecast_from_location_info(
         self,
         location_info,
-        start_date: Optional[dt] = None,
-        end_date: Optional[dt] = None,
+        start_date: dt | None = None,
+        end_date: dt | None = None,
         metric=False,
     ):
         if not start_date:
@@ -117,7 +116,7 @@ class Forecasts(ApiBase):
             )
         )
         for k, v in parameters.items():
-            for key in v.keys():
+            for key in v:
                 if key in ele_map[k]:
                     for period in parameters[k][key]["periods"]:
                         timestamp = period["start-time"]
