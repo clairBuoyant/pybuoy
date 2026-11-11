@@ -46,3 +46,17 @@ def test_forecast_request_parameters(buoy: Buoy, noaa: FakeNoaa) -> None:
     assert params["begin"] == START
     assert params["end"] == END
     assert params["product"] == "time-series"
+
+
+def test_forecast_dates_are_sent_without_microseconds(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    # NDFD ignores a begin/end it cannot parse and returns its full range.
+    buoy.forecasts.get(
+        40.368, -73.701, "2026-11-11T00:00:00.123456", "2026-11-11T03:00:00.654321"
+    )
+
+    params = noaa.calls[0]["params"]
+    assert isinstance(params, dict)
+    assert params["begin"] == "2026-11-11T00:00:00"
+    assert params["end"] == "2026-11-11T03:00:00"

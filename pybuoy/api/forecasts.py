@@ -60,8 +60,9 @@ class Forecasts(ApiBase):
             "lat": lat,
             "lon": lon,
             "product": "time-series",
-            "begin": start_date.isoformat(),
-            "end": None if end_date is None else end_date.isoformat(),
+            # NDFD ignores dates that carry fractional seconds.
+            "begin": start_date.isoformat(timespec="seconds"),
+            "end": None if end_date is None else end_date.isoformat(timespec="seconds"),
             "Unit": "m" if metric else "e",
             "wspd": "wspd",
             "wdir": "wdir",
