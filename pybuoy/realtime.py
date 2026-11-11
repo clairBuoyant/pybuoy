@@ -28,15 +28,15 @@ class Realtime:
 
     @overload
     def get(
-        self, station_id: str, dataset: Literal["txt"] = "txt"
+        self, station_id: str | int, dataset: Literal["txt"] = "txt"
     ) -> list[MeteorologicalObservation]: ...
 
     @overload
     def get(
-        self, station_id: str, dataset: Literal["spec"]
+        self, station_id: str | int, dataset: Literal["spec"]
     ) -> list[WaveSummaryObservation]: ...
 
-    def get(self, station_id: str, dataset: str = "txt") -> list[Any]:
+    def get(self, station_id: str | int, dataset: str = "txt") -> list[Any]:
         """Get the last 45 days of observations from a station, newest first.
 
         Args:
@@ -44,13 +44,14 @@ class Realtime:
             dataset: ``"txt"`` for standard meteorological data or ``"spec"``
                 for the spectral wave summary.
         """
+        # NDBC file names are upper case and its paths are case-sensitive.
+        station_id = str(station_id).upper()
         if not station_id.isalnum():
             raise ValueError("station_id must be letters and digits, such as '44065'")
         if dataset not in MODELS:
             raise ValueError(f"dataset must be one of: {', '.join(MODELS)}")
 
-        # NDBC file names are upper case and its paths are case-sensitive.
-        url = URL.format(station_id=station_id.upper(), dataset=dataset)
+        url = URL.format(station_id=station_id, dataset=dataset)
         try:
             body = self._client.get(url)
         except RequestError as error:

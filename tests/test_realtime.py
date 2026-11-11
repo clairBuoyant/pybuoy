@@ -139,6 +139,10 @@ def test_station_id_must_be_letters_and_digits(
     assert noaa.calls == []
 
 
+def test_numeric_station_id_may_be_an_int(buoy: Buoy) -> None:
+    assert buoy.realtime.get(44065) == buoy.realtime.get("44065")
+
+
 def test_station_id_is_upper_cased_because_ndbc_paths_are_case_sensitive(
     buoy: Buoy, noaa: FakeNoaa
 ) -> None:
