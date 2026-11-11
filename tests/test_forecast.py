@@ -3,7 +3,7 @@ from datetime import UTC, datetime, timedelta
 import pytest
 from conftest import FakeNoaa
 
-from pybuoy import Buoy, Forecast, ParseError, units
+from pybuoy import Buoy, Forecast, ParseError, RequestError, units
 from pybuoy.forecasts import parse_dwml
 
 # The fixture covers 00:00 to 03:00 at UTC-5.
@@ -123,3 +123,28 @@ def test_parameters_pybuoy_does_not_model_are_ignored(
     )
 
     assert len(buoy.forecasts.get(40.368, -73.701, START, END)) == 4
+
+
+def test_error_reported_by_noaa_raises_request_error(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    # NOAA answers an invalid point with status 200 and this body.
+    noaa.bodies[noaa.forecast_url] = (
+        '<error><h2>ERROR</h2><pre>Point with latitude "999" longitude "-73" '
+        "is not on an NDFD grid</pre></error>"
+    )
+
+    with pytest.raises(RequestError, match="not on an NDFD grid"):
+        buoy.forecasts.get(999, -73, START, END)
+
+
+def test_xml_that_is_not_a_forecast_raises_parse_error() -> None:
+    with pytest.raises(ParseError, match="html"):
+        parse_dwml("<html><body>Maintenance</body></html>")
+
+
+def test_start_after_end_is_rejected(buoy: Buoy, noaa: FakeNoaa) -> None:
+    with pytest.raises(ValueError, match="start must not be after end"):
+        buoy.forecasts.get(40.368, -73.701, END, START)
+
+    assert noaa.calls == []

@@ -21,6 +21,10 @@ class Stations:
 @parser
 def parse_active_stations(xml: str) -> list[Station]:
     """Parse NDBC's ``activestations.xml``."""
+    root = ElementTree.fromstring(xml)
+    if root.tag != "stations":
+        raise ValueError(f"expected a <stations> document, got <{root.tag}>")
+
     return [
         Station(
             id=station.attrib["id"],
@@ -38,5 +42,5 @@ def parse_active_stations(xml: str) -> list[Station]:
             water_quality=station.get("waterquality") == "y",
             dart=station.get("dart") == "y",
         )
-        for station in ElementTree.fromstring(xml).iter("station")
+        for station in root.iter("station")
     ]

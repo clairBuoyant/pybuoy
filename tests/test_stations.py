@@ -58,3 +58,12 @@ def test_station_without_a_required_attribute_raises_parse_error(
 
     with pytest.raises(ParseError):
         buoy.stations.get_active()
+
+
+def test_xml_that_is_not_a_station_list_raises_parse_error(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    noaa.bodies[noaa.stations_url] = "<html><body>Maintenance</body></html>"
+
+    with pytest.raises(ParseError, match="html"):
+        buoy.stations.get_active()

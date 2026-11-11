@@ -9,7 +9,7 @@ from datetime import UTC, datetime, timedelta
 from xml.etree import ElementTree
 
 from pybuoy._http import Client
-from pybuoy.errors import parser
+from pybuoy.errors import RequestError, parser
 from pybuoy.models import Forecast
 
 URL = "https://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php"
@@ -39,10 +39,13 @@ class Forecasts:
             start: earliest forecast time wanted; must be timezone-aware.
             end: latest forecast time wanted; must be timezone-aware.
 
-        A point outside NDFD's coverage has no forecasts.
+        A point outside NDFD's coverage has no forecasts. A point NOAA rejects,
+        such as an impossible latitude, raises ``RequestError``.
         """
         if start.utcoffset() is None or end.utcoffset() is None:
             raise ValueError("start and end must be timezone-aware")
+        if start > end:
+            raise ValueError("start must not be after end")
 
         params: dict[str, str | float] = {
             "whichClient": "NDFDgen",
@@ -70,6 +73,13 @@ def parse_dwml(xml: str) -> list[Forecast]:
     differ between parameters, so values are merged by time.
     """
     root = ElementTree.fromstring(xml)
+    if root.tag == "error":
+        # NOAA reports a rejected request in the body, with status 200.
+        reason = root.findtext("pre", default="no reason given")
+        raise RequestError(f"NOAA rejected the forecast request: {reason}")
+    if root.tag != "dwml":
+        raise ValueError(f"expected a <dwml> document, got <{root.tag}>")
+
     layouts = {
         layout.findtext("layout-key"): [
             datetime.fromisoformat(time.text or "").astimezone(UTC)
