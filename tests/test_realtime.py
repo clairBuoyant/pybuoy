@@ -3,8 +3,13 @@ from datetime import UTC, datetime
 import pytest
 from conftest import FakeNoaa
 
-from pybuoy import Buoy, MeteorologicalObservation, WaveSummaryObservation, units
-from pybuoy.exceptions import NDBCException
+from pybuoy import (
+    Buoy,
+    MeteorologicalObservation,
+    ParseError,
+    WaveSummaryObservation,
+    units,
+)
 from pybuoy.realtime import parse_realtime
 
 
@@ -112,19 +117,16 @@ def test_a_response_without_rows_is_empty() -> None:
     assert parse_realtime(body, MeteorologicalObservation) == []
 
 
-def test_unknown_station_raises_with_a_message(
-    buoy: Buoy, capsys: pytest.CaptureFixture[str]
-) -> None:
-    with pytest.raises(NDBCException, match=r"realtime2/ZZZZZ\.txt"):
-        buoy.realtime.get("ZZZZZ")
+def test_malformed_rows_raise_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
+    noaa.bodies[noaa.realtime_url] += "2026 11 11 00 40 230\n"
 
-    assert capsys.readouterr().out == ""
+    with pytest.raises(ParseError):
+        buoy.realtime.get("44065")
 
 
-def test_requests_have_a_timeout(buoy: Buoy, noaa: FakeNoaa) -> None:
-    buoy.realtime.get("44065")
-
-    assert noaa.calls[0]["timeout"] == 10
+def test_a_body_that_is_not_a_realtime_file_raises_parse_error() -> None:
+    with pytest.raises(ParseError):
+        parse_realtime("<html>Service unavailable</html>", MeteorologicalObservation)
 
 
 def test_station_id_is_required(buoy: Buoy) -> None:

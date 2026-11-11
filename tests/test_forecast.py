@@ -3,7 +3,7 @@ from datetime import UTC, datetime, timedelta
 import pytest
 from conftest import FakeNoaa
 
-from pybuoy import Buoy, Forecast, units
+from pybuoy import Buoy, Forecast, ParseError, units
 from pybuoy.forecasts import parse_dwml
 
 # The fixture covers 00:00 to 03:00 at UTC-5.
@@ -71,7 +71,7 @@ def test_request_is_padded_because_ndfd_reads_local_time_without_offset(
     assert isinstance(params, dict)
     assert params["begin"] == "2026-11-10T05:00:00"
     assert params["end"] == "2026-11-12T08:00:00"
-    assert (params["lat"], params["lon"]) == (40.368, -73.701)
+    assert (params["lat"], params["lon"]) == ("40.368", "-73.701")
     assert (params["product"], params["Unit"]) == ("time-series", "e")
 
 
@@ -99,3 +99,12 @@ def test_point_outside_the_ndfd_grid_has_no_forecasts() -> None:
     </dwml>"""
 
     assert parse_dwml(xml) == []
+
+
+def test_unexpected_unit_raises_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
+    noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
+        'units="knots"', 'units="furlongs/fortnight"'
+    )
+
+    with pytest.raises(ParseError):
+        buoy.forecasts.get(40.368, -73.701, START, END)

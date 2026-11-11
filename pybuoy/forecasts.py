@@ -8,7 +8,8 @@ from dataclasses import fields
 from datetime import UTC, datetime, timedelta
 from xml.etree import ElementTree
 
-from pybuoy.api.base import ApiBase
+from pybuoy._http import Client
+from pybuoy.errors import parser
 from pybuoy.models import Forecast
 
 URL = "https://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php"
@@ -23,7 +24,10 @@ TO_METRIC = {"knots": 1852 / 3600, "feet": 0.3048, "degrees true": 1.0}
 PADDING = timedelta(days=1)
 
 
-class Forecasts(ApiBase):
+class Forecasts:
+    def __init__(self, client: Client) -> None:
+        self._client = client
+
     def get(
         self, lat: float, lon: float, start: datetime, end: datetime
     ) -> list[Forecast]:
@@ -40,7 +44,7 @@ class Forecasts(ApiBase):
         if start.utcoffset() is None or end.utcoffset() is None:
             raise ValueError("start and end must be timezone-aware")
 
-        params = {
+        params: dict[str, str | float] = {
             "whichClient": "NDFDgen",
             "product": "time-series",
             "Unit": "e",
@@ -54,10 +58,11 @@ class Forecasts(ApiBase):
             "waveh": "waveh",
             "Submit": "Submit",
         }
-        forecasts = parse_dwml(self.make_request(URL, params))
+        forecasts = parse_dwml(self._client.get(URL, params))
         return [f for f in forecasts if start <= f.time <= end]
 
 
+@parser
 def parse_dwml(xml: str) -> list[Forecast]:
     """Parse an NDFD time-series (DWML) response, converting values to metric.
 

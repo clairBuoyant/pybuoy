@@ -2,18 +2,23 @@
 
 from xml.etree import ElementTree
 
-from pybuoy.api.base import ApiBase
+from pybuoy._http import Client
+from pybuoy.errors import parser
 from pybuoy.models import Station
 
 URL = "https://www.ndbc.noaa.gov/activestations.xml"
 
 
-class Stations(ApiBase):
+class Stations:
+    def __init__(self, client: Client) -> None:
+        self._client = client
+
     def get_active(self) -> list[Station]:
         """Get every station NDBC currently lists as active."""
-        return parse_active_stations(self.make_request(URL))
+        return parse_active_stations(self._client.get(URL))
 
 
+@parser
 def parse_active_stations(xml: str) -> list[Station]:
     """Parse NDBC's ``activestations.xml``."""
     return [

@@ -1,4 +1,7 @@
-from pybuoy import Buoy, Station
+import pytest
+from conftest import FakeNoaa
+
+from pybuoy import Buoy, ParseError, Station
 
 
 def test_active_stations(buoy: Buoy) -> None:
@@ -39,3 +42,19 @@ def test_stations_without_optional_attributes(buoy: Buoy) -> None:
         False,
         False,
     )
+
+
+def test_malformed_xml_raises_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
+    noaa.bodies[noaa.stations_url] = "<stations><station"
+
+    with pytest.raises(ParseError):
+        buoy.stations.get_active()
+
+
+def test_station_without_a_required_attribute_raises_parse_error(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    noaa.bodies[noaa.stations_url] = '<stations><station id="44065"/></stations>'
+
+    with pytest.raises(ParseError):
+        buoy.stations.get_active()

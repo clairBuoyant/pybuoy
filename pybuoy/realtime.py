@@ -7,7 +7,8 @@ from dataclasses import fields
 from datetime import UTC, datetime
 from typing import Any, Literal, overload
 
-from pybuoy.api.base import ApiBase
+from pybuoy._http import Client
+from pybuoy.errors import RequestError, StationNotFoundError, parser
 from pybuoy.models import MeteorologicalObservation, Observation, WaveSummaryObservation
 
 URL = "https://www.ndbc.noaa.gov/data/realtime2/{station_id}.{dataset}"
@@ -21,7 +22,10 @@ MODELS: dict[str, type[Observation]] = {
 }
 
 
-class Realtime(ApiBase):
+class Realtime:
+    def __init__(self, client: Client) -> None:
+        self._client = client
+
     @overload
     def get(
         self, station_id: str, dataset: Literal["txt"] = "txt"
@@ -45,10 +49,18 @@ class Realtime(ApiBase):
         if dataset not in MODELS:
             raise ValueError(f"dataset must be one of: {', '.join(MODELS)}")
 
-        url = URL.format(station_id=station_id, dataset=dataset)
-        return parse_realtime(self.make_request(url), MODELS[dataset])
+        try:
+            body = self._client.get(URL.format(station_id=station_id, dataset=dataset))
+        except RequestError as error:
+            if error.status == 404:
+                raise StationNotFoundError(
+                    f"NDBC has no {dataset!r} data for station {station_id!r}"
+                ) from error
+            raise
+        return parse_realtime(body, MODELS[dataset])
 
 
+@parser
 def parse_realtime[T: Observation](text: str, model: type[T]) -> list[T]:
     """Parse an NDBC realtime file into ``model`` records.
 

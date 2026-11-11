@@ -1,7 +1,10 @@
+from io import BytesIO
 from pathlib import Path
+from urllib.parse import parse_qsl
 
 import pytest
 import requests
+from requests.adapters import BaseAdapter
 
 from pybuoy import Buoy
 
@@ -10,57 +13,77 @@ NDBC_URL = "https://www.ndbc.noaa.gov"
 NDFD_URL = "https://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php"
 
 
-class FakeNoaa:
-    """Stands in for the NOAA/NDBC services.
+class FakeNoaa(BaseAdapter):
+    """Stands in for the NOAA/NDBC services as a ``requests`` transport.
 
     ``bodies`` maps URL to response text and starts out with the fixtures;
-    tests may change it. Unknown URLs answer 404; known ones answer ``status``.
-    ``calls`` records every request so tests can assert on what was sent.
+    tests may change it. Unknown URLs answer 404. Set ``status`` to answer
+    every request with that status, or ``error`` to fail every request.
+    ``calls`` records what was sent.
     """
 
+    realtime_url = f"{NDBC_URL}/data/realtime2/44065.txt"
+    stations_url = f"{NDBC_URL}/activestations.xml"
     forecast_url = NDFD_URL
 
     def __init__(self) -> None:
+        super().__init__()
         self.calls: list[dict[str, object]] = []
-        self.status = 200
+        self.status: int | None = None
+        self.error: requests.RequestException | None = None
         self.bodies = {
-            f"{NDBC_URL}/data/realtime2/44065.txt": _fixture("44065.txt"),
+            self.realtime_url: _fixture("44065.txt"),
             f"{NDBC_URL}/data/realtime2/44065.spec": _fixture("44065.spec"),
-            f"{NDBC_URL}/activestations.xml": _fixture("activestations.xml"),
-            NDFD_URL: _fixture("ndfd_forecast.xml"),
+            self.stations_url: _fixture("activestations.xml"),
+            self.forecast_url: _fixture("ndfd_forecast.xml"),
         }
 
-    def get(
+    def send(  # type: ignore[override]
         self,
-        url: str,
-        params: dict[str, object] | None = None,
-        **request_options: object,
-    ) -> "FakeResponse":
-        self.calls.append({"url": url, "params": params, **request_options})
-        if url not in self.bodies:
-            return FakeResponse(404, "")
-        return FakeResponse(self.status, self.bodies[url])
+        request: requests.PreparedRequest,
+        *,
+        timeout: float | None = None,
+        **kwargs: object,
+    ) -> requests.Response:
+        url, _, query = (request.url or "").partition("?")
+        self.calls.append(
+            {"url": url, "params": dict(parse_qsl(query)), "timeout": timeout}
+        )
+        if self.error is not None:
+            raise self.error
 
+        response = requests.Response()
+        response.request = request
+        response.url = url
+        response.encoding = "utf-8"
+        response.status_code = self.status or (200 if url in self.bodies else 404)
+        response.raw = BytesIO(self.bodies.get(url, "").encode())
+        return response
 
-class FakeResponse:
-    def __init__(self, status_code: int, text: str) -> None:
-        self.status_code = status_code
-        self.text = text
+    def close(self) -> None:
+        pass
 
 
 def _fixture(name: str) -> str:
     return (FIXTURES / name).read_text()
 
 
-@pytest.fixture(autouse=True)
-def noaa(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> FakeNoaa:
-    """Replace the network with ``FakeNoaa``, except for tests marked ``live``."""
-    fake = FakeNoaa()
-    if not request.node.get_closest_marker("live"):
-        monkeypatch.setattr(requests, "get", fake.get)
-    return fake
+@pytest.fixture
+def noaa() -> FakeNoaa:
+    return FakeNoaa()
 
 
 @pytest.fixture
-def buoy() -> Buoy:
-    return Buoy()
+def session(noaa: FakeNoaa) -> requests.Session:
+    """A session whose every HTTPS request is answered by ``noaa``."""
+    session = requests.Session()
+    session.mount("https://", noaa)
+    return session
+
+
+@pytest.fixture
+def buoy(request: pytest.FixtureRequest, session: requests.Session) -> Buoy:
+    """A ``Buoy`` wired to the fake services, or the real ones for ``live`` tests."""
+    if request.node.get_closest_marker("live"):
+        return Buoy()
+    return Buoy(session=session)

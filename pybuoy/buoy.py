@@ -1,39 +1,33 @@
+import requests
+
+from pybuoy._http import Client
 from pybuoy.forecasts import Forecasts
 from pybuoy.realtime import Realtime
 from pybuoy.stations import Stations
 
 
 class Buoy:
-    """Buoy class provides convenient access to NDBC's API.
-
-    Instances of this class are the gateway to interacting with National
-    Data Buoy Center (NDBC) through `pybuoy`. The canonical way to get
-    an instance of this class is via:
+    """Gateway to NOAA and NDBC data.
 
     .. code-block:: python
 
         from pybuoy import Buoy
 
-        buoy = Buoy() # creates instance to access data from NDBC
+        buoy = Buoy()
 
-        meteorological_data = buoy.realtime.get(station_id="44065")
+        observations = buoy.realtime.get("44065")
+        stations = buoy.stations.get_active()
 
-        all_active_NDBC_stations = buoy.stations.get_active()
+    Args:
+        timeout: seconds to wait for NOAA or NDBC before giving up.
+        session: ``requests`` session to send requests with, for example to
+            configure retries or a proxy. A new one is created by default.
     """
 
-    def __init__(self):
-        self._forecasts = Forecasts()
-        self._realtime = Realtime()
-        self._stations = Stations()
-
-    @property
-    def forecasts(self) -> Forecasts:
-        return self._forecasts
-
-    @property
-    def realtime(self) -> Realtime:
-        return self._realtime
-
-    @property
-    def stations(self) -> Stations:
-        return self._stations
+    def __init__(
+        self, *, timeout: float = 10.0, session: requests.Session | None = None
+    ) -> None:
+        client = Client(session or requests.Session(), timeout)
+        self.realtime = Realtime(client)
+        self.stations = Stations(client)
+        self.forecasts = Forecasts(client)
