@@ -1,19 +1,12 @@
 import requests
 
 from pybuoy.exceptions import NDBCException
-from pybuoy.mixins.parser import ParserMixin
 
 REQUEST_TIMEOUT_SECONDS = 10
 
 
-class ApiBase(ParserMixin):
+class ApiBase:
     def make_request(self, url: str, params: dict | None = None) -> str:
-        """Get ``url`` and return the body of a 200 answer.
-
-        Raises:
-            NDBCException: the answer was 404.
-            ValueError: the answer was any other status.
-        """
         response = requests.get(url, params=params, timeout=REQUEST_TIMEOUT_SECONDS)
         if response.status_code == 200:
             return response.text

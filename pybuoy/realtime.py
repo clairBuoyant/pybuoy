@@ -8,14 +8,14 @@ from datetime import UTC, datetime
 from typing import Any, Literal, overload
 
 from pybuoy.api.base import ApiBase
-from pybuoy.models import MeteorologicalObservation, Model, WaveSummaryObservation
+from pybuoy.models import MeteorologicalObservation, Observation, WaveSummaryObservation
 
 URL = "https://www.ndbc.noaa.gov/data/realtime2/{station_id}.{dataset}"
 MISSING = frozenset({"MM", "N/A"})
 TIME_COLUMNS = ("YY", "MM", "DD", "hh", "mm")
 
 # Supporting another dataset means adding its model here and an overload below.
-MODELS: dict[str, type[Model]] = {
+MODELS: dict[str, type[Observation]] = {
     "txt": MeteorologicalObservation,
     "spec": WaveSummaryObservation,
 }
@@ -49,7 +49,7 @@ class Realtime(ApiBase):
         return parse_realtime(self.make_request(url), MODELS[dataset])
 
 
-def parse_realtime[T: Model](text: str, model: type[T]) -> list[T]:
+def parse_realtime[T: Observation](text: str, model: type[T]) -> list[T]:
     """Parse an NDBC realtime file into ``model`` records.
 
     The first header row names the columns and the second their units.

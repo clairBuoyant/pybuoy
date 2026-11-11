@@ -3,12 +3,11 @@
 Deselected by default; run with ``pytest -m live``.
 """
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from pybuoy import Buoy, MeteorologicalObservation, WaveSummaryObservation
-from pybuoy.observation import ForecastObservation
+from pybuoy import Buoy, Forecast, MeteorologicalObservation, WaveSummaryObservation
 
 pytestmark = pytest.mark.live
 
@@ -38,11 +37,14 @@ def test_active_stations_include_the_example_station(buoy: Buoy) -> None:
     assert station.met is True
 
 
-def test_forecast_data(buoy: Buoy) -> None:
-    start = datetime.now() + timedelta(days=1)
-    end = start + timedelta(days=4)
+def test_forecast_data_stays_inside_the_requested_range(buoy: Buoy) -> None:
+    start = datetime.now(UTC) + timedelta(days=1)
+    end = start + timedelta(days=2)
 
-    forecast = buoy.forecasts.get(40.368, -73.701, start.isoformat(), end.isoformat())
+    forecasts = buoy.forecasts.get(40.368, -73.701, start, end)
 
-    assert len(forecast.reports) > 0
-    assert all(type(f) is ForecastObservation for f in forecast)
+    assert len(forecasts) > 0
+    assert all(type(f) is Forecast for f in forecasts)
+    assert all(start <= f.time <= end for f in forecasts)
+    assert forecasts[0].time - start < timedelta(hours=3)
+    assert end - forecasts[-1].time < timedelta(hours=6)

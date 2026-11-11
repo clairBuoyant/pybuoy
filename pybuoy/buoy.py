@@ -1,4 +1,4 @@
-from pybuoy.api.forecasts import Forecasts
+from pybuoy.forecasts import Forecasts
 from pybuoy.realtime import Realtime
 from pybuoy.stations import Stations
 

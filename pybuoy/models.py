@@ -87,9 +87,21 @@ class Station:
     """Whether NDBC lists tsunami (DART) data for the station."""
 
 
-Model = MeteorologicalObservation | WaveSummaryObservation
+@dataclass(frozen=True, slots=True)
+class Forecast:
+    """NDFD wind and wave forecast for one point at one time."""
+
+    time: datetime
+    """When the forecast is valid (UTC)."""
+    wind_direction: float | None = _num("direction/wind", "degT")
+    wind_speed: float | None = _num("wind-speed/sustained", "m/s")
+    wind_gust: float | None = _num("wind-speed/gust", "m/s")
+    wave_height: float | None = _num("waves/significant", "m")
 
 
-def units(model: type[Model]) -> dict[str, str]:
+Observation = MeteorologicalObservation | WaveSummaryObservation
+
+
+def units(model: type[Observation] | type[Forecast]) -> dict[str, str]:
     """Return the unit of each numeric field of ``model``, keyed by field name."""
     return {f.name: f.metadata["unit"] for f in fields(model) if "unit" in f.metadata}
