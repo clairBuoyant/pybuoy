@@ -5,8 +5,5 @@
 
 cd "$(dirname "$0")/.."
 
-if [ -z "$GITHUB_ACTIONS" ]; then
-    ./scripts/check
-fi
-
+./scripts/check
 uv run pytest "$@"
