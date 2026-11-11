@@ -99,3 +99,15 @@ def test_requests_have_a_timeout(buoy: Buoy, noaa: FakeNoaa) -> None:
 def test_station_id_is_required(buoy: Buoy) -> None:
     with pytest.raises(ValueError, match="station_id"):
         buoy.realtime.get("")
+
+
+@pytest.mark.parametrize(
+    "dataset", ["data_spec", "ocean", "supl", "swdir", "swdir2", "swr1", "swr2"]
+)
+def test_datasets_without_a_parser_are_rejected(
+    buoy: Buoy, noaa: FakeNoaa, dataset: str
+) -> None:
+    with pytest.raises(ValueError, match="spec, txt"):
+        buoy.realtime.get("44065", dataset)  # type: ignore[call-overload]
+
+    assert noaa.calls == []

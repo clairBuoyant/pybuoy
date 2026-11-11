@@ -13,27 +13,10 @@ class Endpoints(Enum):
 
 
 class RealtimeDatasets(Enum):
-    data_spec = "data_spec"
-    ocean = "ocean"
     spec = "spec"
-    supl = "supl"
-    swdir = "swdir"
-    swdir2 = "swdir2"
-    swr1 = "swr1"
-    swr2 = "swr2"
     txt = "txt"
 
 
-RealtimeDatasetsValues = Literal[
-    "data_spec",
-    "ocean",
-    "spec",
-    "supl",
-    "swdir",
-    "swdir2",
-    "swr1",
-    "swr2",
-    "txt",
-]
+RealtimeDatasetsValues = Literal["spec", "txt"]
 
 __version__ = "0.5.10"
