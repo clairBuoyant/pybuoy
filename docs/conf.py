@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from pybuoy import __version__
 
-copyright = datetime.today().strftime("%Y, Kyle J. Burda")
+copyright = f"{datetime.now(UTC).year}, Kyle J. Burda"
 exclude_patterns = ["_build"]
 extensions = ["sphinx.ext.autodoc"]
 html_static_path = ["_static"]

@@ -84,7 +84,7 @@ def test_range_in_another_timezone_is_the_same_instant(buoy: Buoy) -> None:
 
 def test_naive_datetimes_are_rejected(buoy: Buoy, noaa: FakeNoaa) -> None:
     with pytest.raises(ValueError, match="timezone-aware"):
-        buoy.forecasts.get(40.368, -73.701, datetime(2026, 11, 11), END)
+        buoy.forecasts.get(40.368, -73.701, datetime(2026, 11, 11), END)  # noqa: DTZ001
 
     assert noaa.calls == []
 
