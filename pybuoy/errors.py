@@ -26,7 +26,7 @@ class StationNotFoundError(PybuoyError):
     """NDBC has no such station, or the station does not publish the dataset."""
 
 
-def parser[**P, T](parse: Callable[P, T]) -> Callable[P, T]:
+def _parser[**P, T](parse: Callable[P, T]) -> Callable[P, T]:
     """Make a parsing function raise ``ParseError`` for malformed input."""
 
     @wraps(parse)

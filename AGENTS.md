@@ -41,7 +41,7 @@ The virtual environment lives at `/opt/venv`, so mounting the source over
 - Tests come first and run offline. Parse real responses from
   `tests/fixtures/`; reach the network only in `tests/test_live.py`.
 - To support another realtime dataset, add its dataclass to `models.py`, one
-  entry to `MODELS` in `realtime.py` and one `get` overload.
+  entry to `_MODELS` in `realtime.py` and one `get` overload.
 - Timestamps are timezone-aware UTC. Values are `None` when the source did not
   report them.
 - Branch names match `(bug|chore|enhancement|feature|hotfix|release|wip)/name`.

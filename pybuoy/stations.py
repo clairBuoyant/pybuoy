@@ -3,10 +3,10 @@
 from xml.etree import ElementTree
 
 from pybuoy._http import Client
-from pybuoy.errors import parser
+from pybuoy.errors import _parser
 from pybuoy.models import Station
 
-URL = "https://www.ndbc.noaa.gov/activestations.xml"
+_URL = "https://www.ndbc.noaa.gov/activestations.xml"
 
 
 class Stations:
@@ -15,10 +15,10 @@ class Stations:
 
     def get_active(self) -> list[Station]:
         """Get every station NDBC currently lists as active."""
-        return parse_active_stations(self._client.get(URL))
+        return parse_active_stations(self._client.get(_URL))
 
 
-@parser
+@_parser
 def parse_active_stations(xml: str) -> list[Station]:
     """Parse NDBC's ``activestations.xml``."""
     root = ElementTree.fromstring(xml)

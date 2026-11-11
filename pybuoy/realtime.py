@@ -8,15 +8,15 @@ from datetime import UTC, datetime
 from typing import Any, Literal, overload
 
 from pybuoy._http import Client
-from pybuoy.errors import RequestError, StationNotFoundError, parser
+from pybuoy.errors import RequestError, StationNotFoundError, _parser
 from pybuoy.models import MeteorologicalObservation, Observation, WaveSummaryObservation
 
-URL = "https://www.ndbc.noaa.gov/data/realtime2/{station_id}.{dataset}"
-MISSING = frozenset({"MM", "N/A"})
-TIME_COLUMNS = ("YY", "MM", "DD", "hh", "mm")
+_URL = "https://www.ndbc.noaa.gov/data/realtime2/{station_id}.{dataset}"
+_MISSING = frozenset({"MM", "N/A"})
+_TIME_COLUMNS = ("YY", "MM", "DD", "hh", "mm")
 
 # Supporting another dataset means adding its model here and an overload below.
-MODELS: dict[str, type[Observation]] = {
+_MODELS: dict[str, type[Observation]] = {
     "txt": MeteorologicalObservation,
     "spec": WaveSummaryObservation,
 }
@@ -48,10 +48,10 @@ class Realtime:
         station_id = str(station_id).upper()
         if not station_id.isalnum():
             raise ValueError("station_id must be letters and digits, such as '44065'")
-        if dataset not in MODELS:
-            raise ValueError(f"dataset must be one of: {', '.join(MODELS)}")
+        if dataset not in _MODELS:
+            raise ValueError(f"dataset must be one of: {', '.join(_MODELS)}")
 
-        url = URL.format(station_id=station_id, dataset=dataset)
+        url = _URL.format(station_id=station_id, dataset=dataset)
         try:
             body = self._client.get(url)
         except RequestError as error:
@@ -60,10 +60,10 @@ class Realtime:
                     f"NDBC has no {dataset!r} data for station {station_id!r}"
                 ) from error
             raise
-        return parse_realtime(body, MODELS[dataset])
+        return parse_realtime(body, _MODELS[dataset])
 
 
-@parser
+@_parser
 def parse_realtime[T: Observation](text: str, model: type[T]) -> list[T]:
     """Parse an NDBC realtime file into ``model`` records.
 
@@ -77,11 +77,11 @@ def parse_realtime[T: Observation](text: str, model: type[T]) -> list[T]:
     observations = []
     for row in rows:
         cells = dict(zip(columns, row.split(), strict=True))
-        year, month, day, hour, minute = (int(cells[c]) for c in TIME_COLUMNS)
+        year, month, day, hour, minute = (int(cells[c]) for c in _TIME_COLUMNS)
         values: dict[str, Any] = {
             f.name: f.metadata["convert"](cells[source])
             for source, f in declared.items()
-            if cells.get(source, "MM") not in MISSING
+            if cells.get(source, "MM") not in _MISSING
         }
         observations.append(
             model(time=datetime(year, month, day, hour, minute, tzinfo=UTC), **values)
