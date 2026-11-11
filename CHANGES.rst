@@ -1,6 +1,35 @@
 Change Log
 ==========
 
+0.5.11 (unreleased)
+-------------------
+
+Fix
+~~~
+
+- **Forecasts**: ``get`` now honours ``start_date`` and ``end_date``. Dates were sent with
+  microseconds, which NOAA does not parse, so it ignored the range and returned everything.
+  NOAA reads the dates as local time at the forecast point and still ignores any date that
+  carries a UTC offset.
+- **Forecasts**: a missing (``xsi:nil``) forecast value is ``None`` instead of raising
+  ``TypeError``.
+- **Realtime**: ``get`` only accepts the ``txt`` and ``spec`` datasets and raises
+  ``ValueError`` for anything else. The other seven datasets were advertised but never
+  parsed; they raised ``UnboundLocalError``.
+- **Realtime**: an unknown station raises ``NDBCException`` with a message naming the URL,
+  and no longer prints to stdout.
+- Requests time out after 10 seconds instead of waiting forever.
+- ``len()`` works on ``MeteorologicalObservations``, ``WaveSummaryObservations`` and
+  ``ForecastObservations``.
+
+Internal
+~~~~~~~~
+
+- Tests run offline against recorded NOAA responses; the network tests are opt-in with
+  ``pytest -m live``.
+- Add a GitHub Actions workflow that runs ``ruff``, ``mypy`` and the tests.
+- Pin the ``ruff`` rule set and run the ``pre-commit`` linters from ``uv.lock``.
+
 0.5.10 (2026-05-02)
 -------------------
 
