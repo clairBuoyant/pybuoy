@@ -11,7 +11,7 @@ Before you submit a PR, please go through these steps and **remove this template
 
     c. Each commit does one thing and passes the checks on its own.
 
-    d. `pytest` doesn't throw any error. If it does, fix them first and amend your commit (`git commit --amend`).
+    d. `./scripts/test` doesn't throw any error. If it does, fix them first and amend your commit (`git commit --amend`).
 
 3. **After** these steps, you're ready to open a pull request.
 
@@ -21,4 +21,4 @@ Before you submit a PR, please go through these steps and **remove this template
 
     c. Put `Closes #XXXX` in your comment to auto-close the issue that your PR fixes (if such).
 
-IMPORTANT: Please review the [CONTRIBUTING.md](../CONTRIBUTING.md) file for detailed contributing guidelines.
+IMPORTANT: Please review the [contributing guide](https://pybuoy.readthedocs.io/en/latest/package_info/contributing.html) for detailed contributing guidelines.

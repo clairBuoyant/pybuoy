@@ -2,13 +2,20 @@ Buoy Instance
 =============
 
 .. autoclass:: pybuoy.Buoy
-    :inherited-members:
 
+A ``Buoy`` has one attribute per data source.
 
-.. toctree::
-    :maxdepth: 1
-    :caption: Helper Classes
+``buoy.realtime``
+-----------------
 
-    observation/observation_datum
-    observation/observation
-    observation/observations
+.. automethod:: pybuoy.realtime.Realtime.get
+
+``buoy.stations``
+-----------------
+
+.. automethod:: pybuoy.stations.Stations.get_active
+
+``buoy.forecasts``
+------------------
+
+.. automethod:: pybuoy.forecasts.Forecasts.get

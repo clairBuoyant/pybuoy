@@ -20,19 +20,40 @@ pybuoy - Python NOAA/NDBC API Wrapper
 Installation
 ------------
 
-``pybuoy`` is supported on Python 3.12+ and can be installed with either pip or a package manager like `uv <https://docs.astral.sh/uv/>`_:
+``pybuoy`` is supported on Python 3.12+ and can be installed with pip or a package manager like `uv <https://docs.astral.sh/uv/>`_:
+
+.. code-block:: bash
+
+    pip install pybuoy
+
+.. code-block:: bash
+
+    uv add pybuoy
 
 Quickstart
 ----------
 
 .. code-block:: python
 
+    from datetime import UTC, datetime, timedelta
+
     from pybuoy import Buoy
 
     buoy = Buoy()
 
+    # Realtime observations from a station, newest first.
+    latest = buoy.realtime.get("44065")[0]
+    print(latest.time, latest.wind_speed, latest.wave_height)
 
-With a instance of ``Buoy``, you can request data from NOAA and NDBC like so:
+    # Every active station.
+    stations = buoy.stations.get_active()
+
+    # Wind and wave forecast for a point.
+    now = datetime.now(UTC)
+    forecasts = buoy.forecasts.get(40.368, -73.701, now, now + timedelta(days=3))
+
+Results are plain dataclasses. Times are timezone-aware UTC, values are metric, and a value
+is ``None`` when the source did not report it.
 
 - `Get all active stations <https://pybuoy.readthedocs.io/en/latest/tutorials/active_buoys.html>`_.
 

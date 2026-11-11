@@ -20,26 +20,33 @@ Get List of Active Stations with **pybuoy**
 
 .. code-block:: python
 
-    active_stations = buoy.stations.get_active()
+    stations = buoy.stations.get_active()
 
 
-`active_stations` returns an array of station objects.
+``stations`` is a list of :class:`.Station`:
 
 .. code-block:: python
 
-    [
-        {
-            'id': '00922',
-            'lat': '30',
-            'lon': '-90',
-            'name': 'OTN201 - 4800922',
-            'owner': 'Dalhousie University',
-            'pgm': 'IOOS Partners',
-            'type': 'other',
-            'met': 'n',
-            'currents': 'n',
-            'waterquality': 'n',
-            'dart': 'n'
-        },
-        ... 1346 more items
-    ]
+    Station(
+        id='44065',
+        name='New York Harbor Entrance - 15 NM SE of Breezy Point , NY',
+        lat=40.368,
+        lon=-73.701,
+        owner='NDBC',
+        program='NDBC Meteorological/Ocean',
+        type='buoy',
+        elevation=0.0,
+        met=True,
+        currents=False,
+        water_quality=False,
+        dart=False,
+    )
+
+The flags say which kinds of data NDBC lists for the station, which makes it easy to pick
+the stations worth querying:
+
+.. code-block:: python
+
+    for station in stations:
+        if station.met:
+            observations = buoy.realtime.get(station.id)

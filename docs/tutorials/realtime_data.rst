@@ -20,57 +20,52 @@ Get Meteorological Data
 
 .. code-block:: python
 
-    realtime_meteorological_data = buoy.realtime.get(station_id="44065", dataset="txt")
+    observations = buoy.realtime.get("44065", dataset="txt")
 
 .. note::
 
-    If you are only analyzing Meteorological data, providing **dataset** is optional.
+    ``dataset`` is optional; ``"txt"`` (standard meteorological data) is the default.
 
-`realtime_meteorological_data` returns an iterable instance of ``MeteorologicalObservations``.
+``observations`` is a list of :class:`.MeteorologicalObservation` covering the last 45 days,
+newest first:
 
 .. code-block:: python
 
-    Observations([
-        MeteorologicalObservation(
-            datetime=datetime.datetime(2022, 9, 11, 17, 10),
-            wind_direction=ObservationDatum(Wind Direction: nan degrees),
-            wind_speed=ObservationDatum(Wind Speed: 0.0 m/s),
-            wind_gust=ObservationDatum(Wind Gust: 1.0 m/s),
-            wave_height=ObservationDatum(Wave Height: nan m),
-            dominant_wave_period=ObservationDatum(Dominant Wave Period: nan seconds),
-            average_wave_period=ObservationDatum(Average Wave Period: nan seconds),
-            wave_direction=ObservationDatum(Wave Direction: nan degrees),
-            sea_level_pressure=ObservationDatum(Sea Level Pressure: 1019.5 hPa),
-            air_temperature=ObservationDatum(Air Temperature: nan celcius),
-            water_temperature=ObservationDatum(Water Temperature: 23.0 celcius),
-            dewpoint_temperature=ObservationDatum(Dewpoint Temperature: nan celcius),
-            visibility=ObservationDatum(Visibility: nan nmi),
-            pressure_tendency=ObservationDatum(Pressure Tendency: nan hPa),
-            tide=ObservationDatum(Tide: nan ft)
-        ),
-        ...
-        MeteorologicalObservation(
-            datetime=datetime.datetime(2022, 7, 28, 0, 0),
-            wind_direction=ObservationDatum(Wind Direction: 190.0 degrees),
-            wind_speed=ObservationDatum(Wind Speed: 7.0 m/s),
-            wind_gust=ObservationDatum(Wind Gust: 8.0 m/s),
-            wave_height=ObservationDatum(Wave Height: nan m),
-            dominant_wave_period=ObservationDatum(Dominant Wave Period: nan seconds),
-            average_wave_period=ObservationDatum(Average Wave Period: nan seconds),
-            wave_direction=ObservationDatum(Wave Direction: nan degrees),
-            sea_level_pressure=ObservationDatum(Sea Level Pressure: 1011.1 hPa),
-            air_temperature=ObservationDatum(Air Temperature: nan celcius),
-            water_temperature=ObservationDatum(Water Temperature: nan celcius),
-            dewpoint_temperature=ObservationDatum(Dewpoint Temperature: nan celcius),
-            visibility=ObservationDatum(Visibility: nan nmi),
-            pressure_tendency=ObservationDatum(Pressure Tendency: -0.8 hP),
-            tide=ObservationDatum(Tide: nan ft)
-        )
-    ])
+    MeteorologicalObservation(
+        time=datetime.datetime(2026, 11, 11, 1, 10, tzinfo=datetime.timezone.utc),
+        wind_direction=230.0,
+        wind_speed=9.0,
+        wind_gust=10.0,
+        wave_height=0.7,
+        dominant_wave_period=None,
+        average_wave_period=3.6,
+        wave_direction=109.0,
+        sea_level_pressure=1012.6,
+        air_temperature=15.6,
+        water_temperature=15.8,
+        dewpoint_temperature=9.4,
+        visibility=None,
+        pressure_tendency=None,
+        tide=None,
+    )
 
 .. note::
 
-    If no value was recorded (e.g., "Tide: nan ft"), it is set to None.
+    A value the station did not report (``MM`` in NDBC's file) is ``None``.
+
+Values are plain floats, so they can be used directly:
+
+.. code-block:: python
+
+    heights = [o.wave_height for o in observations if o.wave_height is not None]
+    print(max(heights))
+
+Units are the ones NDBC publishes. :func:`pybuoy.units` returns them by field name:
+
+.. code-block:: python
+
+    >>> pybuoy.units(pybuoy.MeteorologicalObservation)["wind_speed"]
+    'm/s'
 
 
 .. _get_wave_summary:
@@ -80,43 +75,41 @@ Get Wave Summary Data
 
 .. code-block:: python
 
-    realtimewave_summary_data = buoy.realtime.get(station_id="44065", dataset="spec")
+    observations = buoy.realtime.get("44065", dataset="spec")
 
 
-`realtimewave_summary_data` returns an iterable instance of ``WaveSummaryObservations``.
+``observations`` is a list of :class:`.WaveSummaryObservation`:
 
 .. code-block:: python
 
-    Observations([
-        WaveSummaryObservation(
-            datetime=datetime.datetime(2022, 9, 11, 16, 40),
-            significant_wave_height=ObservationDatum(Significant Wave Height: 1.1 meters),
-            swell_height=ObservationDatum(Swell Height: 1.1 meters),
-            swell_period=ObservationDatum(Swell Period: 12.9 seconds),
-            wind_wave_height=ObservationDatum(Wind Wave Height: 0.2 meters),
-            wind_wave_period=ObservationDatum(Wind Wave Period: 3.1 seconds),
-            swell_direction=ObservationDatum(Swell Direction: 'ESE'),
-            wind_wave_direction=ObservationDatum(Wind Wave Direction: 'S'),
-            steepness=ObservationDatum(Steepness: 'SWELL'),
-            average_wave_period=ObservationDatum(Average Wave Period: 8.0 seconds),
-            dominant_wave_direction=ObservationDatum(Dominant Wave Direction: 116.0 degrees)
-        ),
-        ...
-        WaveSummaryObservation(
-            datetime=datetime.datetime(2022, 7, 28, 0, 40),
-            significant_wave_height=ObservationDatum(Significant Wave Height: 0.8 meters),
-            swell_height=ObservationDatum(Swell Height: 0.6 meters),
-            swell_period=ObservationDatum(Swell Period: 6.2 seconds),
-            wind_wave_height=ObservationDatum(Wind Wave Height: 0.6 meters),
-            wind_wave_period=ObservationDatum(Wind Wave Period: 3.0 seconds),
-            swell_direction=ObservationDatum(Swell Direction: 'SSE'),
-            wind_wave_direction=ObservationDatum(Wind Wave Direction: 'S'),
-            steepness=ObservationDatum(Steepness: 'AVERAGE'),
-            average_wave_period=ObservationDatum(Average Wave Period: 4.2 seconds),
-            dominant_wave_direction=ObservationDatum(Dominant Wave Direction: 164.0 degrees)
-        ),
-    ])
+    WaveSummaryObservation(
+        time=datetime.datetime(2026, 11, 11, 1, 10, tzinfo=datetime.timezone.utc),
+        significant_wave_height=0.7,
+        swell_height=0.3,
+        swell_period=10.8,
+        wind_wave_height=0.6,
+        wind_wave_period=3.6,
+        swell_direction='ESE',
+        wind_wave_direction='SSW',
+        steepness=None,
+        average_wave_period=3.6,
+        dominant_wave_direction=109.0,
+    )
 
 .. note::
 
-    If no value was recorded (e.g., "Steepness: N/A"), it is set to None.
+    A value NDBC marks ``MM`` or ``N/A`` (here, ``steepness``) is ``None``.
+
+
+Errors
+------
+
+A station id NDBC does not know, or a station that does not publish the dataset, raises
+:class:`.StationNotFoundError`:
+
+.. code-block:: python
+
+    try:
+        buoy.realtime.get("00000")
+    except pybuoy.StationNotFoundError:
+        ...

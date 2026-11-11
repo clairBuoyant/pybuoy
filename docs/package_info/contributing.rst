@@ -13,8 +13,8 @@ The following are pybuoy-specific guidelines in addition to those PEPs.
 
 .. note::
 
-    In order to use the ``pre-commit`` hooks, install pybuoy's ``[dev]`` group dependencies,
-    followed by the appropriate ``pre-commit`` command:
+    Development uses `uv <https://docs.astral.sh/uv/>`_. To install the dependencies and
+    the ``pre-commit`` hooks:
 
     .. code-block:: bash
 
@@ -51,9 +51,20 @@ it's useful to be able to run the tests locally. The simplest way is via:
 
 .. code-block:: bash
 
-    pytest
+    ./scripts/test
 
-Without any configuration or modification, all the tests should pass.
+This runs the linters, the type checker and the tests. The tests do not use the network:
+they parse the recorded NOAA and NDBC responses in ``tests/fixtures``. To measure coverage:
+
+.. code-block:: bash
+
+    uv run --with pytest-cov pytest --cov=pybuoy --cov-branch
+
+A small set of tests calls the real services. They are skipped by default and run with:
+
+.. code-block:: bash
+
+    ./scripts/test -m live
 
 Documentation
 -------------
