@@ -108,3 +108,18 @@ def test_unexpected_unit_raises_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
 
     with pytest.raises(ParseError):
         buoy.forecasts.get(40.368, -73.701, START, END)
+
+
+def test_parameters_pybuoy_does_not_model_are_ignored(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    temperature = (
+        '<temperature type="hourly" units="Fahrenheit" time-layout="k-p1h-n61-1">'
+        "<value>50</value><value>50</value><value>49</value><value>49</value>"
+        "</temperature>"
+    )
+    noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
+        "</parameters>", f"{temperature}</parameters>"
+    )
+
+    assert len(buoy.forecasts.get(40.368, -73.701, START, END)) == 4
