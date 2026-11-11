@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import UTC, timedelta
 from datetime import datetime as dt
 from json import loads
 
@@ -9,22 +10,31 @@ from pybuoy.const import API_PATH, Endpoints
 from pybuoy.observation import ForecastObservation, ForecastObservations
 from pybuoy.unit_mappings import NO_NUMERIC_VALUE
 
+# NDFD reads begin/end as local time at the point and ignores a date that
+# carries a UTC offset. Such a date is sent without its offset and a day wider,
+# and the answer is cut to the instants asked for.
+_PADDING = timedelta(days=1)
+
 
 class Forecasts(ApiBase):
     # https://graphical.weather.gov/xml/rest.php
     def get(self, lat: float, lon: float, start_date: str, end_date: str):
+        start, end = dt.fromisoformat(start_date), dt.fromisoformat(end_date)
         dwml_data = self.forecast_by_lat_lon(
             lat=lat,
             lon=lon,
-            start_date=dt.fromisoformat(start_date),
-            end_date=dt.fromisoformat(end_date),
+            start_date=_without_offset(start, -_PADDING),
+            end_date=_without_offset(end, _PADDING),
         )
         grouped = self.__group_parameters_by_time(dwml_data["data"]["parameters"])
+        times = {key: dt.fromisoformat(key) for key in grouped}
 
         return ForecastObservations(
             observations=[
-                ForecastObservation(grouped[key], dt.fromisoformat(key))
-                for key in grouped
+                ForecastObservation(grouped[key], time)
+                for key, time in times.items()
+                if (start.tzinfo is None or start <= time)
+                and (end.tzinfo is None or time <= end)
             ],
             repr_limit=10,
         )
@@ -132,3 +142,9 @@ class Forecasts(ApiBase):
                         }
 
         return groupedby_timestamp
+
+
+def _without_offset(moment: dt, padding: timedelta) -> dt:
+    if moment.tzinfo is None:
+        return moment
+    return moment.astimezone(UTC).replace(tzinfo=None) + padding

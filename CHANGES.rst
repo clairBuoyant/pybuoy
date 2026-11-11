@@ -9,8 +9,8 @@ Fix
 
 - **Forecasts**: ``get`` now honours ``start_date`` and ``end_date``. Dates were sent with
   microseconds, which NOAA does not parse, so it ignored the range and returned everything.
-  NOAA reads the dates as local time at the forecast point and still ignores any date that
-  carries a UTC offset.
+  A date with a UTC offset selects exactly that range; NOAA reads a date without one as
+  local time at the forecast point.
 - **Forecasts**: a missing (``xsi:nil``) forecast value is ``None`` instead of raising
   ``TypeError``.
 - **Realtime**: ``get`` only accepts the ``txt`` and ``spec`` datasets and raises

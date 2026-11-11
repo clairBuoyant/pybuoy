@@ -3,7 +3,7 @@
 Deselected by default; run with ``pytest -m live``.
 """
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -41,11 +41,12 @@ def test_active_stations_include_the_example_station(buoy: Buoy) -> None:
     assert {"id", "lat", "lon", "name", "owner", "type"} <= station.keys()
 
 
-def test_forecast_data(buoy: Buoy) -> None:
-    start = datetime.now() + timedelta(days=1)
-    end = start + timedelta(days=4)
+def test_forecast_data_is_inside_the_requested_range(buoy: Buoy) -> None:
+    start = datetime.now(UTC).replace(microsecond=0) + timedelta(days=1)
+    end = start + timedelta(days=2)
 
     forecast = buoy.forecasts.get(40.368, -73.701, start.isoformat(), end.isoformat())
 
-    assert len(forecast.reports) > 0
+    assert len(forecast) > 0
     assert all(type(f) is ForecastObservation for f in forecast)
+    assert all(start <= f.datetime <= end for f in forecast)

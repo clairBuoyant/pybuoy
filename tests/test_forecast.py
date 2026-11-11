@@ -75,3 +75,21 @@ def test_forecast_nil_value_is_none(buoy: Buoy, noaa: FakeNoaa) -> None:
 
 def test_forecast_has_a_length(buoy: Buoy) -> None:
     assert len(buoy.forecasts.get(40.368, -73.701, START, END)) == 4
+
+
+def test_forecast_dates_with_an_offset_select_the_exact_range(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    # NDFD ignores a date that carries an offset, so it is sent as a naive
+    # date a day wider and the answer is cut to the instants asked for.
+    forecast = buoy.forecasts.get(
+        40.368, -73.701, "2026-11-11T05:00:00+00:00", "2026-11-11T08:00:00+01:00"
+    )
+
+    params = noaa.calls[0]["params"]
+    assert isinstance(params, dict)
+    assert params["begin"] == "2026-11-10T05:00:00"
+    assert params["end"] == "2026-11-12T07:00:00"
+    assert [f.datetime for f in forecast] == [
+        datetime(2026, 11, 11, hour, tzinfo=EST) for hour in range(3)
+    ]
