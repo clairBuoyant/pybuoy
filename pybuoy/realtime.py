@@ -40,17 +40,19 @@ class Realtime:
         """Get the last 45 days of observations from a station, newest first.
 
         Args:
-            station_id: NDBC station id, such as ``"44065"``.
+            station_id: NDBC station id, such as ``"44065"`` or ``"burl1"``.
             dataset: ``"txt"`` for standard meteorological data or ``"spec"``
                 for the spectral wave summary.
         """
-        if not station_id:
-            raise ValueError("station_id must be provided")
+        if not station_id.isalnum():
+            raise ValueError("station_id must be letters and digits, such as '44065'")
         if dataset not in MODELS:
             raise ValueError(f"dataset must be one of: {', '.join(MODELS)}")
 
+        # NDBC file names are upper case and its paths are case-sensitive.
+        url = URL.format(station_id=station_id.upper(), dataset=dataset)
         try:
-            body = self._client.get(URL.format(station_id=station_id, dataset=dataset))
+            body = self._client.get(url)
         except RequestError as error:
             if error.status == 404:
                 raise StationNotFoundError(

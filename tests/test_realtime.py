@@ -129,9 +129,24 @@ def test_a_body_that_is_not_a_realtime_file_raises_parse_error() -> None:
         parse_realtime("<html>Service unavailable</html>", MeteorologicalObservation)
 
 
-def test_station_id_is_required(buoy: Buoy) -> None:
+@pytest.mark.parametrize("station_id", ["", "44065.txt", "../activestations"])
+def test_station_id_must_be_letters_and_digits(
+    buoy: Buoy, noaa: FakeNoaa, station_id: str
+) -> None:
     with pytest.raises(ValueError, match="station_id"):
-        buoy.realtime.get("")
+        buoy.realtime.get(station_id)
+
+    assert noaa.calls == []
+
+
+def test_station_id_is_upper_cased_because_ndbc_paths_are_case_sensitive(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    url = "https://www.ndbc.noaa.gov/data/realtime2/BURL1.txt"
+    noaa.bodies[url] = noaa.bodies[noaa.realtime_url]
+
+    assert len(buoy.realtime.get("burl1")) == 3
+    assert noaa.calls[0]["url"] == url
 
 
 @pytest.mark.parametrize("dataset", ["ocean", "swdir", "TXT"])
