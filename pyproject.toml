@@ -52,7 +52,7 @@ line-length = 88
 select = ["B", "E", "F", "I", "RUF", "SIM", "UP", "W"]
 
 [tool.mypy]
-files = ["pybuoy", "tests"]
+files = ["pybuoy", "tests", "docs/examples"]
 strict = true
 
 [tool.pytest.ini_options]
