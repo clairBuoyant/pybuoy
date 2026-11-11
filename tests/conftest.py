@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from io import BytesIO
 from pathlib import Path
 from urllib.parse import parse_qsl
@@ -38,12 +39,17 @@ class FakeNoaa(BaseAdapter):
             self.forecast_url: _fixture("ndfd_forecast.xml"),
         }
 
-    def send(  # type: ignore[override]
+    def close(self) -> None:
+        pass
+
+    def send(
         self,
         request: requests.PreparedRequest,
-        *,
-        timeout: float | None = None,
-        **kwargs: object,
+        stream: bool = False,
+        timeout: float | tuple[float, float] | tuple[float, None] | None = None,
+        verify: bool | str = True,
+        cert: bytes | str | tuple[bytes | str, bytes | str] | None = None,
+        proxies: Mapping[str, str] | None = None,
     ) -> requests.Response:
         url, _, query = (request.url or "").partition("?")
         self.calls.append(
@@ -59,9 +65,6 @@ class FakeNoaa(BaseAdapter):
         response.status_code = self.status or (200 if url in self.bodies else 404)
         response.raw = BytesIO(self.bodies.get(url, "").encode())
         return response
-
-    def close(self) -> None:
-        pass
 
 
 def _fixture(name: str) -> str:

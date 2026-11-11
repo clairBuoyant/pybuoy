@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from typing import Any
 
 import pytest
 from conftest import FakeNoaa
@@ -157,7 +158,9 @@ def test_station_id_is_upper_cased_because_ndbc_paths_are_case_sensitive(
 def test_datasets_without_a_parser_are_rejected(
     buoy: Buoy, noaa: FakeNoaa, dataset: str
 ) -> None:
+    get: Any = buoy.realtime.get  # the type checker rejects these datasets
+
     with pytest.raises(ValueError, match="txt, spec"):
-        buoy.realtime.get("44065", dataset)  # type: ignore[call-overload]
+        get("44065", dataset)
 
     assert noaa.calls == []

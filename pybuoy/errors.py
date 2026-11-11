@@ -9,6 +9,10 @@ class PybuoyError(Exception):
     """Base class for every error pybuoy raises."""
 
 
+class ParseError(PybuoyError):
+    """A response was not in the format pybuoy expects."""
+
+
 class RequestError(PybuoyError):
     """NOAA or NDBC could not be reached, or answered with an error status."""
 
@@ -20,10 +24,6 @@ class RequestError(PybuoyError):
 
 class StationNotFoundError(PybuoyError):
     """NDBC has no such station, or the station does not publish the dataset."""
-
-
-class ParseError(PybuoyError):
-    """A response was not in the format pybuoy expects."""
 
 
 def parser[**P, T](parse: Callable[P, T]) -> Callable[P, T]:
