@@ -2,7 +2,7 @@
 
 These scripts are provided for development of [clairBuoyant](https://www.github.com/clairBuoyant). The script names are standardized across all repositories for clairBuoyant to simplify the development experience.
 
-he command to run can be inferred based on the following pattern:
+The command to run can be inferred based on the following pattern:
 
 - command: `filename`
   - e.g., `bootstrap`
@@ -13,14 +13,16 @@ he command to run can be inferred based on the following pattern:
 
 See below for list of available commands.
 
-- `bootstrap`: resolve all system dependencies the application needs to run.
-- `check`: check whether code linting passes.
-- `clean`: remove all unnecessary build artifacts.
+Every script runs its tools through [uv](https://docs.astral.sh/uv/), so the versions come from `uv.lock`.
+
+- `bootstrap`: check that `uv` is installed.
+- `check`: check whether linting, formatting and type checking pass.
+- `clean`: remove caches and build artifacts.
 - `init`: run bootstrap and setup.
-- `lint`: run code linting.
+- `lint`: fix lint findings and format the code.
 - `setup`: install python dependencies and githooks.
-- `test`: run test suite.
-- `uninstall`: remove python dependencies and build artifacts.
+- `test`: run `check`, then the test suite. Arguments go to `pytest` (e.g., `./scripts/test -m live` runs the tests that call NOAA).
+- `uninstall`: remove the virtual environment, caches and build artifacts.
 
 ### Usage
 

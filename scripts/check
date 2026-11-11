@@ -1,17 +1,9 @@
-#!/bin/bash -e
+#!/bin/sh -e
 #
-# Check whether code linting passes.
+# Check whether linting, formatting and type checking pass.
 
-APP='pybuoy'
+cd "$(dirname "$0")/.."
 
-if [ -d '.venv' ] ; then
-    PREFIX='.venv/bin/'
-else
-    PREFIX=''
-fi
-
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-BASE_DIR="$(dirname "$CURRENT_DIR")"
-
-${PREFIX}ruff check
-${PREFIX}mypy --config-file "${BASE_DIR}/pyproject.toml" -p "${APP}"
+uv run ruff check
+uv run ruff format --check
+uv run mypy
