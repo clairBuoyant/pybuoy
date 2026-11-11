@@ -77,6 +77,35 @@ def test_forecast_has_a_length(buoy: Buoy) -> None:
     assert len(buoy.forecasts.get(40.368, -73.701, START, END)) == 4
 
 
+def test_forecast_for_a_point_without_waves(buoy: Buoy, noaa: FakeNoaa) -> None:
+    # NOAA leaves out the wave parameter for points on land.
+    body = noaa.bodies[noaa.forecast_url]
+    waves = body[body.index("<water-state") : body.index("</water-state>")]
+    noaa.bodies[noaa.forecast_url] = body.replace(waves + "</water-state>", "")
+
+    forecast = buoy.forecasts.get(39.74, -104.99, START, END)
+
+    assert len(forecast) == 4
+    assert forecast[0].wind_speed.value == 13.0
+    assert forecast[0].wind_direction.value == 290.0
+    assert forecast[0].wave_height.value is None
+
+
+def test_forecast_for_a_point_with_only_wind_direction(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    body = noaa.bodies[noaa.forecast_url]
+    for tag in ("water-state", "wind-speed", "wind-speed"):
+        start, end = body.index(f"<{tag}"), body.index(f"</{tag}>")
+        body = body[:start] + body[end + len(f"</{tag}>") :]
+    noaa.bodies[noaa.forecast_url] = body
+
+    forecast = buoy.forecasts.get(39.74, -104.99, START, END)
+
+    assert forecast[0].wind_direction.value == 290.0
+    assert forecast[0].wind_speed.value is None
+
+
 def test_forecast_dates_with_an_offset_select_the_exact_range(
     buoy: Buoy, noaa: FakeNoaa
 ) -> None:

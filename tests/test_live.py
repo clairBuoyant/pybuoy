@@ -50,3 +50,14 @@ def test_forecast_data_is_inside_the_requested_range(buoy: Buoy) -> None:
     assert len(forecast) > 0
     assert all(type(f) is ForecastObservation for f in forecast)
     assert all(start <= f.datetime <= end for f in forecast)
+
+
+def test_forecast_for_a_point_on_land_has_wind_but_no_waves(buoy: Buoy) -> None:
+    start = datetime.now(UTC).replace(microsecond=0)
+    end = start + timedelta(days=1)
+
+    forecast = buoy.forecasts.get(39.74, -104.99, start.isoformat(), end.isoformat())
+
+    assert len(forecast) > 0
+    assert all(f.wave_height.value is None for f in forecast)
+    assert any(f.wind_speed.value is not None for f in forecast)

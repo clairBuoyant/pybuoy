@@ -11,6 +11,8 @@ Fix
   microseconds, which NOAA does not parse, so it ignored the range and returned everything.
   A date with a UTC offset selects exactly that range; NOAA reads a date without one as
   local time at the forecast point.
+- **Forecasts**: ``get`` works for a point that has no wave forecast, such as one on land.
+  It raised ``JSONDecodeError``.
 - **Forecasts**: a missing (``xsi:nil``) forecast value is ``None`` instead of raising
   ``TypeError``.
 - **Realtime**: ``get`` only accepts the ``txt`` and ``spec`` datasets and raises

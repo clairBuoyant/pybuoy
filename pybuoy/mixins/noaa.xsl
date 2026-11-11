@@ -117,14 +117,14 @@
                 }
             </xsl:if>
             <xsl:if test="parameters/wind-speed">
-                , "wind": {
+                <xsl:if test="parameters/water-state">, </xsl:if>"wind": {
                     <xsl:for-each select="parameters/wind-speed">
                         <xsl:call-template name="wind-speed" /><xsl:if test="position() != last()">, </xsl:if>
                     </xsl:for-each>
                 }
             </xsl:if>
             <xsl:if test="parameters/direction">
-                , "direction": {
+                <xsl:if test="parameters/water-state or parameters/wind-speed">, </xsl:if>"direction": {
                     <xsl:for-each select="parameters/direction">
                         <xsl:call-template name="direction" /><xsl:if test="position() != last()">, </xsl:if>
                     </xsl:for-each>
