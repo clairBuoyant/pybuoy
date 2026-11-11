@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?><stations created="2026-11-11T01:50:08UTC" count="4">
+  <station id="21415" lat="50.12" lon="171.867" name="ATTU - 175 NM South of Attu, AK" owner="NDBC" pgm="Tsunami" type="dart" met="n" currents="n" waterquality="n" dart="y"/>
+  <station id="32303" lat="5" lon="-95" elev="0" name="5N 95W" owner="NDBC" pgm="TAO" type="tao"/>
+  <station id="41053" lat="18.474" lon="-66.099" elev="0" name="San Juan, PR" owner="Caribbean Integrated Coastal Ocean Observing System (CarICoos)" pgm="IOOS Partners" type="buoy" met="y" currents="y" waterquality="y" dart="n"/>
+  <station id="44065" lat="40.368" lon="-73.701" elev="0" name="New York Harbor Entrance - 15 NM SE of Breezy Point , NY" owner="NDBC" pgm="NDBC Meteorological/Ocean" type="buoy" met="y" currents="n" waterquality="n" dart="n"/>
+</stations>
