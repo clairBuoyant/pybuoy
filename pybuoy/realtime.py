@@ -74,6 +74,8 @@ def parse_realtime[T: Observation](text: str, model: type[T]) -> list[T]:
     """
     header, _units, *rows = text.splitlines()
     columns = header.lstrip("#").split()
+    if columns[: len(_TIME_COLUMNS)] != _TIME_COLUMNS:
+        raise ValueError(f"not an NDBC realtime file: it starts with {header!r}")
     declared = {f.metadata["source"]: f for f in fields(model) if f.metadata}
 
     observations = []

@@ -133,9 +133,17 @@ def test_malformed_rows_raise_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
         buoy.realtime.get("44065")
 
 
-def test_a_body_that_is_not_a_realtime_file_raises_parse_error() -> None:
+@pytest.mark.parametrize(
+    "body",
+    [
+        "<html>Service unavailable</html>",
+        "<html>\n<body>Service unavailable</body></html>",
+        "#STN  LAT LON\n#text deg deg\n",
+    ],
+)
+def test_a_body_that_is_not_a_realtime_file_raises_parse_error(body: str) -> None:
     with pytest.raises(ParseError):
-        parse_realtime("<html>Service unavailable</html>", MeteorologicalObservation)
+        parse_realtime(body, MeteorologicalObservation)
 
 
 @pytest.mark.parametrize("station_id", ["", "44065.txt", "../activestations"])
