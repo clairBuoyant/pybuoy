@@ -21,6 +21,8 @@ _TO_METRIC = {"knots": 1852 / 3600, "feet": 0.3048, "degrees true": 1.0}
 
 
 class Forecasts:
+    """NOAA NDFD point forecasts, reached as ``Buoy().forecasts``."""
+
     def __init__(self, client: Client) -> None:
         self._client = client
 

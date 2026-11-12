@@ -10,6 +10,8 @@ _URL = "https://www.ndbc.noaa.gov/activestations.xml"
 
 
 class Stations:
+    """NDBC's list of stations, reached as ``Buoy().stations``."""
+
     def __init__(self, client: Client) -> None:
         self._client = client
 

@@ -1,3 +1,5 @@
+"""The entry point: one ``Buoy`` gives access to every data source."""
+
 import requests
 
 from pybuoy._http import Client

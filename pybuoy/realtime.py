@@ -26,6 +26,8 @@ _MODELS: dict[str, type[Observation]] = {
 
 
 class Realtime:
+    """NDBC realtime observations, reached as ``Buoy().realtime``."""
+
     def __init__(self, client: Client) -> None:
         self._client = client
 

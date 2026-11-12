@@ -1,3 +1,10 @@
+"""Python client for NDBC realtime buoy data, NDBC's active station list and
+NOAA NDFD point forecasts.
+
+Everything public is importable from here: ``Buoy``, the records it returns,
+``units`` and the errors.
+"""
+
 from importlib.metadata import version
 
 from pybuoy.buoy import Buoy as Buoy
