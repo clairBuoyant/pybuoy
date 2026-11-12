@@ -34,9 +34,9 @@ def _parser[**P, T](parse: Callable[P, T]) -> Callable[P, T]:
     """Make a parsing function raise ``ParseError`` for malformed input."""
 
     @wraps(parse)
-    def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
+    def wrapper(*positional: P.args, **named: P.kwargs) -> T:
         try:
-            return parse(*args, **kwargs)
+            return parse(*positional, **named)
         except (KeyError, ValueError, OverflowError, XmlParseError) as error:
             raise ParseError(f"Unexpected response format: {error!r}") from error
 

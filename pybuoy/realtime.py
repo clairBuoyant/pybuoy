@@ -3,6 +3,7 @@
 Format reference: https://www.ndbc.noaa.gov/docs/ndbc_web_data_guide.pdf
 """
 
+from collections.abc import Sequence
 from dataclasses import fields
 from datetime import UTC, datetime
 from typing import Any, Literal, overload
@@ -38,7 +39,7 @@ class Realtime:
         self, station_id: str | int, dataset: Literal["spec"]
     ) -> list[WaveSummaryObservation]: ...
 
-    def get(self, station_id: str | int, dataset: str = "txt") -> list[Any]:
+    def get(self, station_id: str | int, dataset: str = "txt") -> Sequence[Observation]:
         """Get the last 45 days of observations from a station, newest first.
 
         Args:
@@ -82,10 +83,12 @@ def parse_realtime[T: Observation](text: str, model: type[T]) -> list[T]:
     for row in rows:
         cells = dict(zip(columns, row.split(), strict=True))
         year, month, day, hour, minute = (int(cells[c]) for c in _TIME_COLUMNS)
+        # The field types differ by column, so the checker cannot follow them
+        # through this table; each converter comes from the field it fills.
         values: dict[str, Any] = {
             f.name: f.metadata["convert"](cells[source])
             for source, f in declared.items()
-            if cells.get(source, "MM") not in _MISSING
+            if source in cells and cells[source] not in _MISSING
         }
         observations.append(
             model(time=datetime(year, month, day, hour, minute, tzinfo=UTC), **values)
