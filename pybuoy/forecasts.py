@@ -82,8 +82,7 @@ def parse_dwml(xml: str) -> list[Forecast]:
 
     layouts = {
         layout.findtext("layout-key"): [
-            datetime.fromisoformat(time.text or "").astimezone(UTC)
-            for time in layout.iter("start-valid-time")
+            _utc(time.text or "") for time in layout.iter("start-valid-time")
         ]
         for layout in root.iter("time-layout")
     }
@@ -105,6 +104,13 @@ def parse_dwml(xml: str) -> list[Forecast]:
                     else round(float(value.text or "") * factor, 2)
                 )
     return [Forecast(time=time, **by_time[time]) for time in sorted(by_time)]
+
+
+def _utc(text: str) -> datetime:
+    moment = datetime.fromisoformat(text)
+    if moment.utcoffset() is None:
+        raise ValueError(f"forecast time {text!r} has no UTC offset")
+    return moment.astimezone(UTC)
 
 
 def _ndfd_time(moment: datetime) -> str:

@@ -101,6 +101,17 @@ def test_point_outside_the_ndfd_grid_has_no_forecasts() -> None:
     assert parse_dwml(xml) == []
 
 
+def test_forecast_time_without_an_offset_raises_parse_error(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
+        "-05:00", ""
+    )
+
+    with pytest.raises(ParseError, match="offset"):
+        buoy.forecasts.get(40.368, -73.701, START, END)
+
+
 def test_unexpected_unit_raises_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
     noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
         'units="knots"', 'units="furlongs/fortnight"'
