@@ -14,12 +14,16 @@ class ParseError(PybuoyError):
 
 
 class RequestError(PybuoyError):
-    """NOAA or NDBC could not be reached, or answered with an error status."""
+    """NOAA or NDBC could not be reached, or gave an answer pybuoy refuses.
+
+    That is an error status, a forecast request NOAA rejects, or a body larger
+    than 16 MB.
+    """
 
     def __init__(self, message: str, status: int | None = None) -> None:
         super().__init__(message)
         self.status = status
-        """HTTP status of the answer, or ``None`` if there was no answer."""
+        """HTTP status of the answer, or ``None`` if no complete answer arrived."""
 
 
 class StationNotFoundError(PybuoyError):

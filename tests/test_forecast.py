@@ -168,8 +168,10 @@ def test_error_reported_by_noaa_raises_request_error(
         "is not on an NDFD grid</pre></error>"
     )
 
-    with pytest.raises(RequestError, match="not on an NDFD grid"):
+    with pytest.raises(RequestError, match="not on an NDFD grid") as raised:
         buoy.forecasts.get(999, -73, START, END)
+
+    assert raised.value.status == 200
 
 
 def test_xml_that_is_not_a_forecast_raises_parse_error() -> None:

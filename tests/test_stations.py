@@ -44,6 +44,15 @@ def test_stations_without_optional_attributes(buoy: Buoy) -> None:
     )
 
 
+def test_station_names_are_read_as_utf_8(buoy: Buoy, noaa: FakeNoaa) -> None:
+    # NDBC declares no charset for this file, which requests reads as Latin-1.
+    noaa.bodies[noaa.stations_url] = noaa.bodies[noaa.stations_url].replace(
+        "5N 95W", "Añasco, PR"
+    )
+
+    assert buoy.stations.get_active()[1].name == "Añasco, PR"
+
+
 def test_malformed_xml_raises_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
     noaa.bodies[noaa.stations_url] = "<stations><station"
 

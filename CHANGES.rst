@@ -19,6 +19,8 @@ Buoy
 - **Forecasts**: ``get`` returns exactly the requested range for a point in any timezone.
 - **Forecasts**: a point NOAA rejects raises ``RequestError`` with NOAA's reason, and a
   ``start`` after ``end`` raises ``ValueError``. Both used to return an empty list.
+- **Stations**: names are read as UTF-8. NDBC declares no encoding for the list, so a name
+  with an accented letter was garbled.
 - ``pybuoy.units(model)`` returns the unit of each field of a record type.
 
 Errors
@@ -28,6 +30,8 @@ Errors
   NOAA or NDBC cannot be reached or answers with an error status, ``StationNotFoundError``
   when NDBC has no data for a station, and ``ParseError`` when a response is not in the
   expected format, including a well-formed document of the wrong kind.
+- An answer larger than 16 MB raises ``RequestError`` instead of being read into memory.
+  The largest real answer is about 0.6 MB.
 
 Internal
 ~~~~~~~~

@@ -77,7 +77,7 @@ def parse_dwml(xml: str) -> list[Forecast]:
     if root.tag == "error":
         # NOAA reports a rejected request in the body, with status 200.
         reason = root.findtext("pre", default="no reason given")
-        raise RequestError(f"NOAA rejected the forecast request: {reason}")
+        raise RequestError(f"NOAA rejected the forecast request: {reason}", status=200)
     if root.tag != "dwml":
         raise ValueError(f"expected a <dwml> document, got <{root.tag}>")
 
