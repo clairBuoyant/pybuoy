@@ -57,6 +57,16 @@ def test_forecast_data_stays_inside_the_requested_range(buoy: Buoy) -> None:
     assert end - forecasts[-1].time < timedelta(hours=6)
 
 
+def test_forecast_for_a_point_on_land_has_wind_but_no_waves(buoy: Buoy) -> None:
+    start = datetime.now(UTC)
+
+    forecasts = buoy.forecasts.get(39.74, -104.99, start, start + timedelta(days=1))
+
+    assert len(forecasts) > 0
+    assert all(f.wave_height is None for f in forecasts)
+    assert any(f.wind_speed is not None for f in forecasts)
+
+
 def test_forecast_with_an_open_end_reaches_the_end_of_noaa_data(buoy: Buoy) -> None:
     start = datetime.now(UTC)
 

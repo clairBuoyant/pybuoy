@@ -123,6 +123,19 @@ def test_forecast_time_without_an_offset_raises_parse_error(
         buoy.forecasts.get(40.368, -73.701, START, END)
 
 
+def test_point_without_waves_has_wind_only(buoy: Buoy, noaa: FakeNoaa) -> None:
+    # NOAA leaves out the wave parameter for points on land.
+    body = noaa.bodies[noaa.forecast_url]
+    waves = body[body.index("<water-state") : body.index("</water-state>")]
+    noaa.bodies[noaa.forecast_url] = body.replace(waves + "</water-state>", "")
+
+    forecasts = buoy.forecasts.get(39.74, -104.99, START, END)
+
+    assert len(forecasts) == 4
+    assert all(f.wave_height is None for f in forecasts)
+    assert forecasts[0].wind_direction == 290.0
+
+
 def test_forecast_time_out_of_range_raises_parse_error(
     buoy: Buoy, noaa: FakeNoaa
 ) -> None:

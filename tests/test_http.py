@@ -96,10 +96,16 @@ def test_error_status_raises_request_error(buoy: Buoy, noaa: FakeNoaa) -> None:
     assert raised.value.status == 503
 
 
-def test_transport_failure_raises_request_error(buoy: Buoy, noaa: FakeNoaa) -> None:
-    noaa.error = requests.ConnectionError("connection refused")
+@pytest.mark.parametrize(
+    "error",
+    [requests.ConnectionError("connection refused"), requests.Timeout("timed out")],
+)
+def test_transport_failure_raises_request_error(
+    buoy: Buoy, noaa: FakeNoaa, error: requests.RequestException
+) -> None:
+    noaa.error = error
 
-    with pytest.raises(RequestError, match="connection refused") as raised:
+    with pytest.raises(RequestError, match=str(error)) as raised:
         buoy.stations.get_active()
 
     assert raised.value.status is None
