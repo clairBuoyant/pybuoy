@@ -112,6 +112,18 @@ def test_forecast_time_without_an_offset_raises_parse_error(
         buoy.forecasts.get(40.368, -73.701, START, END)
 
 
+def test_forecast_time_out_of_range_raises_parse_error(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    # Year 1 at UTC+5 is before the earliest time Python can hold in UTC.
+    noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
+        "2026-11-11T00:00:00-05:00", "0001-01-01T00:00:00+05:00", 1
+    )
+
+    with pytest.raises(ParseError):
+        buoy.forecasts.get(40.368, -73.701, START, END)
+
+
 def test_unexpected_unit_raises_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
     noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
         'units="knots"', 'units="furlongs/fortnight"'

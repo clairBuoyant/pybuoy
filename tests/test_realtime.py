@@ -126,6 +126,15 @@ def test_a_response_without_rows_is_empty() -> None:
     assert parse_realtime(body, MeteorologicalObservation) == []
 
 
+def test_a_date_out_of_range_raises_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
+    noaa.bodies[noaa.realtime_url] = noaa.bodies[noaa.realtime_url].replace(
+        "2026 11 11 01 10", "99999999999999999999 11 11 01 10"
+    )
+
+    with pytest.raises(ParseError):
+        buoy.realtime.get("44065")
+
+
 def test_malformed_rows_raise_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
     noaa.bodies[noaa.realtime_url] += "2026 11 11 00 40 230\n"
 

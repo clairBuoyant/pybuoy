@@ -33,7 +33,7 @@ def _parser[**P, T](parse: Callable[P, T]) -> Callable[P, T]:
     def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
         try:
             return parse(*args, **kwargs)
-        except (KeyError, ValueError, XmlParseError) as error:
+        except (KeyError, ValueError, OverflowError, XmlParseError) as error:
             raise ParseError(f"Unexpected response format: {error!r}") from error
 
     return wrapper
