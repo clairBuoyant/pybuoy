@@ -12,8 +12,10 @@ from pybuoy.errors import RequestError, StationNotFoundError, _parser
 from pybuoy.models import MeteorologicalObservation, Observation, WaveSummaryObservation
 
 _URL = "https://www.ndbc.noaa.gov/data/realtime2/{station_id}.{dataset}"
-_MISSING = frozenset({"MM", "N/A"})
-_TIME_COLUMNS = ("YY", "MM", "DD", "hh", "mm")
+# NDBC writes MM for a value it does not have, N/A for a missing steepness
+# and -99 for a missing wave direction in the spectral wave summary.
+_MISSING = frozenset({"MM", "N/A", "-99"})
+_TIME_COLUMNS = ["YY", "MM", "DD", "hh", "mm"]
 
 # Supporting another dataset means adding its model here and an overload below.
 _MODELS: dict[str, type[Observation]] = {

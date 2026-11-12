@@ -69,13 +69,21 @@ def test_wave_summary_observation(buoy: Buoy) -> None:
 
 
 def test_wave_summary_values_that_vary_between_rows(buoy: Buoy) -> None:
-    _, second, third = buoy.realtime.get("44065", "spec")
+    _, second, third, _ = buoy.realtime.get("44065", "spec")
 
     assert second.steepness == "VERY_STEEP"
     assert second.wind_wave_direction is None
     assert third.steepness == "STEEP"
     assert third.swell_period is None
     assert third.swell_direction is None
+
+
+def test_minus_99_wave_direction_is_none(buoy: Buoy) -> None:
+    # In the last row of the fixture -99 marks a missing direction, not MM.
+    last = buoy.realtime.get("44065", "spec")[-1]
+
+    assert last.dominant_wave_direction is None
+    assert last.average_wave_period == 3.6
 
 
 def test_units_are_declared_once_per_model() -> None:

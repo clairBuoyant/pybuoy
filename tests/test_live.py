@@ -31,6 +31,9 @@ def test_realtime_wave_summary_data(buoy: Buoy) -> None:
 
     assert len(observations) > 0
     assert all(type(o) is WaveSummaryObservation for o in observations)
+    # NDBC marks a missing direction with -99 here, which must not pass as data.
+    directions = [o.dominant_wave_direction for o in observations]
+    assert all(d is None or 0 <= d <= 360 for d in directions)
 
 
 def test_active_stations_include_the_example_station(buoy: Buoy) -> None:

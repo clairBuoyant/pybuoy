@@ -98,7 +98,8 @@ Get Wave Summary Data
 
 .. note::
 
-    A value NDBC marks ``MM`` or ``N/A`` (here, ``steepness``) is ``None``.
+    A value NDBC marks as missing (``MM``, ``N/A`` or a direction of ``-99``) is ``None``;
+    here, ``steepness``.
 
 
 Errors

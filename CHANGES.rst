@@ -13,6 +13,8 @@ Buoy
   ``requests.Session`` can be supplied, for example to add retries or a proxy.
 - **Realtime**: station ids are validated (letters and digits) and upper-cased. NDBC paths
   are case-sensitive, so ``"burl1"`` used to fail.
+- **Realtime**: NDBC's ``-99`` marker for a missing wave direction is ``None``. It was
+  returned as ``-99.0``.
 - **Realtime**: a column NDBC adds to a file is ignored instead of raising ``KeyError``.
 - **Forecasts**: ``get`` returns exactly the requested range for a point in any timezone.
 - **Forecasts**: a point NOAA rejects raises ``RequestError`` with NOAA's reason, and a
