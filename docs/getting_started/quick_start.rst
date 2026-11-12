@@ -24,6 +24,6 @@ Every result is a list of plain dataclasses (see :doc:`/code_overview/models`):
 - a value is ``None`` when the source did not report it;
 - observations keep the units NDBC publishes (mostly metric, but tide is in feet and
   visibility in nautical miles) and forecasts are in metres and metres per second;
-- :func:`pybuoy.units` gives the unit of each field.
+- :func:`pybuoy.units` gives the unit of each numeric field.
 
 Failures raise a subclass of :class:`pybuoy.PybuoyError` (see :doc:`/code_overview/errors`).

@@ -12,16 +12,15 @@ Buoy
 - ``Buoy(timeout=10.0, session=None)``: the request timeout is configurable and a
   ``requests.Session`` can be supplied, for example to add retries or a proxy.
 - **Realtime**: station ids are validated (letters and digits) and upper-cased. NDBC paths
-  are case-sensitive, so ``"burl1"`` used to fail.
+  are case-sensitive, so ``"burl1"`` used to fail. A numeric id may be passed as an ``int``.
 - **Realtime**: NDBC's ``-99`` marker for a missing wave direction is ``None``. It was
   returned as ``-99.0``.
 - **Realtime**: a column NDBC adds to a file is ignored instead of raising ``KeyError``.
 - **Forecasts**: ``get`` returns exactly the requested range for a point in any timezone.
-- **Forecasts**: a point NOAA rejects raises ``RequestError`` with NOAA's reason, and a
-  ``start`` after ``end`` raises ``ValueError``. Both used to return an empty list.
+- **Forecasts**: a ``start`` after ``end`` raises ``ValueError`` instead of returning nothing.
 - **Stations**: names are read as UTF-8. NDBC declares no encoding for the list, so a name
   with an accented letter was garbled.
-- ``pybuoy.units(model)`` returns the unit of each field of a record type.
+- ``pybuoy.units(model)`` returns the unit of each numeric field of a record type.
 
 Errors
 ~~~~~~
@@ -67,7 +66,10 @@ Breaking Changes
   ``water_quality``.
 - **Errors**: ``pybuoy.exceptions`` (``NDBCException``, ``NOAAException``, ``DWMLException``,
   ``HTTPException``) is removed; catch ``pybuoy.PybuoyError`` or a subclass. Error statuses
-  raise ``RequestError`` instead of ``ValueError``.
+  raise ``RequestError`` instead of ``ValueError``, and so does a point NOAA rejects
+  (``NOAAException`` in 0.5.11). Network failures such as a timeout or a refused connection
+  raise ``RequestError`` instead of a ``requests`` exception; the original is its
+  ``__cause__``.
 - **Modules**: ``pybuoy.observation``, ``pybuoy.unit_mappings``, ``pybuoy.const``,
   ``pybuoy.endpoints``, ``pybuoy.api`` and ``pybuoy.mixins`` are removed. Import from
   ``pybuoy``.

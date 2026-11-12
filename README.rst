@@ -54,7 +54,7 @@ Quickstart
 
 Results are plain dataclasses. Times are timezone-aware UTC and a value is ``None`` when the
 source did not report it. Observations keep the units NDBC publishes and forecasts are in
-metres and metres per second; ``pybuoy.units`` gives the unit of every field.
+metres and metres per second; ``pybuoy.units`` gives the unit of every numeric field.
 
 - `Get all active stations <https://pybuoy.readthedocs.io/en/latest/tutorials/active_buoys.html>`_.
 

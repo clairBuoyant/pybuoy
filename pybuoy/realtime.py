@@ -18,7 +18,8 @@ _URL = "https://www.ndbc.noaa.gov/data/realtime2/{station_id}.{dataset}"
 _MISSING = frozenset({"MM", "N/A", "-99"})
 _TIME_COLUMNS = ["YY", "MM", "DD", "hh", "mm"]
 
-# Supporting another dataset means adding its model here and an overload below.
+# Supporting another dataset starts with its model here and an overload below;
+# AGENTS.md lists the remaining steps.
 _MODELS: dict[str, type[Observation]] = {
     "txt": MeteorologicalObservation,
     "spec": WaveSummaryObservation,

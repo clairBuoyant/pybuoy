@@ -10,8 +10,11 @@ buoy data, NDBC's active station list and NOAA NDFD point forecasts.
 - `pybuoy/realtime.py`, `stations.py`, `forecasts.py`: one module per data
   source. Each holds the request and a pure `parse_*` function.
 - `pybuoy/models.py`: the frozen dataclasses returned to callers. A field's
-  source column, unit and converter are declared once, in its `field` metadata.
-- `pybuoy/_http.py`, `errors.py`: the HTTP client and the error types.
+  source and unit are declared once, in its `field` metadata. `realtime.py`
+  also reads the converter from there; `forecasts.py` converts units itself.
+- `pybuoy/_http.py`: the HTTP client.
+- `pybuoy/errors.py`: the error types, and the `_parser` decorator that makes
+  a `parse_*` function raise `ParseError` for malformed input.
 - `tests/fixtures/`: trimmed real NOAA/NDBC responses (see its README).
 
 ## Commands
@@ -40,8 +43,10 @@ The virtual environment lives at `/opt/venv`, so mounting the source over
 
 - Tests come first and run offline. Parse real responses from
   `tests/fixtures/`; reach the network only in `tests/test_live.py`.
-- To support another realtime dataset, add its dataclass to `models.py`, one
-  entry to `_MODELS` in `realtime.py` and one `get` overload.
+- To support another realtime dataset: add its dataclass to `models.py` and to
+  the `Observation` union there, add one entry to `_MODELS` and one `get`
+  overload in `realtime.py`, export the dataclass from `pybuoy/__init__.py`,
+  and list it in `docs/code_overview/models.rst`.
 - Timestamps are timezone-aware UTC. Values are `None` when the source did not
   report them.
 - Branch names match `(bug|chore|enhancement|feature|hotfix|release|wip)/name`.
