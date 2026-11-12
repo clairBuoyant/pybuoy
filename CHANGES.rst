@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-0.6.0 (unreleased)
+0.6.0 (2026-11-12)
 ------------------
 
 This release replaces the result types. See **Breaking Changes** below for how to update.
