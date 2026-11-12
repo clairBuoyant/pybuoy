@@ -5,7 +5,7 @@ Service reference: https://graphical.weather.gov/xml/rest.php
 
 from collections import defaultdict
 from dataclasses import fields
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from xml.etree import ElementTree
 
 from pybuoy._http import Client
@@ -18,10 +18,6 @@ _XSI_NIL = "{http://www.w3.org/2001/XMLSchema-instance}nil"
 # NDFD's metric output rounds wave height to whole metres, so request English
 # units and convert them here.
 _TO_METRIC = {"knots": 1852 / 3600, "feet": 0.3048, "degrees true": 1.0}
-
-# NDFD reads begin/end as local time at the point and ignores any value that
-# carries a UTC offset. Ask for a day either side, then keep the exact range.
-_PADDING = timedelta(days=1)
 
 
 class Forecasts:
@@ -39,22 +35,27 @@ class Forecasts:
             start: earliest forecast time wanted; must be timezone-aware.
             end: latest forecast time wanted; must be timezone-aware.
 
-        A point outside NDFD's coverage has no forecasts. A point NOAA rejects,
-        such as an impossible latitude, raises ``RequestError``.
+        NDFD forecasts about a week ahead, from now. A range that reaches
+        outside that returns the part inside it, and a range wholly outside it,
+        such as one in the past, returns an empty list. So does a point outside
+        NDFD's coverage. A point NOAA rejects, such as an impossible latitude,
+        raises ``RequestError``.
         """
         if start.utcoffset() is None or end.utcoffset() is None:
             raise ValueError("start and end must be timezone-aware")
         if start > end:
             raise ValueError("start must not be after end")
 
+        # No begin or end is sent, so NDFD answers with its whole forecast. It
+        # reads them as local time at the point, ignores one that carries a UTC
+        # offset and answers nothing for an end past 2038, so the range is
+        # applied to its answer instead.
         params: dict[str, str | float] = {
             "whichClient": "NDFDgen",
             "product": "time-series",
             "Unit": "e",
             "lat": lat,
             "lon": lon,
-            "begin": _ndfd_time(start - _PADDING),
-            "end": _ndfd_time(end + _PADDING),
             "wspd": "wspd",
             "wdir": "wdir",
             "wgust": "wgust",
@@ -111,7 +112,3 @@ def _utc(text: str) -> datetime:
     if moment.utcoffset() is None:
         raise ValueError(f"forecast time {text!r} has no UTC offset")
     return moment.astimezone(UTC)
-
-
-def _ndfd_time(moment: datetime) -> str:
-    return moment.astimezone(UTC).replace(tzinfo=None).isoformat(timespec="seconds")

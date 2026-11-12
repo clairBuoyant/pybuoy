@@ -62,15 +62,15 @@ def test_only_forecasts_inside_the_requested_range_are_returned(buoy: Buoy) -> N
     assert [f.time for f in forecasts] == [START + HOUR, START + 2 * HOUR]
 
 
-def test_request_is_padded_because_ndfd_reads_local_time_without_offset(
-    buoy: Buoy, noaa: FakeNoaa
-) -> None:
+def test_request_asks_for_the_whole_forecast(buoy: Buoy, noaa: FakeNoaa) -> None:
+    # NDFD reads begin and end as local time at the point, so none are sent
+    # and the range is applied to its answer.
     buoy.forecasts.get(40.368, -73.701, START, END)
 
     params = noaa.calls[0]["params"]
     assert isinstance(params, dict)
-    assert params["begin"] == "2026-11-10T05:00:00"
-    assert params["end"] == "2026-11-12T08:00:00"
+    assert "begin" not in params
+    assert "end" not in params
     assert (params["lat"], params["lon"]) == ("40.368", "-73.701")
     assert (params["product"], params["Unit"]) == ("time-series", "e")
 
@@ -80,6 +80,17 @@ def test_range_in_another_timezone_is_the_same_instant(buoy: Buoy) -> None:
     end = datetime.fromisoformat("2026-11-11T03:00:00-05:00")
 
     assert len(buoy.forecasts.get(40.368, -73.701, start, end)) == 4
+
+
+def test_open_ended_range_returns_the_whole_forecast(buoy: Buoy) -> None:
+    forecasts = buoy.forecasts.get(
+        40.368,
+        -73.701,
+        datetime.min.replace(tzinfo=UTC),
+        datetime.max.replace(tzinfo=UTC),
+    )
+
+    assert len(forecasts) == 4
 
 
 def test_naive_datetimes_are_rejected(buoy: Buoy, noaa: FakeNoaa) -> None:

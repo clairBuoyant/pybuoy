@@ -55,3 +55,13 @@ def test_forecast_data_stays_inside_the_requested_range(buoy: Buoy) -> None:
     assert all(start <= f.time <= end for f in forecasts)
     assert forecasts[0].time - start < timedelta(hours=3)
     assert end - forecasts[-1].time < timedelta(hours=6)
+
+
+def test_forecast_with_an_open_end_reaches_the_end_of_noaa_data(buoy: Buoy) -> None:
+    start = datetime.now(UTC)
+
+    forecasts = buoy.forecasts.get(
+        40.368, -73.701, start, datetime.max.replace(tzinfo=UTC)
+    )
+
+    assert forecasts[-1].time - start > timedelta(days=5)
