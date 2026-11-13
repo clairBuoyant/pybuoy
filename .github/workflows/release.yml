@@ -3,6 +3,10 @@ name: release
 # Publish to PyPI when a version tag is pushed. Uses PyPI Trusted Publishing,
 # which must be configured for this repository, workflow and environment at
 # https://pypi.org/manage/project/pybuoy/settings/publishing/
+#
+# Then ask Read the Docs to look for the new tag, so its "stable" docs follow
+# the release. This needs a Read the Docs API token in the RTD_TOKEN secret of
+# the pypi environment (https://app.readthedocs.org/accounts/tokens/).
 on:
   push:
     tags: ['v*']
@@ -31,3 +35,23 @@ jobs:
         run: uv build
       - name: Publish
         run: uv publish
+
+  docs:
+    # Read the Docs hears about a tag from GitHub, but skips a version sync
+    # requested within 60 seconds of the previous one, such as the one for the
+    # branch deleted by the merge. It then never learns about the tag, and
+    # "stable" keeps serving the previous release. Ask again once the 60 seconds
+    # have passed: either this sync runs, or a later one already saw the tag.
+    needs: publish
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions: {}
+    steps:
+      - name: Ask Read the Docs to sync versions
+        run: |
+          sleep 60
+          curl --fail-with-body --silent --show-error --request POST \
+            --header "Authorization: Token $RTD_TOKEN" \
+            https://app.readthedocs.org/api/v3/projects/pybuoy/sync-versions/
+        env:
+          RTD_TOKEN: ${{ secrets.RTD_TOKEN }}
