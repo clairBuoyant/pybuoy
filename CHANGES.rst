@@ -1,6 +1,23 @@
 Change Log
 ==========
 
+0.6.1 (2026-11-13)
+------------------
+
+Fix
+~~~
+
+- An unknown station raises ``StationNotFoundError`` even when NDBC's 404 answer breaks off
+  part-way. It raised ``RequestError`` with no status. ``RequestError.status`` is now
+  ``None`` only when no answer arrived at all.
+- **Realtime**, **Forecasts**: a value of ``nan`` or ``inf`` in an answer raises
+  ``ParseError``. It was returned as a float that is not valid JSON.
+
+Internal
+~~~~~~~~
+
+- Update development dependencies to latest.
+
 0.6.0 (2026-11-12)
 ------------------
 
