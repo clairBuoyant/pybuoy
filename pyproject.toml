@@ -1,6 +1,6 @@
 [project]
 name = "pybuoy"
-version = "0.5.10"
+version = "0.5.11"
 description = "Python wrapper for NOAA and NDBC REST web services."
 authors = [{ name = "Kyle J. Burda", email = "kylejbdev@gmail.com" }]
 requires-python = ">=3.12"
@@ -47,22 +47,15 @@ exclude = [
     "htmlcov",
 ]
 line-length = 88
-target-version = "py311"
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "RUF", "SIM", "UP", "W"]
 
 [tool.mypy]
-namespace_packages = true
-explicit_package_bases = true
-exclude = '''
-(
-  /(
-    \.git
-    | dist
-    | docs/source/conf.py
-    | .venv
-  )/
-)
-'''
+packages = ["pybuoy"]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
+addopts = ["--strict-markers", "-m", "not live"]
+markers = ["live: calls NOAA/NDBC over the network (run with `pytest -m live`)"]

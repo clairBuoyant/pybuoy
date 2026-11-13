@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dwml version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://digital.weather.gov/xml/schema/DWML.xsd">
+  <head>
+    <product srsName="WGS 1984" concise-name="time-series" operational-mode="official">
+      <title>NOAA's National Weather Service Forecast Data</title>
+      <field>meteorological</field>
+      <category>forecast</category>
+      <creation-date refresh-frequency="PT30M">2026-11-11T01:55:13Z</creation-date>
+    </product>
+    <source>
+      <more-information>https://digital.weather.gov/xml/</more-information>
+      <production-center>Meteorological Development Laboratory<sub-center>Weather Information Applications Division</sub-center></production-center>
+      <disclaimer>http://www.nws.noaa.gov/disclaimer.html</disclaimer>
+      <credit>https://www.weather.gov/</credit>
+      <credit-logo>https://www.weather.gov/logorequest</credit-logo>
+      <feedback>https://www.weather.gov/contact</feedback>
+    </source>
+  </head>
+  <data>
+    <location>
+      <location-key>point1</location-key>
+      <point latitude="40.37" longitude="-73.70"/>
+    </location>
+    <moreWeatherInformation applicable-location="point1">http://forecast.weather.gov/MapClick.php?textField1=40.37&amp;textField2=-73.70</moreWeatherInformation>
+    <time-layout time-coordinate="local" summarization="none">
+      <layout-key>k-p1h-n61-1</layout-key>
+      <start-valid-time>2026-11-11T00:00:00-05:00</start-valid-time>
+      <start-valid-time>2026-11-11T01:00:00-05:00</start-valid-time>
+      <start-valid-time>2026-11-11T02:00:00-05:00</start-valid-time>
+      <start-valid-time>2026-11-11T03:00:00-05:00</start-valid-time>
+    </time-layout>
+    <time-layout time-coordinate="local" summarization="none">
+      <layout-key>k-p1h-n57-2</layout-key>
+      <start-valid-time>2026-11-11T00:00:00-05:00</start-valid-time>
+      <start-valid-time>2026-11-11T01:00:00-05:00</start-valid-time>
+      <start-valid-time>2026-11-11T02:00:00-05:00</start-valid-time>
+    </time-layout>
+    <parameters applicable-location="point1">
+      <wind-speed type="sustained" units="knots" time-layout="k-p1h-n61-1">
+        <name>Wind Speed</name>
+        <value>13</value>
+        <value>13</value>
+        <value>13</value>
+        <value>13</value>
+      </wind-speed>
+      <direction type="wind" units="degrees true" time-layout="k-p1h-n61-1">
+        <name>Wind Direction</name>
+        <value>290</value>
+        <value>290</value>
+        <value>290</value>
+        <value>300</value>
+      </direction>
+      <wind-speed type="gust" units="knots" time-layout="k-p1h-n61-1">
+        <name>Wind Speed Gust</name>
+        <value>19</value>
+        <value>19</value>
+        <value>19</value>
+        <value>19</value>
+      </wind-speed>
+      <water-state time-layout="k-p1h-n57-2">
+        <waves type="significant" units="feet">
+          <name>Wave Height</name>
+          <value>3</value>
+          <value>3</value>
+          <value>3</value>
+        </waves>
+      </water-state>
+    </parameters>
+  </data>
+</dwml>

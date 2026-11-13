@@ -9,12 +9,11 @@ realtime_meteorological_data = buoy.realtime.get(station_id=example_station_id)
 
 for meteorological_record in realtime_meteorological_data:
     # IDE should now detect available attributes
-    # add code below here
-    pass
+    print(meteorological_record)
 
 # Sample Output of Meteorological Data
 print(f"Station Realtime Data (latest record): {realtime_meteorological_data[0]}")
-# OUTPUT: Station Realtime Data (latest record): Observation(2022-08-28 21:10:00) # noqa: E501,W505
+# OUTPUT: Station Realtime Data (latest record): Observation(2022-08-28 21:10:00) # noqa: E501
 #
 """realtime_meteorological_data returns an instance of `MeteorologicalObservations`.
 `Observations` is an iterable object and contains a list
@@ -42,7 +41,7 @@ Under the hood, the aforementioned sample output provides this object:
 
 `realtime_meteorological_data[0].sea_level_pressure.value` would return
 1020.9 as type float (defaults to None, if no value was recorded).
-"""  # noqa: W505
+"""
 
 
 realtime_wave_summary_data = buoy.realtime.get(
@@ -51,12 +50,11 @@ realtime_wave_summary_data = buoy.realtime.get(
 
 for wave_record in realtime_wave_summary_data:
     # IDE should now detect available attributes
-    # add code below here
-    pass
+    print(wave_record)
 
 # Sample Output of Wave Summary Data
 print(f"Station Realtime Data (latest record): {realtime_wave_summary_data[0]}")
-# OUTPUT: Station Realtime Data (latest record): Observation(2022-08-28 20:40:00) # noqa: E501,W505
+# OUTPUT: Station Realtime Data (latest record): Observation(2022-08-28 20:40:00) # noqa: E501
 #
 """realtime_wave_summary_data returns an instance of `WaveSummaryObservations`.
 `Observations` is an iterable object and contains a list
@@ -80,4 +78,4 @@ Under the hood, the aforementioned sample output provides this object:
 
 `realtime_wave_summary_data[0].average_wave_period.value` would return
 4.1 as type float (defaults to None, if no value was recorded).
-"""  # noqa: W505
+"""

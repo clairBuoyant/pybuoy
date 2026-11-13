@@ -1,6 +1,6 @@
 """pybuoy exception classes."""
 
-from requests import HTTPError  # type: ignore
+from requests import HTTPError
 
 
 class BaseException(Exception):

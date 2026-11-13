@@ -1,4 +1,4 @@
-from typing import Generic, Iterator, Optional, TypeVar
+from collections.abc import Iterator
 
 from pybuoy.observation import (
     ForecastObservation,
@@ -7,19 +7,16 @@ from pybuoy.observation import (
 )
 from pybuoy.observation.observation import BaseObservation
 
-ObservationType = TypeVar("ObservationType", bound=BaseObservation)
 
-
-class BaseObservations(Generic[ObservationType]):
+class BaseObservations[ObservationType: BaseObservation]:
     """Observations class encapsulates `Observation`s by datetime."""
 
     def __init__(
-        self, observations: Optional[list[ObservationType]] = None, repr_limit=1000
+        self, observations: list[ObservationType] | None = None, repr_limit=1000
     ):
         # TODO: improve error handling
         self._data = observations if observations is not None else []
         self._repr_limit = repr_limit
-        self._size = len(self._data)
 
     @property
     def reports(self) -> list[ObservationType]:
@@ -30,17 +27,19 @@ class BaseObservations(Generic[ObservationType]):
 
     def __iadd__(self, observation: ObservationType):
         self._data.append(observation)
-        self._size = len(self._data)
         return self
 
     def __iter__(self) -> Iterator[ObservationType]:
         return iter(self._data)
 
+    def __len__(self) -> int:
+        return len(self._data)
+
     def __repr__(self) -> str:
         if len(self._data) < self._repr_limit:
             return "{}({})".format(
                 self.__class__.__name__,
-                ", ".join("{}={!r}".format(k, v) for k, v in self.__dict__.items()),
+                ", ".join(f"{k}={v!r}" for k, v in self.__dict__.items()),
             )
         # Get the first and last three items
         items_to_display = self._data[:3] + self._data[-3:]

@@ -49,9 +49,7 @@ class ObservationStringDatum(str):
             value (str): value of observation. (Default: "MM")
             label_unit (MeasurementsAndUnits): label and unit for value.
         """
-        self.value = (
-            None if value == NO_NUMERIC_VALUE or value == NO_TEXT_VALUE else value
-        )
+        self.value = None if value in (NO_NUMERIC_VALUE, NO_TEXT_VALUE) else value
         self._label = label_unit["label"]
         self._unit = label_unit["unit"]
 

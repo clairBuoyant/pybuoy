@@ -58,11 +58,10 @@ class ParserMixin:
         self,
         data: str,
         dataset: RealtimeDatasetsValues,
-    ) -> MeteorologicalObservations | WaveSummaryObservations | str:
+    ) -> MeteorologicalObservations | WaveSummaryObservations:
         obs = self.__clean_realtime_data(data=data, dataset=dataset)
-        # TODO: refine error handling
-        if obs is None or len(obs) == 0:
-            raise NDBCException
+        if len(obs) == 0:
+            raise NDBCException(f"No observations in the {dataset!r} response")
 
         match dataset:
             case RealtimeDatasets.spec.value:
@@ -72,8 +71,6 @@ class ParserMixin:
             case RealtimeDatasets.txt.value:
                 met_obs: list[MeteorologicalObservation] = obs  # type: ignore
                 return MeteorologicalObservations(observations=met_obs)
-            case _:
-                return data
 
     @property
     def xslt_transform(self) -> ET.XSLT:
@@ -89,10 +86,6 @@ class ParserMixin:
     def __clean_realtime_data(
         self, data: str, dataset: RealtimeDatasetsValues
     ) -> list[MeteorologicalObservation] | list[WaveSummaryObservation]:
-        if data is None:
-            # TODO: handle when request not successful
-            raise NDBCException
-
         # TODO: consider csv module
         rows = data.strip().split("\n")
         headers = [" ".join(row.split()).split(" ") for row in rows[0:2]]
@@ -116,7 +109,7 @@ class ParserMixin:
                     headers=headers_without_dates,
                     records=record_array[header_offset:],
                 )
-            elif dataset == RealtimeDatasets.spec.value:
+            else:
                 observation = self.__parse_wave_summary_record(
                     date_recorded=date_recorded,
                     headers=headers_without_dates,

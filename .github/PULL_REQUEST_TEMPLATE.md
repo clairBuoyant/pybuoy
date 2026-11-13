@@ -5,11 +5,11 @@ Before you submit a PR, please go through these steps and **remove this template
 1. Make sure that your PR is not a duplicate.
 2. If not, then make sure that:
 
-    a. You have done your changes in a separate branch. Branches MUST have descriptive names that start with either the `fix/` or `feat/` prefixes. Good examples are: `fix/signin-issue` or `feat/issue-templates`.
+    a. You have done your changes in a separate branch. Branches MUST have descriptive names that start with one of the `bug/`, `chore/`, `enhancement/`, `feature/`, `hotfix/`, `release/` or `wip/` prefixes. Good examples are: `bug/signin-issue` or `feature/issue-templates`.
 
     b. You have a descriptive commit message with a short title (first line).
 
-    c. You have only one commit (if not, squash them into one commit).
+    c. Each commit does one thing and passes the checks on its own.
 
     d. `pytest` doesn't throw any error. If it does, fix them first and amend your commit (`git commit --amend`).
 

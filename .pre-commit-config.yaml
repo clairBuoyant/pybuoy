@@ -20,13 +20,23 @@ repos:
     hooks:
       - id: forbid-tabs
       - id: remove-tabs
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.12
+  # Run the linters from the locked dev environment so hooks, scripts and CI
+  # all use the versions in uv.lock.
+  - repo: local
     hooks:
-      - id: ruff
-        args: [ --fix ]
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check --fix
+        language: system
+        types_or: [ python, pyi ]
       - id: ruff-format
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.20.2
-    hooks:
+        name: ruff format
+        entry: uv run ruff format
+        language: system
+        types_or: [ python, pyi ]
       - id: mypy
+        name: mypy
+        entry: uv run mypy
+        language: system
+        types: [ python ]
+        pass_filenames: false
