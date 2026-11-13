@@ -138,7 +138,17 @@ def test_failure_while_reading_the_body_raises_request_error(
     with pytest.raises(RequestError, match="connection broken") as raised:
         buoy.stations.get_active()
 
+    assert raised.value.status == 200
     assert raised.value.__cause__ is noaa.read_error
+
+
+def test_unknown_station_is_still_reported_when_reading_the_404_body_fails(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    noaa.read_error = requests.exceptions.ChunkedEncodingError("connection broken")
+
+    with pytest.raises(StationNotFoundError):
+        buoy.realtime.get("ZZZZZ")
 
 
 def test_declared_charset_is_honoured(buoy: Buoy, noaa: FakeNoaa) -> None:

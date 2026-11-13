@@ -10,7 +10,7 @@ from xml.etree import ElementTree
 
 from pybuoy._http import Client
 from pybuoy.errors import RequestError, _parser
-from pybuoy.models import Forecast
+from pybuoy.models import Forecast, _number
 
 _URL = "https://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php"
 _XSI_NIL = "{http://www.w3.org/2001/XMLSchema-instance}nil"
@@ -104,7 +104,7 @@ def parse_dwml(xml: str) -> list[Forecast]:
                 by_time[time][name] = (
                     None
                     if value.get(_XSI_NIL) == "true"
-                    else round(float(value.text or "") * factor, 2)
+                    else round(_number(value.text or "") * factor, 2)
                 )
     return [Forecast(time=time, **by_time[time]) for time in sorted(by_time)]
 

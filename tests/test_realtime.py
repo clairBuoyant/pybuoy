@@ -88,27 +88,22 @@ def test_minus_99_wave_direction_is_none(buoy: Buoy) -> None:
     assert last.average_wave_period == 3.6
 
 
-def test_records_with_missing_values_are_valid_json(buoy: Buoy) -> None:
-    record = asdict(buoy.realtime.get("44065", "spec")[1])
-
-    decoded = json.loads(json.dumps(record, default=str, allow_nan=False))
-
-    assert decoded["wind_wave_direction"] is None
-    assert decoded["swell_height"] == 0.4
-
-
-def test_every_record_type_is_valid_json(buoy: Buoy) -> None:
+def test_every_record_type_is_valid_json_with_null_for_missing(buoy: Buoy) -> None:
     everything = (datetime.min.replace(tzinfo=UTC), datetime.max.replace(tzinfo=UTC))
     records = [
         asdict(buoy.realtime.get("44065")[0]),
-        asdict(buoy.realtime.get("44065", "spec")[-1]),
+        asdict(buoy.realtime.get("44065", "spec")[1]),
         asdict(buoy.stations.get_active()[1]),
         asdict(buoy.forecasts.get(40.368, -73.701, *everything)[-1]),
     ]
 
-    for record in records:
-        text = json.dumps(record, default=str, allow_nan=False)
-        assert json.loads(text).keys() == record.keys()
+    decoded = [
+        json.loads(json.dumps(record, default=str, allow_nan=False))
+        for record in records
+    ]
+
+    assert decoded[1]["wind_wave_direction"] is None
+    assert decoded[1]["swell_height"] == 0.4
 
 
 def test_units_are_declared_once_per_model() -> None:
@@ -176,6 +171,14 @@ def test_malformed_rows_raise_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
     ],
 )
 def test_a_body_that_is_not_a_realtime_file_raises_parse_error(body: str) -> None:
+    with pytest.raises(ParseError):
+        parse_realtime(body, MeteorologicalObservation)
+
+
+@pytest.mark.parametrize("cell", ["nan", "inf", "-Infinity", "1e999"])
+def test_a_value_that_is_not_a_finite_number_raises_parse_error(cell: str) -> None:
+    body = f"#YY  MM DD hh mm WSPD\n#yr  mo dy hr mn  m/s\n2026 11 11 01 10 {cell}\n"
+
     with pytest.raises(ParseError):
         parse_realtime(body, MeteorologicalObservation)
 
