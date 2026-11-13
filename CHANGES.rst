@@ -1,6 +1,79 @@
 Change Log
 ==========
 
+0.6.0 (2026-11-12)
+------------------
+
+This release replaces the result types. See **Breaking Changes** below for how to update.
+
+Buoy
+~~~~
+
+- ``Buoy(timeout=10.0, session=None)``: the request timeout is configurable and a
+  ``requests.Session`` can be supplied, for example to add retries or a proxy.
+- **Realtime**: station ids are validated (letters and digits) and upper-cased. NDBC paths
+  are case-sensitive, so ``"burl1"`` used to fail. A numeric id may be passed as an ``int``.
+- **Realtime**: NDBC's ``-99`` marker for a missing wave direction is ``None``. It was
+  returned as ``-99.0``.
+- **Realtime**: a column NDBC adds to a file is ignored instead of raising ``KeyError``.
+- **Forecasts**: ``get`` returns exactly the requested range for a point in any timezone.
+- **Forecasts**: a ``start`` after ``end`` raises ``ValueError`` instead of returning nothing.
+- **Stations**: names are read as UTF-8. NDBC declares no encoding for the list, so a name
+  with an accented letter was garbled.
+- ``pybuoy.units(model)`` returns the unit of each numeric field of a record type.
+
+Errors
+~~~~~~
+
+- Every error derives from ``pybuoy.PybuoyError``: ``RequestError`` (with ``.status``) when
+  NOAA or NDBC cannot be reached or answers with an error status, ``StationNotFoundError``
+  when NDBC has no data for a station, and ``ParseError`` when a response is not in the
+  expected format, including a well-formed document of the wrong kind.
+- An answer larger than 16 MB raises ``RequestError`` instead of being read into memory.
+  The largest real answer is about 0.6 MB.
+
+Internal
+~~~~~~~~
+
+- Remove the ``lxml`` dependency; XML is parsed with the standard library.
+- ``mypy`` runs in strict mode over the library, tests and examples.
+- Development scripts run through ``uv``. Add a development ``Dockerfile``, a weekly run of
+  the network tests and a tag-triggered PyPI release workflow.
+- The published package metadata links to the documentation again.
+
+Breaking Changes
+~~~~~~~~~~~~~~~~
+
+- **Records**: results are lists of frozen dataclasses from ``pybuoy``
+  (``MeteorologicalObservation``, ``WaveSummaryObservation``, ``Forecast``, ``Station``)
+  instead of ``Observations`` containers and dicts. Use ``len(result)`` and indexing directly;
+  ``.reports`` and ``+=`` are gone.
+- **Values**: fields are plain ``float | None`` or ``str | None``. Replace
+  ``observation.wave_height.value`` with ``observation.wave_height``. ``.unit`` is replaced by
+  ``pybuoy.units(model)[field]`` and ``.label`` is removed. A missing value is always
+  ``None``; it is no longer also ``nan`` or ``"MM"``.
+- **Units**: unit names are the ones NDBC publishes (``degT``, ``m/s``, ``m``, ``sec``,
+  ``hPa``, ``degC``, ``nmi``, ``ft``). Forecast values are now metric (``m/s`` and ``m``,
+  converted from NOAA's knots and feet) instead of knots and feet.
+- **Time**: ``datetime`` is renamed ``time`` and is always timezone-aware UTC. Realtime times
+  were naive and forecast times carried the forecast point's local offset.
+- **Forecasts**: ``get(lat, lon, start, end)`` takes timezone-aware ``datetime`` objects
+  instead of ISO strings (``start_date``/``end_date``), and raises ``ValueError`` for naive
+  ones. ``ForecastObservation`` is renamed ``Forecast``; ``forecast_by_lat_lon`` is removed.
+- **Stations**: ``get_active`` returns ``Station`` records. ``lat``, ``lon`` and
+  ``elevation`` are floats and ``met``, ``currents``, ``water_quality`` and ``dart`` are
+  booleans. ``pgm``, ``elev`` and ``waterquality`` are now ``program``, ``elevation`` and
+  ``water_quality``.
+- **Errors**: ``pybuoy.exceptions`` (``NDBCException``, ``NOAAException``, ``DWMLException``,
+  ``HTTPException``) is removed; catch ``pybuoy.PybuoyError`` or a subclass. Error statuses
+  raise ``RequestError`` instead of ``ValueError``, and so does a point NOAA rejects
+  (``NOAAException`` in 0.5.11). Network failures such as a timeout or a refused connection
+  raise ``RequestError`` instead of a ``requests`` exception; the original is its
+  ``__cause__``.
+- **Modules**: ``pybuoy.observation``, ``pybuoy.unit_mappings``, ``pybuoy.const``,
+  ``pybuoy.endpoints``, ``pybuoy.api`` and ``pybuoy.mixins`` are removed. Import from
+  ``pybuoy``.
+
 0.5.11 (2026-11-12)
 -------------------
 

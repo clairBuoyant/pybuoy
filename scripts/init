@@ -1,9 +1,8 @@
-#!/bin/bash -e
+#!/bin/sh -e
 #
-# Prepare application for development by running bootstrap and setup.
+# Prepare the project for development by running bootstrap and setup.
 
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-BASE_DIR="$(dirname "$CURRENT_DIR")"
+cd "$(dirname "$0")/.."
 
-${BASE_DIR}/scripts/bootstrap
-${BASE_DIR}/scripts/setup
+./scripts/bootstrap
+./scripts/setup

@@ -1,114 +1,178 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from conftest import FakeNoaa
 
-from pybuoy import Buoy
-from pybuoy.exceptions import NOAAException
-from pybuoy.observation import ForecastObservation
+from pybuoy import Buoy, Forecast, ParseError, RequestError, units
+from pybuoy.forecasts import parse_dwml
 
-EST = timezone(timedelta(hours=-5))
-START = "2026-11-11T00:00:00"
-END = "2026-11-11T03:00:00"
-
-
-def test_forecast_is_merged_by_timestamp(buoy: Buoy) -> None:
-    forecast = buoy.forecasts.get(40.368, -73.701, START, END)
-
-    assert [type(f) for f in forecast] == [ForecastObservation] * 4
-    assert [f.datetime for f in forecast] == [
-        datetime(2026, 11, 11, hour, tzinfo=EST) for hour in range(4)
-    ]
+# The fixture covers 00:00 to 03:00 at UTC-5.
+START = datetime(2026, 11, 11, 5, tzinfo=UTC)
+END = datetime(2026, 11, 11, 8, tzinfo=UTC)
+HOUR = timedelta(hours=1)
 
 
-def test_forecast_values(buoy: Buoy) -> None:
-    first, _, _, last = buoy.forecasts.get(40.368, -73.701, START, END)
+def test_forecasts_are_merged_by_time_in_utc(buoy: Buoy) -> None:
+    forecasts = buoy.forecasts.get(40.368, -73.701, START, END)
 
-    assert first.wind_speed.value == 13.0
-    assert first.wind_gust.value == 19.0
-    assert first.wind_direction.value == 290.0
-    assert first.wave_height.value == 3.0
-    assert last.wind_direction.value == 300.0
+    assert [f.time for f in forecasts] == [START + n * HOUR for n in range(4)]
 
 
-def test_forecast_value_missing_from_a_shorter_time_layout_is_none(buoy: Buoy) -> None:
-    last = buoy.forecasts.get(40.368, -73.701, START, END)[3]
-
-    assert last.wave_height.value is None
-    assert last.wind_speed.value == 13.0
-
-
-def test_forecast_request_parameters(buoy: Buoy, noaa: FakeNoaa) -> None:
-    buoy.forecasts.get(40.368, -73.701, START, END)
-
-    params = noaa.calls[0]["params"]
-    assert isinstance(params, dict)
-    assert params["lat"] == 40.368
-    assert params["lon"] == -73.701
-    assert params["begin"] == START
-    assert params["end"] == END
-    assert params["product"] == "time-series"
-
-
-def test_forecast_dates_are_sent_without_microseconds(
-    buoy: Buoy, noaa: FakeNoaa
-) -> None:
-    # NDFD ignores a begin/end it cannot parse and returns its full range.
-    buoy.forecasts.get(
-        40.368, -73.701, "2026-11-11T00:00:00.123456", "2026-11-11T03:00:00.654321"
+def test_forecast_values_are_converted_to_metric(buoy: Buoy) -> None:
+    # The fixture reports 13 and 19 knots and 3 feet.
+    assert buoy.forecasts.get(40.368, -73.701, START, END)[0] == Forecast(
+        time=START,
+        wind_direction=290.0,
+        wind_speed=6.69,
+        wind_gust=9.77,
+        wave_height=0.91,
     )
 
-    params = noaa.calls[0]["params"]
-    assert isinstance(params, dict)
-    assert params["begin"] == "2026-11-11T00:00:00"
-    assert params["end"] == "2026-11-11T03:00:00"
+
+def test_forecast_units() -> None:
+    assert units(Forecast) == {
+        "wind_direction": "degT",
+        "wind_speed": "m/s",
+        "wind_gust": "m/s",
+        "wave_height": "m",
+    }
 
 
-def test_forecast_nil_value_is_none(buoy: Buoy, noaa: FakeNoaa) -> None:
+def test_value_missing_from_a_shorter_time_layout_is_none(buoy: Buoy) -> None:
+    last = buoy.forecasts.get(40.368, -73.701, START, END)[3]
+
+    assert last.wave_height is None
+    assert last.wind_direction == 300.0
+
+
+def test_nil_value_is_none(buoy: Buoy, noaa: FakeNoaa) -> None:
     noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
         "<value>290</value>", '<value xsi:nil="true"/>', 1
     )
 
     first, second, _, _ = buoy.forecasts.get(40.368, -73.701, START, END)
 
-    assert first.wind_direction.value is None
-    assert second.wind_direction.value == 290.0
+    assert first.wind_direction is None
+    assert second.wind_direction == 290.0
 
 
-def test_forecast_has_a_length(buoy: Buoy) -> None:
-    assert len(buoy.forecasts.get(40.368, -73.701, START, END)) == 4
+def test_only_forecasts_inside_the_requested_range_are_returned(buoy: Buoy) -> None:
+    forecasts = buoy.forecasts.get(40.368, -73.701, START + HOUR, END - HOUR)
+
+    assert [f.time for f in forecasts] == [START + HOUR, START + 2 * HOUR]
 
 
-def test_forecast_for_a_point_without_waves(buoy: Buoy, noaa: FakeNoaa) -> None:
+def test_request_asks_for_the_whole_forecast(buoy: Buoy, noaa: FakeNoaa) -> None:
+    # NDFD reads begin and end as local time at the point, so none are sent
+    # and the range is applied to its answer.
+    buoy.forecasts.get(40.368, -73.701, START, END)
+
+    params = noaa.calls[0]["params"]
+    assert isinstance(params, dict)
+    assert "begin" not in params
+    assert "end" not in params
+    assert (params["lat"], params["lon"]) == ("40.368", "-73.701")
+    assert (params["product"], params["Unit"]) == ("time-series", "e")
+
+
+def test_range_in_another_timezone_is_the_same_instant(buoy: Buoy) -> None:
+    start = datetime.fromisoformat("2026-11-11T00:00:00-05:00")
+    end = datetime.fromisoformat("2026-11-11T03:00:00-05:00")
+
+    assert len(buoy.forecasts.get(40.368, -73.701, start, end)) == 4
+
+
+def test_open_ended_range_returns_the_whole_forecast(buoy: Buoy) -> None:
+    forecasts = buoy.forecasts.get(
+        40.368,
+        -73.701,
+        datetime.min.replace(tzinfo=UTC),
+        datetime.max.replace(tzinfo=UTC),
+    )
+
+    assert len(forecasts) == 4
+
+
+def test_naive_datetimes_are_rejected(buoy: Buoy, noaa: FakeNoaa) -> None:
+    with pytest.raises(ValueError, match="timezone-aware"):
+        buoy.forecasts.get(40.368, -73.701, datetime(2026, 11, 11), END)  # noqa: DTZ001
+
+    assert noaa.calls == []
+
+
+def test_point_outside_the_ndfd_grid_has_no_forecasts() -> None:
+    xml = """<?xml version="1.0" encoding="UTF-8"?>
+    <dwml version="1.0">
+      <data>
+        <location><point latitude="0.00" longitude="0.00"/></location>
+        <parameters applicable-location="point1"/>
+      </data>
+    </dwml>"""
+
+    assert parse_dwml(xml) == []
+
+
+def test_forecast_time_without_an_offset_raises_parse_error(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
+        "-05:00", ""
+    )
+
+    with pytest.raises(ParseError, match="offset"):
+        buoy.forecasts.get(40.368, -73.701, START, END)
+
+
+def test_point_without_waves_has_wind_only(buoy: Buoy, noaa: FakeNoaa) -> None:
     # NOAA leaves out the wave parameter for points on land.
     body = noaa.bodies[noaa.forecast_url]
     waves = body[body.index("<water-state") : body.index("</water-state>")]
     noaa.bodies[noaa.forecast_url] = body.replace(waves + "</water-state>", "")
 
-    forecast = buoy.forecasts.get(39.74, -104.99, START, END)
+    forecasts = buoy.forecasts.get(39.74, -104.99, START, END)
 
-    assert len(forecast) == 4
-    assert forecast[0].wind_speed.value == 13.0
-    assert forecast[0].wind_direction.value == 290.0
-    assert forecast[0].wave_height.value is None
+    assert len(forecasts) == 4
+    assert all(f.wave_height is None for f in forecasts)
+    assert forecasts[0].wind_direction == 290.0
 
 
-def test_forecast_for_a_point_with_only_wind_direction(
+def test_forecast_time_out_of_range_raises_parse_error(
     buoy: Buoy, noaa: FakeNoaa
 ) -> None:
-    body = noaa.bodies[noaa.forecast_url]
-    for tag in ("water-state", "wind-speed", "wind-speed"):
-        start, end = body.index(f"<{tag}"), body.index(f"</{tag}>")
-        body = body[:start] + body[end + len(f"</{tag}>") :]
-    noaa.bodies[noaa.forecast_url] = body
+    # Year 1 at UTC+5 is before the earliest time Python can hold in UTC.
+    noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
+        "2026-11-11T00:00:00-05:00", "0001-01-01T00:00:00+05:00", 1
+    )
 
-    forecast = buoy.forecasts.get(39.74, -104.99, START, END)
-
-    assert forecast[0].wind_direction.value == 290.0
-    assert forecast[0].wind_speed.value is None
+    with pytest.raises(ParseError):
+        buoy.forecasts.get(40.368, -73.701, START, END)
 
 
-def test_error_reported_by_noaa_raises_with_its_message(
+def test_unexpected_unit_raises_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
+    noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
+        'units="knots"', 'units="furlongs/fortnight"'
+    )
+
+    with pytest.raises(ParseError):
+        buoy.forecasts.get(40.368, -73.701, START, END)
+
+
+def test_parameters_pybuoy_does_not_model_are_ignored(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    temperature = (
+        '<temperature type="hourly" units="Fahrenheit" time-layout="k-p1h-n61-1">'
+        "<value>50</value><value>50</value><value>49</value><value>49</value>"
+        "</temperature>"
+    )
+    noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
+        "</parameters>", f"{temperature}</parameters>"
+    )
+
+    assert len(buoy.forecasts.get(40.368, -73.701, START, END)) == 4
+
+
+def test_error_reported_by_noaa_raises_request_error(
     buoy: Buoy, noaa: FakeNoaa
 ) -> None:
     # NOAA answers an invalid point with status 200 and this body.
@@ -117,23 +181,19 @@ def test_error_reported_by_noaa_raises_with_its_message(
         "is not on an NDFD grid</pre></error>"
     )
 
-    with pytest.raises(NOAAException, match="not on an NDFD grid"):
+    with pytest.raises(RequestError, match="not on an NDFD grid") as raised:
         buoy.forecasts.get(999, -73, START, END)
 
+    assert raised.value.status == 200
 
-def test_forecast_dates_with_an_offset_select_the_exact_range(
-    buoy: Buoy, noaa: FakeNoaa
-) -> None:
-    # NDFD ignores a date that carries an offset, so it is sent as a naive
-    # date a day wider and the answer is cut to the instants asked for.
-    forecast = buoy.forecasts.get(
-        40.368, -73.701, "2026-11-11T05:00:00+00:00", "2026-11-11T08:00:00+01:00"
-    )
 
-    params = noaa.calls[0]["params"]
-    assert isinstance(params, dict)
-    assert params["begin"] == "2026-11-10T05:00:00"
-    assert params["end"] == "2026-11-12T07:00:00"
-    assert [f.datetime for f in forecast] == [
-        datetime(2026, 11, 11, hour, tzinfo=EST) for hour in range(3)
-    ]
+def test_xml_that_is_not_a_forecast_raises_parse_error() -> None:
+    with pytest.raises(ParseError, match="html"):
+        parse_dwml("<html><body>Maintenance</body></html>")
+
+
+def test_start_after_end_is_rejected(buoy: Buoy, noaa: FakeNoaa) -> None:
+    with pytest.raises(ValueError, match="start must not be after end"):
+        buoy.forecasts.get(40.368, -73.701, END, START)
+
+    assert noaa.calls == []

@@ -1,7 +1,8 @@
-#!/bin/bash -e
+#!/bin/sh -e
 #
 # Install python dependencies and githooks.
 
-poetry install
+cd "$(dirname "$0")/.."
 
-command -v pre-commit &> /dev/null && pre-commit install --hook-type commit-msg || echo >&2 'pre-commit not found.'
+uv sync
+uv run pre-commit install --hook-type pre-commit --hook-type commit-msg

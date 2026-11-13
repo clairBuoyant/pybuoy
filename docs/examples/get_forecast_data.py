@@ -1,38 +1,20 @@
-from datetime import datetime, timedelta
+"""Print the three-day wind and wave forecast for a point."""
+
+from datetime import UTC, datetime, timedelta
 
 from pybuoy import Buoy
 
-start = datetime.today().isoformat()
-end = (datetime.today() + timedelta(7)).isoformat()
 buoy = Buoy()
 
-station_44065 = [40.368, -73.701]  # lat, lon
-
-forecast_observations = buoy.forecasts.get(
-    lat=station_44065[0], lon=station_44065[1], start_date=start, end_date=end
+start = datetime.now(UTC)
+forecasts = buoy.forecasts.get(
+    lat=40.368, lon=-73.701, start=start, end=start + timedelta(days=3)
 )
 
-for observation in forecast_observations:
-    # IDE should now detect available attributes
-    print(observation)
-
-# Sample Output of Forecast Data
-print(f"Station Forecast: {forecast_observations[0]}")
-# OUTPUT: Station Forecast: Observation(2022-12-04 19:00:00)
-#
-"""forecast_data returns an instance of `ForecastObservations`.
-`Observations` is an iterable object and contains a list
-of `ForecastObservation`.
-
-Under the hood, the aforementioned sample output provides this object:
-
-    ForecastObservation(
-        datetime=datetime.datetime(2022, 12, 4, 19, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=68400))),
-        wind_direction=ObservationDatum(Wind Direction: 280.0 degrees),
-        wind_speed=ObservationDatum(Wind Speed: 9.0 knots),
-        wind_gust=ObservationDatum(Wind Gust: 11.0 knots),
-        wave_height=ObservationDatum(Wave Height: 2.0 feet)
+for forecast in forecasts:
+    print(
+        f"{forecast.time:%a %H:%M} UTC"
+        f"  wind {forecast.wind_speed} m/s from {forecast.wind_direction}"
+        f"  gust {forecast.wind_gust} m/s"
+        f"  waves {forecast.wave_height} m"
     )
-
-`forecast_data[0].wave_height.value` would return 2.0 as type float (defaults to None, if no value was recorded).
-"""  # noqa: E501

@@ -1,18 +1,9 @@
-#!/bin/bash -e
+#!/bin/sh -e
 #
-# Run test suite.
+# Run the checks and the test suite. Arguments are passed to pytest,
+# for example `./scripts/test -m live` to run the network tests.
 
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-BASE_DIR="$(dirname "$CURRENT_DIR")"
+cd "$(dirname "$0")/.."
 
-if [ -z "$GITHUB_ACTIONS" ]; then
-    ${BASE_DIR}/scripts/check
-fi
-
-if [ -d '.venv' ] ; then
-    PREFIX='.venv/bin/'
-else
-    PREFIX=''
-fi
-
-${PREFIX}/pytest
+./scripts/check
+uv run pytest "$@"

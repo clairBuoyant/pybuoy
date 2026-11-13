@@ -34,7 +34,8 @@ Contents
     :caption: Code Overview
 
     code_overview/buoy_instance
-    code_overview/exceptions
+    code_overview/models
+    code_overview/errors
 
 .. _tutorial:
 

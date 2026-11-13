@@ -1,6 +1,6 @@
 [project]
 name = "pybuoy"
-version = "0.5.11"
+version = "0.6.0"
 description = "Python wrapper for NOAA and NDBC REST web services."
 authors = [{ name = "Kyle J. Burda", email = "kylejbdev@gmail.com" }]
 requires-python = ">=3.12"
@@ -8,14 +8,20 @@ readme = "README.rst"
 license = "GPL-3.0-or-later"
 keywords = ["NDBC", "NOAA", "api", "buoy", "weather", "wrapper"]
 classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+    "Typing :: Typed",
 ]
-dependencies = ["lxml>=6.1,<7.0", "requests>=2.33.1,<3"]
-documentation = "https://pybuoy.readthedocs.io"
-include = ["LICENSE"]
+dependencies = ["requests>=2.33.1,<3"]
 
 [project.urls]
+Documentation = "https://pybuoy.readthedocs.io"
+Changelog = "https://pybuoy.readthedocs.io/en/latest/package_info/changelog.html"
 "Source Code" = "https://github.com/clairBuoyant/pybuoy"
 "Bug Tracker" = "https://github.com/clairBuoyant/pybuoy/issues"
 
@@ -36,23 +42,18 @@ default-groups = ["dev", "docs"]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.ruff]
-exclude = [
-    ".git",
-    ".github",
-    ".mypy_cache",
-    ".pytest_cache",
-    ".venv",
-    "dist",
-    "htmlcov",
-]
-line-length = 88
+[tool.hatch.build.targets.sdist]
+include = ["pybuoy", "tests", "CHANGES.rst"]
 
 [tool.ruff.lint]
-select = ["B", "E", "F", "I", "RUF", "SIM", "UP", "W"]
+select = ["B", "C4", "DTZ", "E", "F", "I", "PT", "RUF", "SIM", "T20", "UP", "W"]
+
+[tool.ruff.lint.per-file-ignores]
+"docs/examples/*" = ["T20"]
 
 [tool.mypy]
-packages = ["pybuoy"]
+files = ["pybuoy", "tests", "docs/examples"]
+strict = true
 
 [tool.pytest.ini_options]
 minversion = "8.0"

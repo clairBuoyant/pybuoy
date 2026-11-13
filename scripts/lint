@@ -1,12 +1,8 @@
-#!/bin/bash -e
+#!/bin/sh -e
 #
-# Run code linting.
+# Fix lint findings and format the code.
 
-if [ -d '.venv' ] ; then
-    PREFIX='.venv/bin/'
-else
-    PREFIX=''
-fi
+cd "$(dirname "$0")/.."
 
-${PREFIX}ruff check --select I --fix # until unified command is added to format and sort imports
-${PREFIX}ruff format
+uv run ruff check --fix
+uv run ruff format

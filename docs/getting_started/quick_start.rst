@@ -8,10 +8,22 @@ Quick Start
     buoy = Buoy()
 
 
-With the ``buoy`` instance you can then interact with NDBC:
+With the ``buoy`` instance you can then request data from NOAA and NDBC:
 
-- `Get all active stations <https://pybuoy.readthedocs.io/en/latest/tutorials/active_buoys.html>`_.
+- :doc:`Get all active stations </tutorials/active_buoys>`.
 
-- `Get realtime meteorological data <https://pybuoy.readthedocs.io/en/latest/tutorials/realtime_data.html#get-meteorological-data>`_ for buoy by station_id.
+- :ref:`Get realtime meteorological data <get_meteorological>` for a buoy by station id.
 
-- `Get realtime wave summary data <https://pybuoy.readthedocs.io/en/latest/tutorials/realtime_data.html#get-wave-summary-data>`_ for buoy by station_id.
+- :ref:`Get realtime wave summary data <get_wave_summary>` for a buoy by station id.
+
+- :doc:`Get forecast data </tutorials/forecast_data>` for a point by latitude and longitude.
+
+Every result is a list of plain dataclasses (see :doc:`/code_overview/models`):
+
+- times are timezone-aware UTC;
+- a value is ``None`` when the source did not report it;
+- observations keep the units NDBC publishes (mostly metric, but tide is in feet and
+  visibility in nautical miles) and forecasts are in metres and metres per second;
+- :func:`pybuoy.units` gives the unit of each numeric field.
+
+Failures raise a subclass of :class:`pybuoy.PybuoyError` (see :doc:`/code_overview/errors`).
