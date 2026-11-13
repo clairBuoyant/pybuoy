@@ -23,6 +23,7 @@ class Client:
         # Assumed when no charset is declared, as for NDBC's station list, which
         # requests would read as Latin-1. Both services write UTF-8 or ASCII.
         charset = "utf-8"
+        status: int | None = None
         try:
             with self._session.get(
                 url, params=params, timeout=self._timeout, stream=True
@@ -41,7 +42,7 @@ class Client:
                 if status != 200:
                     raise RequestError(f"{url} answered with status {status}", status)
         except requests.RequestException as error:
-            raise RequestError(f"Request to {url} failed: {error}") from error
+            raise RequestError(f"Request to {url} failed: {error}", status) from error
         try:
             return body.decode(charset, errors="replace")
         except (LookupError, UnicodeError):  # a charset Python cannot decode
