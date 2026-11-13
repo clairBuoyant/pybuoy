@@ -18,6 +18,12 @@ Internal
 
 - Update development dependencies to latest.
 
+Security
+~~~~~~~~
+
+- Address CVE-2026-126190 by updating ``soupsieve`` to ``4.0``. Only the documentation build
+  uses it; the published package does not depend on it.
+
 0.6.0 (2026-11-12)
 ------------------
 
