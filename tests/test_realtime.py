@@ -180,6 +180,14 @@ def test_a_body_that_is_not_a_realtime_file_raises_parse_error(body: str) -> Non
         parse_realtime(body, MeteorologicalObservation)
 
 
+@pytest.mark.parametrize("cell", ["nan", "inf", "-Infinity", "1e999"])
+def test_a_value_that_is_not_a_finite_number_raises_parse_error(cell: str) -> None:
+    body = f"#YY  MM DD hh mm WSPD\n#yr  mo dy hr mn  m/s\n2026 11 11 01 10 {cell}\n"
+
+    with pytest.raises(ParseError):
+        parse_realtime(body, MeteorologicalObservation)
+
+
 @pytest.mark.parametrize("station_id", ["", "44065.txt", "../activestations"])
 def test_station_id_must_be_letters_and_digits(
     buoy: Buoy, noaa: FakeNoaa, station_id: str

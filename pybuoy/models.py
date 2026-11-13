@@ -3,14 +3,23 @@
 A value is ``None`` when the source did not report it.
 """
 
+import math
 from dataclasses import dataclass, field, fields
 from datetime import datetime
+
+
+def _number(text: str) -> float:
+    """Read a number, refusing NaN and infinity, which JSON cannot hold."""
+    number = float(text)
+    if not math.isfinite(number):
+        raise ValueError(f"{text!r} is not a finite number")
+    return number
 
 
 def _num(source: str, unit: str) -> float | None:
     """Declare a numeric field read from ``source`` and measured in ``unit``."""
     return field(
-        default=None, metadata={"source": source, "unit": unit, "convert": float}
+        default=None, metadata={"source": source, "unit": unit, "convert": _number}
     )
 
 

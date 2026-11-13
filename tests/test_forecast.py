@@ -148,6 +148,17 @@ def test_forecast_time_out_of_range_raises_parse_error(
         buoy.forecasts.get(40.368, -73.701, START, END)
 
 
+def test_forecast_value_that_is_not_a_finite_number_raises_parse_error(
+    buoy: Buoy, noaa: FakeNoaa
+) -> None:
+    noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
+        "<value>290</value>", "<value>NaN</value>", 1
+    )
+
+    with pytest.raises(ParseError):
+        buoy.forecasts.get(40.368, -73.701, START, END)
+
+
 def test_unexpected_unit_raises_parse_error(buoy: Buoy, noaa: FakeNoaa) -> None:
     noaa.bodies[noaa.forecast_url] = noaa.bodies[noaa.forecast_url].replace(
         'units="knots"', 'units="furlongs/fortnight"'
