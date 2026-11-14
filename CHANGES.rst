@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+Internal
+~~~~~~~~
+
+- The release workflow asks Read the Docs to look for the new tag, so the ``stable``
+  documentation follows each release. It was two releases behind.
+
 0.6.1 (2026-11-13)
 ------------------
 
